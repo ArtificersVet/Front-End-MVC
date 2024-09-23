@@ -18,7 +18,7 @@ namespace MVC_NPANTS.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult pPrivacy()
         {
             return View();
         }
