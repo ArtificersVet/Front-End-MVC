@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MVC_NPANTS.Models;
+using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace MVC_NPANTS.Controllers
 {
@@ -11,15 +13,15 @@ namespace MVC_NPANTS.Controllers
         {
             _httpClient = httpClientFactory.CreateClient("CRMAPI");
         }
+
+        // Método para listar todos los roles
         public async Task<IActionResult> Index()
         {
             List<roles> roles = new List<roles>();
 
             try
             {
-                // URL completa de la API
                 var response = await _httpClient.GetFromJsonAsync<List<roles>>("http://localhost:3000/roles");
-
                 if (response != null)
                 {
                     roles = response;
@@ -34,8 +36,165 @@ namespace MVC_NPANTS.Controllers
                 Console.WriteLine($"Error al hacer la solicitud: {ex.Message}");
             }
 
-            // Retornamos la vista con el modelo
             return View(roles);
         }
+
+        // Método para obtener un rol por su ID
+        public async Task<IActionResult> Details(int id)
+        {
+            roles role = null;
+
+            try
+            {
+                role = await _httpClient.GetFromJsonAsync<roles>($"http://localhost:3000/roles/{id}");
+                if (role == null)
+                {
+                    Console.WriteLine($"No se encontró el rol con ID {id}.");
+                    return NotFound();
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error al hacer la solicitud: {ex.Message}");
+                return BadRequest();
+            }
+
+            return View(role);
+        }
+
+        // Método para crear un nuevo rol (GET)
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var role = new roles(); // Initialize a new instance of roles
+            return View(role); // Pass it to the view
+        }
+
+        // Método para crear un nuevo rol (POST)
+        [HttpPost]
+        public async Task<IActionResult> Create(roles role)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var response = await _httpClient.PostAsJsonAsync("http://localhost:3000/roles/create", role);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error al crear el rol: {response.StatusCode}");
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    Console.WriteLine($"Error al hacer la solicitud: {ex.Message}");
+                }
+            }
+            return View(role);
+        }
+
+        // Método para editar un rol (GET)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            roles role = null;
+            try
+            {
+                role = await _httpClient.GetFromJsonAsync<roles>($"http://localhost:3000/roles/{id}");
+                if (role == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error al hacer la solicitud: {ex.Message}");
+                return BadRequest();
+            }
+
+            return View(role);
+        }
+
+        // Método para editar un rol (POST)
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, roles role)
+        {
+            if (id != role.id)
+            {
+                return BadRequest();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var response = await _httpClient.PutAsJsonAsync($"http://localhost:3000/roles/{id}", role);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error al actualizar el rol: {response.StatusCode}");
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    Console.WriteLine($"Error al hacer la solicitud: {ex.Message}");
+                }
+            }
+
+            return View(role);
+        }
+        // Método para confirmar la eliminación de un rol (GET)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            roles role = null;
+            try
+            {
+                role = await _httpClient.GetFromJsonAsync<roles>($"http://localhost:3000/roles/{id}");
+                if (role == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error al hacer la solicitud: {ex.Message}");
+                return BadRequest();
+            }
+
+            return View(role);
+        }
+
+        // Método para manejar la confirmación de eliminación (POST)
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"http://localhost:3000/roles/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index"); // Redirigir a la lista de roles después de eliminar
+                }
+                else
+                {
+                    Console.WriteLine($"Error al eliminar el rol: {response.StatusCode}");
+                    return BadRequest();
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error al hacer la solicitud: {ex.Message}");
+                return BadRequest();
+            }
+        }
+
+
     }
 }
