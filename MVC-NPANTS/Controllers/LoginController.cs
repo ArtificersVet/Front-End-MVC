@@ -49,7 +49,7 @@ namespace MVC_NPANTS.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Inicio de sesión fallido. Verifique sus credenciales.");
+                ModelState.AddModelError(string.Empty, "Inicio de sesión fallido. Verifique sus credenciales. Gran pendejo.");
                 return View("Index"); // Vuelve a la vista de inicio de sesión
             }
         }
