@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVC_NPANTS.Models;
+using System.Net.Http.Json;
 
 namespace MVC_NPANTS.Controllers
 {
@@ -13,14 +14,24 @@ namespace MVC_NPANTS.Controllers
             _httpClient = httpClientFactory.CreateClient("CRMAPI");
         }
 
+        private void SetAuthorizationHeader()
+        {
+            var token = HttpContext.Session.GetString("AccessToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+        }
+
         // Método para listar todos los usuarios
         public async Task<IActionResult> Index()
         {
-            List<usuario> usuarios = new List<usuario>();
+            SetAuthorizationHeader(); // Establecer el encabezado de autorización
 
+            List<usuario> usuarios = new List<usuario>();
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<List<usuario>>("http://localhost:3000/usuarios");
+                var response = await _httpClient.GetFromJsonAsync<List<usuario>>("usuarios");
                 usuarios = response ?? new List<usuario>();
             }
             catch (HttpRequestException ex)
@@ -34,11 +45,12 @@ namespace MVC_NPANTS.Controllers
         // Método para obtener un usuario por su ID
         public async Task<IActionResult> Details(int id)
         {
-            usuario user = null;
+            SetAuthorizationHeader(); // Establecer el encabezado de autorización
 
+            usuario user = null;
             try
             {
-                user = await _httpClient.GetFromJsonAsync<usuario>($"http://localhost:3000/usuarios/{id}");
+                user = await _httpClient.GetFromJsonAsync<usuario>($"usuarios/{id}");
                 if (user == null)
                 {
                     return NotFound();
@@ -57,6 +69,8 @@ namespace MVC_NPANTS.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            SetAuthorizationHeader(); // Establecer el encabezado de autorización
+
             ViewBag.Roles = await GetRolesAsync(); // Pasar la lista de roles a la vista como SelectListItems
             return View(new usuario());
         }
@@ -65,12 +79,14 @@ namespace MVC_NPANTS.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(usuario user, List<int> selectedRoleIds)
         {
+            SetAuthorizationHeader(); // Establecer el encabezado de autorización
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     user.rolid = await GetSelectedRoleAsync(selectedRoleIds); // Asignar el rol seleccionado
-                    var response = await _httpClient.PostAsJsonAsync("http://localhost:3000/usuarios/create", user);
+                    var response = await _httpClient.PostAsJsonAsync("usuarios/create", user);
                     if (response.IsSuccessStatusCode)
                     {
                         return RedirectToAction("Index");
@@ -94,11 +110,12 @@ namespace MVC_NPANTS.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            usuario user = null;
+            SetAuthorizationHeader(); // Establecer el encabezado de autorización
 
+            usuario user = null;
             try
             {
-                user = await _httpClient.GetFromJsonAsync<usuario>($"http://localhost:3000/usuarios/{id}");
+                user = await _httpClient.GetFromJsonAsync<usuario>($"usuarios/{id}");
                 if (user == null)
                 {
                     return NotFound();
@@ -120,6 +137,8 @@ namespace MVC_NPANTS.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, usuario user, List<int> selectedRoleIds)
         {
+            SetAuthorizationHeader(); // Establecer el encabezado de autorización
+
             if (id != user.id)
             {
                 return BadRequest();
@@ -131,7 +150,7 @@ namespace MVC_NPANTS.Controllers
 
                 try
                 {
-                    var response = await _httpClient.PutAsJsonAsync($"http://localhost:3000/usuarios/{id}", user);
+                    var response = await _httpClient.PutAsJsonAsync($"usuarios/{id}", user);
                     if (response.IsSuccessStatusCode)
                     {
                         return RedirectToAction("Index");
@@ -155,10 +174,12 @@ namespace MVC_NPANTS.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            SetAuthorizationHeader(); // Establecer el encabezado de autorización
+
             usuario user = null;
             try
             {
-                user = await _httpClient.GetFromJsonAsync<usuario>($"http://localhost:3000/usuarios/{id}");
+                user = await _httpClient.GetFromJsonAsync<usuario>($"usuarios/{id}");
                 if (user == null)
                 {
                     return NotFound();
@@ -177,9 +198,11 @@ namespace MVC_NPANTS.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            SetAuthorizationHeader(); // Establecer el encabezado de autorización
+
             try
             {
-                var response = await _httpClient.DeleteAsync($"http://localhost:3000/usuarios/{id}");
+                var response = await _httpClient.DeleteAsync($"usuarios/{id}");
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index");
@@ -204,7 +227,7 @@ namespace MVC_NPANTS.Controllers
 
             try
             {
-                var allRoles = await _httpClient.GetFromJsonAsync<List<Role>>("http://localhost:3000/roles");
+                var allRoles = await _httpClient.GetFromJsonAsync<List<Role>>("roles");
 
                 // Convertir los roles a SelectListItem
                 roles = allRoles.Select(r => new SelectListItem
@@ -227,7 +250,7 @@ namespace MVC_NPANTS.Controllers
             if (selectedRoleIds == null || selectedRoleIds.Count == 0)
                 return null;
 
-            var allRoles = await _httpClient.GetFromJsonAsync<List<Role>>("http://localhost:3000/roles");
+            var allRoles = await _httpClient.GetFromJsonAsync<List<Role>>("roles");
             return allRoles.FirstOrDefault(r => selectedRoleIds.Contains(r.Id)); // Asumiendo que 'Id' es la propiedad en 'Role'
         }
     }

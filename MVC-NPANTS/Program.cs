@@ -2,10 +2,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession(); // Habilitar el uso de sesiones
 
 builder.Services.AddHttpClient("CRMAPI", c =>
 {
-    c.BaseAddress = new Uri(builder.Configuration["UrlsAPI:CRM"]);
+    c.BaseAddress = new Uri(builder.Configuration["UrlsAPI:CRM"]); // Asegúrate de que esta configuración está en appsettings.json
 });
 
 var app = builder.Build();
@@ -14,7 +15,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -23,6 +23,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession(); // Habilitar sesiones antes de la autorización
 app.UseAuthorization();
 
 app.MapControllerRoute(
