@@ -1,0 +1,46 @@
+﻿@model usuario
+
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+<div class="container mt-5">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white text-center">
+            <h2 class="mb-0">@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            <h4 class="mb-3">¿Estás seguro que deseas eliminar este usuario?</h4>
+            <hr />
+            <dl class="row mb-4">
+                <dt class="col-sm-3 fw-bold">Nombre:</dt>
+                <dd class="col-sm-9">@Model.nombre</dd>
+                <dt class="col-sm-3 fw-bold">Email:</dt>
+                <dd class="col-sm-9">@Model.email</dd>
+                <dt class="col-sm-3 fw-bold">Roles:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.rolid?.Count > 0)
+                    {
+                        <ul>
+                            @foreach (var rol in Model.rolid)
+                            {
+                                <li>@rol.nombre</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>No tiene roles asignados</span>
+                    }
+                </dd>
+            </dl>
+            <form asp-action="DeleteConfirmed" method="post">
+                <input type="hidden" asp-for="id" />
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
