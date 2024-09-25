@@ -1,0 +1,35 @@
+﻿@model IEnumerable<MVC_NPANTS.Models.Talla>
+
+@{
+    ViewData["Title"] = "Lista de Tallas";
+}
+
+<h1>Lista de Tallas</h1>
+
+<p>
+    <a asp-action="Create">Crear Nueva Talla</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
