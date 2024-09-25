@@ -3,16 +3,17 @@ using System.Collections.Generic;
 
 namespace MVC_NPANTS.Models
 {
-    public partial class Estilo
+    public partial class Tela
     {
-        public Estilo()
+        public Tela()
         {
             PrendaVestirs = new HashSet<PrendaVestir>();
         }
 
         public long Id { get; set; }
+        public string? Color { get; set; }
         public string? Nombre { get; set; }
-        public string? Tipo { get; set; }
+        public double? Stock { get; set; }
 
         public virtual ICollection<PrendaVestir> PrendaVestirs { get; set; }
     }

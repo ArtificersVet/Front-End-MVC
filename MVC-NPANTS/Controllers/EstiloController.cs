@@ -15,7 +15,7 @@ namespace MVC_NPANTS.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var estilos = await _httpClient.GetFromJsonAsync<List<estilo>>("estilos");
+            var estilos = await _httpClient.GetFromJsonAsync<List<Estilo>>("estilos");
 
             if (estilos == null)
             {
@@ -31,7 +31,7 @@ namespace MVC_NPANTS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> create(estilo estiloOBJ)
+        public async Task<IActionResult> create(Estilo estiloOBJ)
         {
             var estilo = await _httpClient.PostAsJsonAsync("estilos/create", estiloOBJ);
 
@@ -45,7 +45,7 @@ namespace MVC_NPANTS.Controllers
 
         public async Task<IActionResult> GetById(int id)
         {
-            var estilo = await _httpClient.GetFromJsonAsync<estilo>($"estilos/{id}");
+            var estilo = await _httpClient.GetFromJsonAsync<Estilo>($"estilos/{id}");
 
             if (estilo == null)
             {
@@ -57,7 +57,7 @@ namespace MVC_NPANTS.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var estilo = await _httpClient.GetFromJsonAsync<estilo>($"estilos/{id}");
+            var estilo = await _httpClient.GetFromJsonAsync<Estilo>($"estilos/{id}");
 
             if (estilo == null) Console.WriteLine("no se encontro el estilo");
 
@@ -65,7 +65,7 @@ namespace MVC_NPANTS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, estilo estiloOBJ)
+        public async Task<IActionResult> Edit(int id, Estilo estiloOBJ)
         {
             var estilo = await _httpClient.PutAsJsonAsync($"estilos/{id}", estiloOBJ);
 
