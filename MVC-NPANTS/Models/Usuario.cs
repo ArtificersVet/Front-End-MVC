@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MVC_NPANTS.Models
+﻿namespace MVC_NPANTS.Models
 {
-    public partial class Usuario
+    public class usuario
     {
-        public Usuario()
-        {
-            HistorialPedidos = new HashSet<HistorialPedido>();
-        }
-
-        public int Id { get; set; }
-        public int? RolId { get; set; }
-        public string Nombre { get; set; } = null!;
-        public string Email { get; set; } = null!;
-        public string Password { get; set; } = null!;
-
-        public virtual Role? Rol { get; set; }
-        public virtual ICollection<HistorialPedido> HistorialPedidos { get; set; }
+        public int id { get; set; }
+        public List<roles> rolid { get; set; }
+        public string nombre { get; set; }
+        public string email { get; set; }
+        public string password { get; set; }
     }
 }
