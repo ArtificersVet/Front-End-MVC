@@ -19,20 +19,15 @@
                 <dd class="col-sm-9">@Model.nombre</dd>
                 <dt class="col-sm-3 fw-bold">Email:</dt>
                 <dd class="col-sm-9">@Model.email</dd>
-                <dt class="col-sm-3 fw-bold">Roles:</dt>
+                <dt class="col-sm-3 fw-bold">Rol:</dt>
                 <dd class="col-sm-9">
-                    @if (Model.rolid?.Count > 0)
+                    @if (Model.rolid != null)
                     {
-                        <ul>
-                            @foreach (var rol in Model.rolid)
-                            {
-                                <li>@rol.nombre</li>
-                            }
-                        </ul>
+                        <span>@Model.rolid.Nombre</span> <!-- Asegúrate de que 'nombre' sea una propiedad de 'Role' -->
                     }
                     else
                     {
-                        <span>No tiene roles asignados</span>
+                        <span>No tiene rol asignado</span>
                     }
                 </dd>
             </dl>

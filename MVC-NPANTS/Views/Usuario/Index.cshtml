@@ -30,13 +30,10 @@
                         <td>@usuario.nombre</td>
                         <td>@usuario.email</td>
                         <td>
-                            @if (usuario.rolid?.Count > 0)
+                            @if (usuario.rolid != null)
                             {
                                 <ul>
-                                    @foreach (var rol in usuario.rolid)
-                                    {
-                                        <li>@rol.nombre</li>
-                                    }
+                                    <li>@usuario.rolid.Nombre</li>
                                 </ul>
                             }
                             else

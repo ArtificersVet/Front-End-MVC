@@ -7,13 +7,13 @@ namespace MVC_NPANTS.Models
     {
         public Role()
         {
-            Usuarios = new HashSet<Usuario>();
+            usuarios = new HashSet<usuario>();
         }
 
         public int Id { get; set; }
         public string? Nombre { get; set; }
         public string? Descripcion { get; set; }
 
-        public virtual ICollection<Usuario> Usuarios { get; set; }
+        public virtual ICollection<usuario> usuarios { get; set; }
     }
 }

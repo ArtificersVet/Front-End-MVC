@@ -1,4 +1,4 @@
-﻿@model roles
+﻿@model Role
 
 @{
     ViewData["Title"] = "Detalles del Rol";
@@ -14,14 +14,14 @@
             <hr />
             <dl class="row mb-4">
                 <dt class="col-sm-3 fw-bold">Id:</dt>
-                <dd class="col-sm-9">@Model.id</dd>
+                <dd class="col-sm-9">@Model.Id</dd>
                 <dt class="col-sm-3 fw-bold">Nombre:</dt>
-                <dd class="col-sm-9">@Model.nombre</dd>
+                <dd class="col-sm-9">@Model.Nombre</dd>
                 <dt class="col-sm-3 fw-bold">Descripción:</dt>
-                <dd class="col-sm-9">@Model.descripcion</dd>
+                <dd class="col-sm-9">@Model.Descripcion</dd>
             </dl>
             <div class="d-flex justify-content-between">
-                <a asp-action="Edit" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
                 <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
             </div>
         </div>

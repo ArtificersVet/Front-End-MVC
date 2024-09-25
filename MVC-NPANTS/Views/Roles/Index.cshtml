@@ -1,4 +1,4 @@
-﻿@model List<roles>
+﻿@model List<Role>
 
 @{
     ViewData["Title"] = "Lista de Roles";
@@ -25,17 +25,17 @@
                 @foreach (var rol in Model)
                 {
                     <tr>
-                        <th scope="row">@rol.id</th>
-                        <td>@rol.nombre</td>
-                        <td>@rol.descripcion</td>
+                        <th scope="row">@rol.Id</th>
+                        <td>@rol.Nombre</td>
+                        <td>@rol.Descripcion</td>
                         <td class="text-center">
-                            <a class="btn btn-info btn-sm mx-1" asp-action="Details" asp-route-id="@rol.id">
+                            <a class="btn btn-info btn-sm mx-1" asp-action="Details" asp-route-id="@rol.Id">
                                 <i class="fas fa-eye"></i> Ver
                             </a>
-                            <a class="btn btn-warning btn-sm mx-1" asp-action="Edit" asp-route-id="@rol.id">
+                            <a class="btn btn-warning btn-sm mx-1" asp-action="Edit" asp-route-id="@rol.Id">
                                 <i class="fas fa-edit"></i> Editar
                             </a>
-                            <a class="btn btn-danger btn-sm mx-1" asp-action="Delete" asp-route-id="@rol.id">
+                            <a class="btn btn-danger btn-sm mx-1" asp-action="Delete" asp-route-id="@rol.Id">
                                 <i class="fas fa-trash-alt"></i> Eliminar
                             </a>
                         </td>

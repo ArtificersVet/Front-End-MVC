@@ -1,4 +1,4 @@
-﻿@model roles
+﻿@model Role
 
 @{
     ViewData["Title"] = "Editar Rol";
@@ -12,12 +12,12 @@
         <div class="card-body">
             <form asp-action="Edit" method="post">
                 <div class="form-group mb-3">
-                    <label asp-for="nombre" class="form-label"></label>
-                    <input asp-for="nombre" class="form-control" required />
+                    <label asp-for="Nombre" class="form-label"></label>
+                    <input asp-for="Nombre" class="form-control" required />
                 </div>
                 <div class="form-group mb-4">
-                    <label asp-for="descripcion" class="form-label"></label>
-                    <input asp-for="descripcion" class="form-control" />
+                    <label asp-for="Descripcion" class="form-label"></label>
+                    <input asp-for="Descripcion" class="form-control" />
                 </div>
                 <div class="d-flex justify-content-between">
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>

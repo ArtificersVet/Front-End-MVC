@@ -17,11 +17,11 @@ namespace MVC_NPANTS.Controllers
         // Método para listar todos los roles
         public async Task<IActionResult> Index()
         {
-            List<roles> roles = new List<roles>();
+            List<Role> roles = new List<Role>();
 
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<List<roles>>("http://localhost:3000/roles");
+                var response = await _httpClient.GetFromJsonAsync<List<Role>>("http://localhost:3000/roles");
                 if (response != null)
                 {
                     roles = response;
@@ -42,11 +42,11 @@ namespace MVC_NPANTS.Controllers
         // Método para obtener un rol por su ID
         public async Task<IActionResult> Details(int id)
         {
-            roles role = null;
+            Role role = null;
 
             try
             {
-                role = await _httpClient.GetFromJsonAsync<roles>($"http://localhost:3000/roles/{id}");
+                role = await _httpClient.GetFromJsonAsync<Role>($"http://localhost:3000/roles/{id}");
                 if (role == null)
                 {
                     Console.WriteLine($"No se encontró el rol con ID {id}.");
@@ -66,13 +66,13 @@ namespace MVC_NPANTS.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var role = new roles(); // Initialize a new instance of roles
+            var role = new Role(); // Initialize a new instance of Role
             return View(role); // Pass it to the view
         }
 
         // Método para crear un nuevo rol (POST)
         [HttpPost]
-        public async Task<IActionResult> Create(roles role)
+        public async Task<IActionResult> Create(Role role)
         {
             if (ModelState.IsValid)
             {
@@ -100,10 +100,10 @@ namespace MVC_NPANTS.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            roles role = null;
+            Role role = null;
             try
             {
-                role = await _httpClient.GetFromJsonAsync<roles>($"http://localhost:3000/roles/{id}");
+                role = await _httpClient.GetFromJsonAsync<Role>($"http://localhost:3000/roles/{id}");
                 if (role == null)
                 {
                     return NotFound();
@@ -120,9 +120,9 @@ namespace MVC_NPANTS.Controllers
 
         // Método para editar un rol (POST)
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, roles role)
+        public async Task<IActionResult> Edit(int id, Role role)
         {
-            if (id != role.id)
+            if (id != role.Id)
             {
                 return BadRequest();
             }
@@ -149,14 +149,15 @@ namespace MVC_NPANTS.Controllers
 
             return View(role);
         }
+
         // Método para confirmar la eliminación de un rol (GET)
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            roles role = null;
+            Role role = null;
             try
             {
-                role = await _httpClient.GetFromJsonAsync<roles>($"http://localhost:3000/roles/{id}");
+                role = await _httpClient.GetFromJsonAsync<Role>($"http://localhost:3000/roles/{id}");
                 if (role == null)
                 {
                     return NotFound();
@@ -194,7 +195,5 @@ namespace MVC_NPANTS.Controllers
                 return BadRequest();
             }
         }
-
-
     }
 }

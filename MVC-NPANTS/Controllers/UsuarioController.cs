@@ -61,15 +61,15 @@ namespace MVC_NPANTS.Controllers
             return View(new usuario());
         }
 
-
         // Método para crear un nuevo usuario (POST)
         [HttpPost]
-        public async Task<IActionResult> Create(usuario user)
+        public async Task<IActionResult> Create(usuario user, List<int> selectedRoleIds)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    user.rolid = await GetSelectedRoleAsync(selectedRoleIds); // Asignar el rol seleccionado
                     var response = await _httpClient.PostAsJsonAsync("http://localhost:3000/usuarios/create", user);
                     if (response.IsSuccessStatusCode)
                     {
@@ -105,7 +105,7 @@ namespace MVC_NPANTS.Controllers
                 }
 
                 ViewBag.Roles = await GetRolesAsync(); // Cargar los roles disponibles como SelectListItems
-                ViewBag.SelectedRoles = user.rolid.Select(r => r.id).ToList(); // Pasar los roles seleccionados
+                ViewBag.SelectedRoleId = user.rolid?.Id; // Pasar el rol seleccionado
             }
             catch (HttpRequestException ex)
             {
@@ -116,10 +116,9 @@ namespace MVC_NPANTS.Controllers
             return View(user);
         }
 
-
         // Método para editar un usuario (POST)
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, usuario user, List<int> selectedRoles)
+        public async Task<IActionResult> Edit(int id, usuario user, List<int> selectedRoleIds)
         {
             if (id != user.id)
             {
@@ -128,7 +127,7 @@ namespace MVC_NPANTS.Controllers
 
             if (ModelState.IsValid)
             {
-                user.rolid = await GetSelectedRolesAsync(selectedRoles); // Actualizar roles seleccionados
+                user.rolid = await GetSelectedRoleAsync(selectedRoleIds); // Actualizar rol seleccionado
 
                 try
                 {
@@ -205,13 +204,13 @@ namespace MVC_NPANTS.Controllers
 
             try
             {
-                var allRoles = await _httpClient.GetFromJsonAsync<List<roles>>("http://localhost:3000/roles");
+                var allRoles = await _httpClient.GetFromJsonAsync<List<Role>>("http://localhost:3000/roles");
 
                 // Convertir los roles a SelectListItem
                 roles = allRoles.Select(r => new SelectListItem
                 {
-                    Value = r.id.ToString(),
-                    Text = r.nombre
+                    Value = r.Id.ToString(),
+                    Text = r.Nombre
                 }).ToList();
             }
             catch (HttpRequestException)
@@ -222,13 +221,14 @@ namespace MVC_NPANTS.Controllers
             return roles;
         }
 
-
-        // Método para obtener los roles seleccionados
-        private async Task<List<roles>> GetSelectedRolesAsync(List<int> selectedRoleIds)
+        // Método para obtener el rol seleccionado
+        private async Task<Role> GetSelectedRoleAsync(List<int> selectedRoleIds)
         {
-            var allRoles = await _httpClient.GetFromJsonAsync<List<roles>>("http://localhost:3000/roles");
-            return allRoles.Where(r => selectedRoleIds.Contains(r.id)).ToList(); // Asumiendo que 'id' es la propiedad en 'roles'
-        }
+            if (selectedRoleIds == null || selectedRoleIds.Count == 0)
+                return null;
 
+            var allRoles = await _httpClient.GetFromJsonAsync<List<Role>>("http://localhost:3000/roles");
+            return allRoles.FirstOrDefault(r => selectedRoleIds.Contains(r.Id)); // Asumiendo que 'Id' es la propiedad en 'Role'
+        }
     }
 }

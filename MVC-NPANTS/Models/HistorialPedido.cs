@@ -14,6 +14,6 @@ namespace MVC_NPANTS.Models
 
         public virtual EstadoPedido? EstadoPedido { get; set; }
         public virtual Pedido? Pedido { get; set; }
-        public virtual Usuario? Usuario { get; set; }
+        //public virtual Usuario? Usuario { get; set; }
     }
 }
