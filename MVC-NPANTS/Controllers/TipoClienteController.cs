@@ -13,8 +13,17 @@ namespace MVC_NPANTS.Controllers
 
             _httpClient = httpClientFactory.CreateClient("CRMAPI");
         }
+        private void SetAuthorizationHeader()
+        {
+            var token = HttpContext.Session.GetString("AccessToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+        }
         public async Task <IActionResult> Index()
         {
+            SetAuthorizationHeader();
             var tipos = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
 
             if (tipos == null)
@@ -28,6 +37,7 @@ namespace MVC_NPANTS.Controllers
         
         public ActionResult Create()
         {
+            SetAuthorizationHeader();
             return View();
         }
 
@@ -35,6 +45,7 @@ namespace MVC_NPANTS.Controllers
         [HttpPost]
         public async Task <IActionResult> Create(TipoCliente TiposOBJ)
         {
+            SetAuthorizationHeader();
             var tipo = await _httpClient.PostAsJsonAsync("tipoclientes/create", TiposOBJ);
 
             if (tipo.IsSuccessStatusCode)
@@ -49,6 +60,7 @@ namespace MVC_NPANTS.Controllers
         
         public async Task <IActionResult> Edit(int id)
         {
+            SetAuthorizationHeader();
             var tipo = await _httpClient.GetFromJsonAsync<TipoCliente>($"tipoclientes/{id}");
 
             if (tipo == null) Console.WriteLine("No se encontro el tipo cliente");
@@ -60,6 +72,7 @@ namespace MVC_NPANTS.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, TipoCliente TiposOBJ)
         {
+            SetAuthorizationHeader();
             var tipo = await _httpClient.PutAsJsonAsync($"tipoclientes/{id}", TiposOBJ);
 
             if (tipo.IsSuccessStatusCode) return RedirectToAction(nameof(Index));
@@ -70,6 +83,7 @@ namespace MVC_NPANTS.Controllers
 
         public async Task<IActionResult> GetById(int id)
         {
+            SetAuthorizationHeader();
             var tipo = await _httpClient.GetFromJsonAsync<TipoCliente>($"tipoclientes/{id}");
 
             if (tipo == null)
@@ -83,6 +97,7 @@ namespace MVC_NPANTS.Controllers
         
         public async Task <IActionResult> Delete(int id)
         {
+            SetAuthorizationHeader();
             var tipo = await _httpClient.DeleteAsync($"tipoclientes/{id}");
 
             if (tipo == null) Console.WriteLine("No se elimino");

@@ -13,10 +13,19 @@ namespace MVC_NPANTS.Controllers
         {
             _httpClient = httpClientFactory.CreateClient("CRMAPI");
         }
-
+        private void SetAuthorizationHeader()
+        {
+            var token = HttpContext.Session.GetString("AccessToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+        }
         // Método para listar todos los roles
         public async Task<IActionResult> Index()
         {
+
+            SetAuthorizationHeader();
             List<Role> roles = new List<Role>();
 
             try
@@ -42,6 +51,7 @@ namespace MVC_NPANTS.Controllers
         // Método para obtener un rol por su ID
         public async Task<IActionResult> Details(int id)
         {
+            SetAuthorizationHeader();
             Role role = null;
 
             try
@@ -66,6 +76,7 @@ namespace MVC_NPANTS.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            SetAuthorizationHeader();
             var role = new Role(); // Initialize a new instance of Role
             return View(role); // Pass it to the view
         }
@@ -74,6 +85,7 @@ namespace MVC_NPANTS.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Role role)
         {
+            SetAuthorizationHeader();
             if (ModelState.IsValid)
             {
                 try
@@ -100,6 +112,7 @@ namespace MVC_NPANTS.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            SetAuthorizationHeader();
             Role role = null;
             try
             {
@@ -122,6 +135,8 @@ namespace MVC_NPANTS.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Role role)
         {
+
+            SetAuthorizationHeader();
             if (id != role.Id)
             {
                 return BadRequest();
@@ -154,6 +169,7 @@ namespace MVC_NPANTS.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            SetAuthorizationHeader();
             Role role = null;
             try
             {
@@ -176,6 +192,7 @@ namespace MVC_NPANTS.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            SetAuthorizationHeader();
             try
             {
                 var response = await _httpClient.DeleteAsync($"http://localhost:3000/roles/{id}");

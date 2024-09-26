@@ -12,10 +12,19 @@ namespace MVC_NPANTS.Controllers
         {
             _httpClient = httpClientFactory.CreateClient("CRMAPI");
         }
+        private void SetAuthorizationHeader()
+        {
+            var token = HttpContext.Session.GetString("AccessToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+        }
 
         // Listar todas las tallas
         public async Task<IActionResult> Index()
         {
+            SetAuthorizationHeader();
             var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas");
 
             if (tallas == null)
@@ -29,6 +38,7 @@ namespace MVC_NPANTS.Controllers
         // Mostrar el formulario para crear una nueva talla
         public IActionResult Create()
         {
+            SetAuthorizationHeader();
             return View();
         }
 
@@ -36,6 +46,7 @@ namespace MVC_NPANTS.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Talla talla)
         {
+            SetAuthorizationHeader();
             var result = await _httpClient.PostAsJsonAsync("tallas/create", talla);
 
             if (result.IsSuccessStatusCode)
@@ -49,6 +60,7 @@ namespace MVC_NPANTS.Controllers
         // Obtener los detalles de una talla por ID
         public async Task<IActionResult> Details(int id)
         {
+            SetAuthorizationHeader();
             var talla = await _httpClient.GetFromJsonAsync<Talla>($"tallas/{id}");
 
             if (talla == null)
@@ -62,6 +74,7 @@ namespace MVC_NPANTS.Controllers
         // Mostrar el formulario de edición de una talla
         public async Task<IActionResult> Edit(int id)
         {
+            SetAuthorizationHeader();
             var talla = await _httpClient.GetFromJsonAsync<Talla>($"tallas/{id}");
 
             if (talla == null)
@@ -76,6 +89,7 @@ namespace MVC_NPANTS.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Talla talla)
         {
+            SetAuthorizationHeader();
             var result = await _httpClient.PutAsJsonAsync($"tallas/{id}", talla);
 
             if (result.IsSuccessStatusCode)
@@ -89,6 +103,7 @@ namespace MVC_NPANTS.Controllers
         // Eliminar una talla
         public async Task<IActionResult> Delete(int id)
         {
+            SetAuthorizationHeader();
             var result = await _httpClient.DeleteAsync($"tallas/{id}");
 
             if (result.IsSuccessStatusCode)
