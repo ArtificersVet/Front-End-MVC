@@ -94,7 +94,7 @@ namespace MVC_NPANTS.Controllers
             SetAuthorizationHeader();
             var estilo = await _httpClient.DeleteAsync($"estilos/{id}");
 
-            if (estilo == null) Console.WriteLine("no se encontro el id");
+            if (estilo.IsSuccessStatusCode) Console.WriteLine("no se encontro el id");
 
             return RedirectToAction(nameof(Index));
         }

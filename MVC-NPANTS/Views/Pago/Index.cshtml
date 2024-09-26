@@ -9,6 +9,13 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-warning">
+        @ViewBag.Message
+    </div>
+}
 <table class="table">
     <thead>
         <tr>
@@ -31,6 +38,14 @@
         </tr>
     </thead>
     <tbody>
+        <tr>
+            <td>
+                @if(Model == null)
+                {
+                    <p>no hay mas registros</p>
+                }
+            </td>
+        </tr>
 @foreach (var item in Model) {
         <tr>
             <td>
