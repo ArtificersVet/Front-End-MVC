@@ -13,8 +13,18 @@ namespace MVC_NPANTS.Controllers
             _httpClient = httpClientFactory.CreateClient("CRMAPI");
         }
 
+        private void SetAuthorizationHeader()
+        {
+            var token = HttpContext.Session.GetString("AccessToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+        }
+
         public async Task<IActionResult> Index()
         {
+            SetAuthorizationHeader();
             var estilos = await _httpClient.GetFromJsonAsync<List<Estilo>>("estilos");
 
             if (estilos == null)
@@ -27,12 +37,14 @@ namespace MVC_NPANTS.Controllers
 
         public ActionResult create()
         {
+            SetAuthorizationHeader();
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> create(Estilo estiloOBJ)
         {
+            SetAuthorizationHeader();
             var estilo = await _httpClient.PostAsJsonAsync("estilos/create", estiloOBJ);
 
             if (estilo.IsSuccessStatusCode)
@@ -45,6 +57,7 @@ namespace MVC_NPANTS.Controllers
 
         public async Task<IActionResult> GetById(int id)
         {
+            SetAuthorizationHeader();
             var estilo = await _httpClient.GetFromJsonAsync<Estilo>($"estilos/{id}");
 
             if (estilo == null)
@@ -57,6 +70,7 @@ namespace MVC_NPANTS.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            SetAuthorizationHeader();
             var estilo = await _httpClient.GetFromJsonAsync<Estilo>($"estilos/{id}");
 
             if (estilo == null) Console.WriteLine("no se encontro el estilo");
@@ -67,6 +81,7 @@ namespace MVC_NPANTS.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Estilo estiloOBJ)
         {
+            SetAuthorizationHeader();
             var estilo = await _httpClient.PutAsJsonAsync($"estilos/{id}", estiloOBJ);
 
             if(estilo.IsSuccessStatusCode) return RedirectToAction(nameof(Index));
@@ -76,6 +91,7 @@ namespace MVC_NPANTS.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+            SetAuthorizationHeader();
             var estilo = await _httpClient.DeleteAsync($"estilos/{id}");
 
             if (estilo == null) Console.WriteLine("no se elimino");
