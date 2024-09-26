@@ -78,7 +78,7 @@ namespace MVC_NPANTS.Controllers
         {
             var estilo = await _httpClient.DeleteAsync($"estilos/{id}");
 
-            if (estilo == null) Console.WriteLine("no se elimino");
+            if (estilo == null) Console.WriteLine("no se encontro el id");
 
             return RedirectToAction(nameof(Index));
         }
