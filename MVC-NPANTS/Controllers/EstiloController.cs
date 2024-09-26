@@ -19,7 +19,7 @@ namespace MVC_NPANTS.Controllers
 
             if (estilos == null)
             {
-                Console.WriteLine("no se esncontraron los estilos");
+                Console.WriteLine("no se encontraron los estilos");
             }
 
             return View(estilos);
