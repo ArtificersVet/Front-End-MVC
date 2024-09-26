@@ -33,7 +33,7 @@ namespace MVC_NPANTS.Controllers
 
        
         [HttpPost]
-        public async Task <ActionResult> Create(TipoCliente TiposOBJ)
+        public async Task <IActionResult> Create(TipoCliente TiposOBJ)
         {
             var tipo = await _httpClient.PostAsJsonAsync("tipoclientes/create", TiposOBJ);
 
