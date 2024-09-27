@@ -159,21 +159,28 @@ namespace MVC_NPANTS.Controllers
         }
 
         // POST: PrendaVestirController/DeleteConfirmed/5
-        [HttpPost, ActionName("DeleteConfirmed")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             SetAuthorizationHeader();
-
-            var response = await _httpClient.DeleteAsync($"prendas/{id}");
-
-            if (response.IsSuccessStatusCode)
+            try
             {
+                var response = await _httpClient.DeleteAsync($"prendas/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ModelState.AddModelError("", "No se pudo eliminar la prenda .");
                 return RedirectToAction(nameof(Index));
             }
-
-            ModelState.AddModelError("", "No se pudo eliminar la prenda de vestir.");
-            return RedirectToAction(nameof(Index));
+            catch
+            {
+                ModelState.AddModelError("", "Error al eliminar prenda.");
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }
