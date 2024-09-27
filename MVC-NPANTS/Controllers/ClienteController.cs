@@ -38,7 +38,7 @@ namespace MVC_NPANTS.Controllers
                     if (cliente.TipoclienteId.HasValue)
                     {
                         var tipoCliente = await _httpClient.GetFromJsonAsync<TipoCliente>($"tipoclientes/{cliente.TipoclienteId.Value}");
-                        cliente.Tipocliente = tipoCliente; 
+                        cliente.Tipocliente = tipoCliente;
                     }
                 }
             }
@@ -60,7 +60,7 @@ namespace MVC_NPANTS.Controllers
             if (cliente.TipoclienteId.HasValue)
             {
                 var tipoCliente = await _httpClient.GetFromJsonAsync<TipoCliente>($"tipoclientes/{cliente.TipoclienteId.Value}");
-                cliente.Tipocliente = tipoCliente; 
+                cliente.Tipocliente = tipoCliente;
             }
 
             return View(cliente);
@@ -75,7 +75,7 @@ namespace MVC_NPANTS.Controllers
             if (tiposClientes == null || !tiposClientes.Any())
             {
                 ModelState.AddModelError("", "No se encontraron tipos de clientes.");
-                ViewBag.TiposClientes = new SelectList(Enumerable.Empty<TipoCliente>(), "Id", "Nombre"); 
+                ViewBag.TiposClientes = new SelectList(Enumerable.Empty<TipoCliente>(), "Id", "Nombre");
             }
             else
             {
@@ -110,7 +110,7 @@ namespace MVC_NPANTS.Controllers
                 }
             }
 
-            
+
             var tiposClientes = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
             ViewBag.TiposClientes = new SelectList(tiposClientes, "Id", "Nombre");
 
@@ -127,7 +127,7 @@ namespace MVC_NPANTS.Controllers
                 return NotFound();
             }
 
-            
+
             var tiposClientes = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
             ViewBag.TiposClientes = new SelectList(tiposClientes, "Id", "Nombre", cliente.TipoclienteId);
 
@@ -150,7 +150,7 @@ namespace MVC_NPANTS.Controllers
                 ModelState.AddModelError("", "No se pudo actualizar el cliente.");
             }
 
-            
+
             var tiposClientes = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
             ViewBag.TiposClientes = new SelectList(tiposClientes, "Id", "Nombre", cliente.TipoclienteId);
 
@@ -167,7 +167,7 @@ namespace MVC_NPANTS.Controllers
 
             if (cliente == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
             if (cliente.TipoclienteId.HasValue)
             {
@@ -200,10 +200,11 @@ namespace MVC_NPANTS.Controllers
             catch
             {
                 ModelState.AddModelError("", "Error al eliminar el cliente.");
-                return RedirectToAction(nameof(Index)); 
+                return RedirectToAction(nameof(Index));
+            }
+
+
+
         }
-
-
-
     }
 }
