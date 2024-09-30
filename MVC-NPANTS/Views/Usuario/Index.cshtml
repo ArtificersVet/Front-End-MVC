@@ -4,7 +4,7 @@
     ViewData["Title"] = "Lista de Usuarios";
 }
 
-<div class="container mt-4">
+<div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">@ViewData["Title"]</h2>
         <a class="btn btn-primary" asp-action="Create">Crear Nuevo Usuario</a>
@@ -12,54 +12,54 @@
 
     @if (Model.Count > 0)
     {
-        <table class="table table-hover table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Roles</th>
-                    <th scope="col" class="text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var usuario in Model)
-                {
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead class="thead-dark">
                     <tr>
-                        <th scope="row">@usuario.id</th>
-                        <td>@usuario.nombre</td>
-                        <td>@usuario.email</td>
-                        <td>
-                            @if (usuario.rolid != null)
-                            {
-                                <ul>
-                                    <li>@usuario.rolid.Nombre</li>
-                                </ul>
-                            }
-                            else
-                            {
-                                <span>No tiene roles asignados</span>
-                            }
-                        </td>
-                        <td class="text-center">
-                            <a class="btn btn-info btn-sm mx-1" asp-action="Details" asp-route-id="@usuario.id">
-                                <i class="fas fa-eye"></i> Ver
-                            </a>
-                            <a class="btn btn-warning btn-sm mx-1" asp-action="Edit" asp-route-id="@usuario.id">
-                                <i class="fas fa-edit"></i> Editar
-                            </a>
-                            <a class="btn btn-danger btn-sm mx-1" asp-action="Delete" asp-route-id="@usuario.id">
-                                <i class="fas fa-trash-alt"></i> Eliminar
-                            </a>
-                        </td>
+                        <th scope="col" style="width: 5%;">#</th>
+                        <th scope="col" style="width: 25%;">Nombre</th>
+                        <th scope="col" style="width: 25%;">Email</th>
+                        <th scope="col" style="width: 20%;">Roles</th>
+                        <th scope="col" style="width: 25%;" class="text-center">Acciones</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var usuario in Model)
+                    {
+                        <tr>
+                            <th scope="row">@usuario.id</th>
+                            <td>@usuario.nombre</td>
+                            <td>@usuario.email</td>
+                            <td>
+                                @if (usuario.rolid != null)
+                                {
+                                    <span class="badge badge-info">@usuario.rolid.Nombre</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Sin roles</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <a class="btn btn-info btn-sm mx-1" asp-action="Details" asp-route-id="@usuario.id">
+                                    <i class="fas fa-eye"></i> Ver
+                                </a>
+                                <a class="btn btn-warning btn-sm mx-1" asp-action="Edit" asp-route-id="@usuario.id">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a class="btn btn-danger btn-sm mx-1" asp-action="Delete" asp-route-id="@usuario.id">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
     else
     {
-        <div class="alert alert-info" role="alert">
+        <div class="alert alert-info text-center" role="alert">
             No se encontraron usuarios.
         </div>
     }
