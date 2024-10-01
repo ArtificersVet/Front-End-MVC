@@ -4,58 +4,44 @@
     ViewData["Title"] = "Eliminar Prenda de Vestir";
 }
 
-<h1>Eliminar Prenda de Vestir</h1>
+<div class="container mt-5">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white text-center">
+            <h2 class="mb-0">@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger text-center" role="alert">
+                <h4 class="alert-heading">¡Atención!</h4>
+                <p>¿Estás seguro de eliminar esta prenda de vestir? Esta acción es irreversible.</p>
+            </div>
 
-<h3>¿Estás seguro que deseas eliminar esta prenda de vestir?</h3>
+            <h5 class="mb-3">Detalles de la Prenda de Vestir</h5>
+            <hr />
+            <dl class="row mb-4">
+                <dt class="col-sm-4 fw-bold">Id:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.Id</dd>
 
-<div>
-    <h4>Prenda de Vestir</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-           
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class="col-sm-2">
-            Nombre
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class="col-sm-2">
-            Descripción
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class="col-sm-2">
-            Tela
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tela.Nombre)
-        </dd>
-        <dt class="col-sm-2">
-            Estilo
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Estilo.Nombre)
-        </dd>
-        <dt class="col-sm-2">
-            Tipo Prenda de Vestir
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tipoprendavestir.Nombre)
-        </dd>
-    </dl>
-</div>
+                <dt class="col-sm-4 fw-bold">Nombre:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.Nombre</dd>
 
-<div>
-    <form asp-action="Delete" method="post">
-        <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">Eliminar</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-    </form>
+                <dt class="col-sm-4 fw-bold">Descripción:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.Descripcion</dd>
+
+                <dt class="col-sm-4 fw-bold">Tela:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.Tela.Nombre</dd>
+
+                <dt class="col-sm-4 fw-bold">Estilo:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.Estilo.Nombre</dd>
+
+                <dt class="col-sm-4 fw-bold">Tipo Prenda de Vestir:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.Tipoprendavestir.Nombre</dd>
+            </dl>
+
+            <form asp-action="Delete" method="post" class="text-center">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-danger me-2">Eliminar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
 </div>

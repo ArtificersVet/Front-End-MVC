@@ -4,46 +4,38 @@
     ViewData["Title"] = "Detalles de Prenda de Vestir";
 }
 
-<h1>Detalles de Prenda de Vestir</h1>
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-info text-white text-center">
+            <h2 class="mb-0">@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            <h4 class="mb-3">Detalles de Prenda de Vestir</h4>
+            <hr />
+            <dl class="row mb-4">
+                <dt class="col-sm-3 fw-bold">Id:</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
 
-<div>
-    <h4>Prenda de Vestir</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            Nombre
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class="col-sm-2">
-            Descripción
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class="col-sm-2">
-            Tela
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tela.Nombre) 
-        </dd>
-        <dt class="col-sm-2">
-            Estilo
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Estilo.Nombre) 
-        </dd>
-        <dt class="col-sm-2">
-            Tipo Prenda de Vestir
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tipoprendavestir.Nombre)
-        </dd>
-    </dl>
-</div>
+                <dt class="col-sm-3 fw-bold">Nombre:</dt>
+                <dd class="col-sm-9">@Model.Nombre</dd>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
-    <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+                <dt class="col-sm-3 fw-bold">Descripción:</dt>
+                <dd class="col-sm-9">@Model.Descripcion</dd>
+
+                <dt class="col-sm-3 fw-bold">Tela:</dt>
+                <dd class="col-sm-9">@Model.Tela.Nombre</dd>
+
+                <dt class="col-sm-3 fw-bold">Estilo:</dt>
+                <dd class="col-sm-9">@Model.Estilo.Nombre</dd>
+
+                <dt class="col-sm-3 fw-bold">Tipo de Prenda de Vestir:</dt>
+                <dd class="col-sm-9">@Model.Tipoprendavestir.Nombre</dd>
+            </dl>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
+            </div>
+        </div>
+    </div>
 </div>
