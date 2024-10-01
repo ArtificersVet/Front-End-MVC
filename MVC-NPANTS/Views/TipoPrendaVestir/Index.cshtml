@@ -4,38 +4,117 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<style>
+    body {
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
-                @Html.ActionLink("Details", "GetById", new {  id=item.Id  }) |
-                @Html.ActionLink("Delete", "Delete", new {  id=item.Id })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    .tipoPrenda-container {
+        max-width: 800px;
+        margin: 20px auto;
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .tipoPrenda-header {
+        margin-bottom: 20px;
+    }
+
+        .tipoPrenda-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+    .tipoPrenda-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+        .tipoPrenda-table th, .tipoPrenda-table td {
+            border: 1px solid #927c77;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .tipoPrenda-table th {
+            background-color: #a0a0a0;
+            color: white;
+        }
+
+    .btn {
+        padding: 5px 15px;
+        border: none;
+        cursor: pointer;
+        border-radius: 15px;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .btn-modify {
+        background-color: #00c3a5;
+        color: white;
+    }
+
+    .btn-details {
+        background-color: #c9a063;
+        color: white;
+    }
+
+    .btn-delete {
+        background-color: #c75d5d;
+        color: white;
+    }
+
+    .btn-create {
+        background-color: #a0a0a0;
+        color: white;
+        display: block;
+        margin-left: auto;
+        padding: 10px 20px;
+    }
+</style>
+
+<div class="tipoPrenda-container">
+    <div class="tipoPrenda-header">
+        <h1>Index</h1>
+    </div>
+
+    <table class="tipoPrenda-table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-modify" })
+                        @Html.ActionLink("Details", "GetById", new { id = item.Id }, new { @class = "btn btn-details" })
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-delete" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a class="btn btn-create" asp-action="Create">Crear Nuevo</a>
+</div>
