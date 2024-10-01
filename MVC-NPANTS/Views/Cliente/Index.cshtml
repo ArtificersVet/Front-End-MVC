@@ -1,85 +1,61 @@
 ﻿@model IEnumerable<MVC_NPANTS.Models.Cliente>
 
 @{
-    ViewData["Title"] = "Clientes";
+    ViewData["Title"] = "Lista de Clientes";
 }
 
-<h1>Clientes</h1>
-
-<p>
-    <a asp-action="Create">Create New Cliente</a>
-</p>
-
-@if (ViewBag.Message != null)
-{
-    <div class="alert alert-warning">
-        @ViewBag.Message
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">@ViewData["Title"]</h2>
+        <a class="btn btn-primary" asp-action="Create">Crear Nuevo Cliente</a>
     </div>
-}
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Direccion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Telefono)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().TipoclienteId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model == null || !Model.Any())
-        {
-            <tr>
-                <td colspan="7">
-                    <p>No hay registros de clientes.</p>
-                </td>
-            </tr>
-        }
-        else
-        {
-            foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Nombre)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Direccion)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Email)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Telefono)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Tipocliente.Nombre)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                    </td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Dirección</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Tipo de Cliente</th>
+                        <th scope="col" class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cliente in Model)
+                    {
+                        <tr>
+                            <th scope="row">@cliente.Id</th>
+                            <td>@cliente.Nombre</td>
+                            <td>@cliente.Direccion</td>
+                            <td>@cliente.Email</td>
+                            <td>@cliente.Telefono</td>
+                            <td>@cliente.Tipocliente.Nombre</td>
+                            <td class="text-center">
+                                <a class="btn btn-info btn-sm mx-1" asp-action="Details" asp-route-id="@cliente.Id">
+                                    <i class="fas fa-eye"></i> Ver
+                                </a>
+                                <a class="btn btn-warning btn-sm mx-1" asp-action="Edit" asp-route-id="@cliente.Id">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a class="btn btn-danger btn-sm mx-1" asp-action="Delete" asp-route-id="@cliente.Id">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No se encontraron clientes.
+        </div>
+    }
+</div>
