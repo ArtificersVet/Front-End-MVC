@@ -4,12 +4,16 @@
     ViewData["Title"] = "GetById";
 }
 
-<h1>GetById</h1>
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-info text-white text-center">
+            <h2 class="mb-0">@ViewData["Title"]</h2>
+        </div>
+
 
 <div>
-    <h4>estilo</h4>
-    <hr />
-    <dl class="row">
+     
+    <dl class="card-body">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Id)
         </dt>
@@ -30,7 +34,11 @@
         </dd>
     </dl>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+        <div class="d-flex justify-content-between">
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-warning" })
+            <a class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
 </div>
+        </div>
+        </div>
+
+
