@@ -8,38 +8,38 @@
 
 <h4>Pago</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <form asp-action="Create" class="shadow p-4 rounded bg-light">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
            
-            <div class="form-group">
-                <label asp-for="FechaPago" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="FechaPago" class="form-label"></label>
                 <input type="date" asp-for="FechaPago" class="form-control" />
                 <span asp-validation-for="FechaPago" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Monto" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Monto" class="form-label"></label>
                 <input asp-for="Monto" class="form-control" />
                 <span asp-validation-for="Monto" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="MetodoPagoId" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="MetodoPagoId" class="form-label"></label>
                 @Html.DropDownListFor(model => model.MetodoPagoId,
                          new SelectList(ViewBag.MetodosPago, "Id", "Nombre"),
                          "Seleccione un método de pago",
                          new { @class = "form-control" })
                 <span asp-validation-for="MetodoPagoId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="PedidoId" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="PedidoId" class="form-label"></label>
                 @Html.DropDownListFor(model => model.PedidoId,
                          new SelectList(ViewBag.Pedidos, "Id", "Saldo"),
                          "Seleccione un pedido",
                          new { @class = "form-control" })
                 <span asp-validation-for="PedidoId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="d-flex justify-content-between">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -47,7 +47,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-primary" asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

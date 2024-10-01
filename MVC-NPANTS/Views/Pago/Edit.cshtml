@@ -4,26 +4,26 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
 
-<h4>Pago</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+            <h2 class="mb-0">@ViewData["Title"]</h2>
+        </div>
+        <form asp-action="Edit" class="card-body">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="FechaPago" class="control-label"></label>
                 <input type="date" asp-for="FechaPago" class="form-control" />
                 <span asp-validation-for="FechaPago" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Monto" class="control-label"></label>
                 <input type="number" asp-for="Monto" class="form-control" />
                 <span asp-validation-for="Monto" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="MetodoPagoId" class="control-label"></label>
                 @Html.DropDownListFor(model => model.MetodoPagoId,
                          new SelectList(ViewBag.MetodosPago, "Id", "Nombre"),
@@ -31,7 +31,7 @@
                          new { @class = "form-control" })
                 <span asp-validation-for="MetodoPagoId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="PedidoId" class="control-label"></label>
                 @Html.DropDownListFor(model => model.PedidoId,
                          new SelectList(ViewBag.Pedidos, "Id", "Saldo"),
@@ -39,16 +39,16 @@
                          new { @class = "form-control" })
                 <span asp-validation-for="PedidoId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <div>
+              <a class="btn btn-primary" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
