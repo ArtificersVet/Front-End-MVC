@@ -1,37 +1,51 @@
 ﻿@model IEnumerable<MVC_NPANTS.Models.EstadoPedido>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lista de Estados de Pedido";
 }
 
-<h1>Index</h1>
+<div class="main-container">
+    <div class="page-header">
+        <h1>@ViewData["Title"]</h1>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-           
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-           
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                    @Html.ActionLink("Details", "Details", new {  id=item.Id  }) |
-                    @Html.ActionLink("Delete", "Delete", new {  id=item.Id  })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="btn-container mb-3">
+        <a class="btn btn-create" asp-action="Create">Crear Nuevo Estado de Pedido</a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Nombre)
+                    </th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var estado in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => estado.Nombre)
+                        </td>
+                        <td>
+                          
+                            @Html.ActionLink("Editar", "Edit", new { id = estado.Id }, new { @class = "btn btn-edit" }) |
+                            @Html.ActionLink("Detalles", "Details", new { id = estado.Id }, new { @class = "btn btn-details" }) |
+                            @Html.ActionLink("Eliminar", "Delete", new { id = estado.Id }, new { @class = "btn btn-danger" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No se encontraron estados de pedido.
+        </div>
+    }
+</div>
