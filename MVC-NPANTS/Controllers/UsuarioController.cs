@@ -24,7 +24,7 @@ namespace MVC_NPANTS.Controllers
         }
 
         // Método para listar todos los usuarios
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             SetAuthorizationHeader(); // Establecer el encabezado de autorización
 
@@ -33,6 +33,14 @@ namespace MVC_NPANTS.Controllers
             {
                 var response = await _httpClient.GetFromJsonAsync<List<usuario>>("usuarios");
                 usuarios = response ?? new List<usuario>();
+
+                // Filtrar usuarios según el searchString
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    usuarios = usuarios.Where(u => u.nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                                                    u.email.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+                    ViewBag.SearchString = searchString; // Guardar el término de búsqueda en ViewBag
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -41,6 +49,7 @@ namespace MVC_NPANTS.Controllers
 
             return View(usuarios);
         }
+
 
         // Método para obtener un usuario por su ID
         public async Task<IActionResult> Details(int id)
