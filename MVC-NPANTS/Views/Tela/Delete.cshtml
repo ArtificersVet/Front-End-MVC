@@ -1,43 +1,50 @@
 ﻿@model MVC_NPANTS.Models.Tela
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Tela";
 }
 
-<h2>¿Estás seguro que deseas eliminar esta tela?</h2>
-<div>
-    <h4>Tela</h4>
+<div class="main-container">
+    <div class="page-header">
+        <h1>Eliminar Tela</h1>
+    </div>
+
+    <h4>¿Estás seguro de que deseas eliminar esta tela?</h4>
     <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class="col-sm-10">
+
+    <div class="form-group">
+        <label>ID:</label>
+        <div class="form-control">
             @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class="col-sm-10">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Nombre:</label>
+        <div class="form-control">
             @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Color)
-        </dt>
-        <dd class="col-sm-10">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Color:</label>
+        <div class="form-control">
             @Html.DisplayFor(model => model.Color)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Stock)
-        </dt>
-        <dd class="col-sm-10">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Stock:</label>
+        <div class="form-control">
             @Html.DisplayFor(model => model.Stock)
-        </dd>
-    </dl>
+        </div>
+    </div>
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver a la lista</a>
+        <div class="btn-container">
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </div>
     </form>
 </div>
