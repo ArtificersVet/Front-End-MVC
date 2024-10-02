@@ -5,65 +5,60 @@
 }
 
 <div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white text-center">
-            <h2 class="mb-0">@ViewData["Title"]</h2>
-        </div>
-        <div class="card-body">
-            <form asp-action="Edit" method="post">
-                <input asp-for="Id" type="hidden" />
+    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
 
-                <div class="row mb-4">
-                    <div class="col-md-6 col-12">
-                        <div class="form-group mb-3">
-                            <label asp-for="Nombre" class="form-label"></label>
-                            <input asp-for="Nombre" class="form-control" required />
-                            <span asp-validation-for="Nombre" class="text-danger"></span>
-                        </div>
-                    </div>
+    <form asp-action="Edit" method="post" class="shadow p-4 rounded bg-light">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <input type="hidden" asp-for="Id" />
 
-                    <div class="col-md-6 col-12">
-                        <div class="form-group mb-3">
-                            <label asp-for="Direccion" class="form-label"></label>
-                            <input asp-for="Direccion" class="form-control" />
-                            <span asp-validation-for="Direccion" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-12">
-                        <div class="form-group mb-3">
-                            <label asp-for="Telefono" class="form-label"></label>
-                            <input asp-for="Telefono" class="form-control" />
-                            <span asp-validation-for="Telefono" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-12">
-                        <div class="form-group mb-3">
-                            <label asp-for="Email" class="form-label"></label>
-                            <input asp-for="Email" type="email" class="form-control" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-12">
-                        <div class="form-group mb-4">
-                            <label asp-for="TipoclienteId" class="form-label"></label>
-                            @Html.DropDownListFor(model => model.TipoclienteId, (SelectList)ViewBag.TiposClientes, "Seleccione un tipo de cliente", new { @class = "form-control" })
-                            <span asp-validation-for="TipoclienteId" class="text-danger"></span>
-                        </div>
-                    </div>
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="Nombre" class="form-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" required />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
                 </div>
+            </div>
 
-                <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                    <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="Direccion" class="form-label">Dirección</label>
+                    <input asp-for="Direccion" class="form-control" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
                 </div>
-            </form>
+            </div>
+
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="Telefono" class="form-label">Teléfono</label>
+                    <input asp-for="Telefono" class="form-control" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" type="email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-4">
+                    <label asp-for="TipoclienteId" class="form-label">Tipo de Cliente</label>
+                    @Html.DropDownListFor(model => model.TipoclienteId, (SelectList)ViewBag.TiposClientes, "Seleccione un tipo de cliente", new { @class = "form-control" })
+                    <span asp-validation-for="TipoclienteId" class="text-danger"></span>
+                </div>
+            </div>
         </div>
-    </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+        </div>
+    </form>
 </div>
-
 @section Scripts {
     @Html.Partial("_ValidationScriptsPartial")
 }

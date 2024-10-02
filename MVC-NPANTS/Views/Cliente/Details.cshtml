@@ -4,38 +4,55 @@
     ViewData["Title"] = "Detalles del Cliente";
 }
 
-<div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-info text-white text-center">
-            <h2 class="mb-0">@ViewData["Title"]</h2>
+<div class="main-container">
+    <div class="page-header">
+        <h1>Detalles del Cliente</h1>
+    </div>
+
+    <div class="form-group">
+        <label>ID:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Id)
         </div>
-        <div class="card-body">
-            <h4 class="mb-3">Detalles del Cliente</h4>
-            <hr />
-            <dl class="row mb-4">
-                <dt class="col-sm-3 fw-bold">Id:</dt>
-                <dd class="col-sm-9">@Model.Id</dd>
+    </div>
 
-                <dt class="col-sm-3 fw-bold">Nombre:</dt>
-                <dd class="col-sm-9">@Model.Nombre</dd>
-
-                <dt class="col-sm-3 fw-bold">Dirección:</dt>
-                <dd class="col-sm-9">@Model.Direccion</dd>
-
-                <dt class="col-sm-3 fw-bold">Teléfono:</dt>
-                <dd class="col-sm-9">@Model.Telefono</dd>
-
-                <dt class="col-sm-3 fw-bold">Email:</dt>
-                <dd class="col-sm-9">@Model.Email</dd>
-
-                <dt class="col-sm-3 fw-bold">Tipo de Cliente:</dt>
-                <dd class="col-sm-9">@Model.Tipocliente.Nombre</dd>
-            </dl>
-
-            <div class="d-flex justify-content-between">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
-                <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
-            </div>
+    <div class="form-group">
+        <label>Nombre:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Nombre)
         </div>
+    </div>
+
+    <div class="form-group">
+        <label>Dirección:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Direccion)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Teléfono:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Telefono)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Email:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Email)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Tipo de Cliente:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Tipocliente.Nombre)
+        </div>
+    </div>
+
+    <div class="btn-container">
+        @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-edit" })
+        <a asp-action="Index" class="btn btn-secondary">Volver</a>
     </div>
 </div>
