@@ -4,44 +4,62 @@
     ViewData["Title"] = "Eliminar Prenda de Vestir";
 }
 
-<div class="container mt-5">
-    <div class="card border-danger">
-        <div class="card-header bg-danger text-white text-center">
-            <h2 class="mb-0">@ViewData["Title"]</h2>
-        </div>
-        <div class="card-body">
-            <div class="alert alert-danger text-center" role="alert">
-                <h4 class="alert-heading">¡Atención!</h4>
-                <p>¿Estás seguro de eliminar esta prenda de vestir? Esta acción es irreversible.</p>
-            </div>
+<div class="main-container">
+    <div class="page-header">
+        <h1>Eliminar Prenda de Vestir</h1>
+    </div>
 
-            <h5 class="mb-3">Detalles de la Prenda de Vestir</h5>
-            <hr />
-            <dl class="row mb-4">
-                <dt class="col-sm-4 fw-bold">Id:</dt>
-                <dd class="col-sm-8 fw-bold">@Model.Id</dd>
+    <h4>¿Estás seguro de que deseas eliminar esta prenda de vestir?</h4>
+    <hr />
 
-                <dt class="col-sm-4 fw-bold">Nombre:</dt>
-                <dd class="col-sm-8 fw-bold">@Model.Nombre</dd>
-
-                <dt class="col-sm-4 fw-bold">Descripción:</dt>
-                <dd class="col-sm-8 fw-bold">@Model.Descripcion</dd>
-
-                <dt class="col-sm-4 fw-bold">Tela:</dt>
-                <dd class="col-sm-8 fw-bold">@Model.Tela.Nombre</dd>
-
-                <dt class="col-sm-4 fw-bold">Estilo:</dt>
-                <dd class="col-sm-8 fw-bold">@Model.Estilo.Nombre</dd>
-
-                <dt class="col-sm-4 fw-bold">Tipo Prenda de Vestir:</dt>
-                <dd class="col-sm-8 fw-bold">@Model.Tipoprendavestir.Nombre</dd>
-            </dl>
-
-            <form asp-action="Delete" method="post" class="text-center">
-                <input type="hidden" name="id" value="@Model.Id" />
-                <button type="submit" class="btn btn-danger me-2">Eliminar</button>
-                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
-            </form>
+    <div class="form-group">
+        <label>ID:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Id)
         </div>
     </div>
+
+    <div class="form-group">
+        <label>Nombre:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Nombre)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Descripción:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Descripcion)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Tela:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Tela.Nombre)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Estilo:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Estilo.Nombre)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Tipo de Prenda de Vestir:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.Tipoprendavestir.Nombre)
+        </div>
+    </div>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <div class="btn-container">
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
 </div>
+
