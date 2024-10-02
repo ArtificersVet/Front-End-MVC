@@ -114,9 +114,25 @@ namespace MVC_NPANTS.Controllers
             }
             return View(tela);
         }
+        // Mostrar la vista de confirmación de eliminación
+        public async Task<IActionResult> Delete(long id)
+        {
+            SetAuthorizationHeader();
+            var tela = await _httpClient.GetFromJsonAsync<Tela>($"telas/{id}");
 
-        // Eliminar una tela
-        public async Task<IActionResult> Delete(long id)
+            if (tela == null)
+            {
+                return NotFound();
+            }
+
+            return View(tela);
+        }
+
+
+        // Eliminar una tela
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(long id)
         {
             SetAuthorizationHeader();
             var result = await _httpClient.DeleteAsync($"telas/{id}");
@@ -129,5 +145,6 @@ namespace MVC_NPANTS.Controllers
             Console.WriteLine("No se pudo eliminar la tela");
             return RedirectToAction(nameof(Index));
         }
+
     }
 }
