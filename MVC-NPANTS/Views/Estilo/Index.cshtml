@@ -44,8 +44,8 @@
                             @Html.DisplayFor(modelItem => estilo.Tipo)
                         </td>
                         <td>
-                            @Html.ActionLink("Ver", "GetById", new { id = estilo.Id }, new { @class = "btn btn-details" })
-                            @Html.ActionLink("Editar", "Edit", new { id = estilo.Id }, new { @class = "btn btn-edit" })
+                            @Html.ActionLink("Ver", "GetById", new { id = estilo.Id }, new { @class = "btn btn-details" }) |
+                            @Html.ActionLink("Editar", "Edit", new { id = estilo.Id }, new { @class = "btn btn-edit" }) |
                             @Html.ActionLink("Eliminar", "Delete", new { id = estilo.Id }, new { @class = "btn btn-danger" })
                         </td>
                     </tr>
