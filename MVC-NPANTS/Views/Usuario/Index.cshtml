@@ -55,8 +55,9 @@
                             }
                         </td>
                         <td>
-                            @Html.ActionLink("Ver", "Details", new { id = usuario.id }, new { @class = "btn btn-info" }) |
-                            @Html.ActionLink("Editar", "Edit", new { id = usuario.id }, new { @class = "btn btn-warning" }) |
+                         
+                            @Html.ActionLink("Editar", "Edit", new { id = usuario.id }, new { @class = "btn btn-edit" }) |
+                            @Html.ActionLink("Detalles", "Details", new { id = usuario.id }, new { @class = "btn btn-details" }) |
                             @Html.ActionLink("Eliminar", "Delete", new { id = usuario.id }, new { @class = "btn btn-danger" })
                         </td>
                     </tr>
