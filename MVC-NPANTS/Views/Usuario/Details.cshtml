@@ -1,40 +1,51 @@
-﻿@model usuario
+﻿@model MVC_NPANTS.Models.usuario
 
 @{
     ViewData["Title"] = "Detalles del Usuario";
 }
 
-<div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-info text-white text-center">
-            <h2 class="mb-0">@ViewData["Title"]</h2>
+<div class="main-container">
+    <div class="page-header">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+
+    <div class="form-group">
+        <label>ID:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.id)
         </div>
-        <div class="card-body">
-            <h4 class="mb-3">Detalles del Usuario</h4>
-            <hr />
-            <dl class="row mb-4">
-                <dt class="col-sm-3 fw-bold">Id:</dt>
-                <dd class="col-sm-9">@Model.id</dd>
-                <dt class="col-sm-3 fw-bold">Nombre:</dt>
-                <dd class="col-sm-9">@Model.nombre</dd>
-                <dt class="col-sm-3 fw-bold">Email:</dt>
-                <dd class="col-sm-9">@Model.email</dd>
-                <dt class="col-sm-3 fw-bold">Rol:</dt>
-                <dd class="col-sm-9">
-                    @if (Model.rolid != null)
-                    {
-                        <span>@Model.rolid.Nombre</span> <!-- Asegúrate de que 'nombre' sea una propiedad de 'Role' -->
-                    }
-                    else
-                    {
-                        <span>No tiene rol asignado</span>
-                    }
-                </dd>
-            </dl>
-            <div class="d-flex justify-content-between">
-                <a asp-action="Edit" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
-                <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
-            </div>
+    </div>
+
+    <div class="form-group">
+        <label>Nombre:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.nombre)
         </div>
+    </div>
+
+    <div class="form-group">
+        <label>Email:</label>
+        <div class="form-control">
+            @Html.DisplayFor(model => model.email)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Rol:</label>
+        <div class="form-control">
+            @if (Model.rolid != null)
+            {
+                <span>@Model.rolid.Nombre</span>
+            }
+            else
+            {
+                <span>No tiene rol asignado</span>
+            }
+        </div>
+    </div>
+
+    <div class="btn-container">
+        @Html.ActionLink("Editar", "Edit", new { id = Model.id }, new { @class = "btn btn-edit" })
+        <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
     </div>
 </div>
