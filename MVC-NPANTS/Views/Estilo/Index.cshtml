@@ -1,47 +1,62 @@
 ﻿@model IEnumerable<MVC_NPANTS.Models.Estilo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lista de Estilos";
 }
 
-<h1>Index</h1>
+<div class="main-container">
+    <div class="page-header">
+        <h1>@ViewData["Title"]</h1>
+    </div>
 
-<p>
-    <a class="btn btn-primary" asp-action="Create">Create New</a>
-</p>
-<table class="table table-hover table-bordered">
-    <thead class="thead-dark">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tipo)
-            </th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tipo)
-            </td>
-            <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-info btn-sm mx-1" }) 
-                    @Html.ActionLink("Details", "GetById", new { id = item.Id }, new { @class = "btn btn-warning btn-sm mx-1" })
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-sm mx-1" })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="btn-container mb-3">
+        <a class="btn btn-create" asp-action="Create">Crear Nuevo Estilo</a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Nombre)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Tipo)
+                    </th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var estilo in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => estilo.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => estilo.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => estilo.Tipo)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Ver", "GetById", new { id = estilo.Id }, new { @class = "btn btn-details" })
+                            @Html.ActionLink("Editar", "Edit", new { id = estilo.Id }, new { @class = "btn btn-edit" })
+                            @Html.ActionLink("Eliminar", "Delete", new { id = estilo.Id }, new { @class = "btn btn-danger" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No se encontraron estilos.
+        </div>
+    }
+</div>

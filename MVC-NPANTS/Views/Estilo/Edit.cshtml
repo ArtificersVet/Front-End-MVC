@@ -1,44 +1,43 @@
 ﻿@model MVC_NPANTS.Models.Estilo
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Estilo";
 }
 
 <div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white text-center">
-            <h2 class="mb-0">@ViewData["Title"]</h2>
+    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+
+    <form asp-action="Edit" method="post" class="shadow p-4 rounded bg-light">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="Nombre" class="form-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" required />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="Tipo" class="form-label">Tipo</label>
+                    <input asp-for="Tipo" class="form-control" required />
+                    <span asp-validation-for="Tipo" class="text-danger"></span>
+                </div>
+            </div>
         </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" class="card-body">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-           
-            <div class="form-group mb-3">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="Tipo" class="control-label"></label>
-                <input asp-for="Tipo" class="form-control" />
-                <span asp-validation-for="Tipo" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-            <div>
-              <a class="btn btn-primary" asp-action="Index">Back to List</a>
-            </div>
-        </form>
-    </div>
-    </div>
+        <div class="d-flex justify-content-between mt-4">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+        </div>
+    </form>
 </div>
-</div>
- 
-
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
