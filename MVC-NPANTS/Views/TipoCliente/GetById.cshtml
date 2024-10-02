@@ -4,71 +4,8 @@
     ViewData["Title"] = "Detalles de Tipo Cliente";
 }
 
-<style>
-    body {
-        background-color: #f0f0f0;
-        font-family: Arial, sans-serif;
-    }
-
-    .tipo-cliente-container {
-        max-width: 400px;
-        margin: 200px auto;
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    .tipo-cliente-header {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-        .tipo-cliente-header h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #333;
-        }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #666;
-        }
-
-    .btn-container {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .btn {
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-        font-weight: bold;
-        text-decoration: none;
-        display: inline-block;
-        margin: 0 10px;
-    }
-
-    .btn-editar {
-        background-color: #b39b7d;
-        color: white;
-    }
-
-    .btn-regresar {
-        background-color: #c9a063;
-        color: white;
-    }
-</style>
-
-<div class="tipo-cliente-container">
-    <div class="tipo-cliente-header">
+<div class="main-container">
+    <div class="page-header">
         <h1>Detalles de Tipo Cliente</h1>
     </div>
 
@@ -94,8 +31,8 @@
     </div>
 
     <div class="btn-container">
-        @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-editar" })
-        <a asp-action="Index" class="btn btn-regresar">Regresar</a>
+        @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-edit" })
+        <a asp-action="Index" class="btn btn-secondary">Regresar</a>
     </div>
 </div>
 

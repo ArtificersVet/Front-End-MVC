@@ -4,91 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
-<style>
-    body {
-        background-color: #f0f0f0;
-        font-family: Arial, sans-serif;
-    }
-
-    .tipo-cliente-container {
-        max-width: 800px;
-        margin: 20px auto;
-        background-color: white;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    .tipo-cliente-header {
-        margin-bottom: 20px;
-    }
-
-        .tipo-cliente-header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-
-    .tipo-cliente-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-        .tipo-cliente-table th, .tipo-cliente-table td {
-            border: 1px solid #927c77;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .tipo-cliente-table th {
-            background-color: #a0a0a0;
-            color: white;
-        }
-
-    .btn {
-        padding: 5px 15px;
-        border: none;
-        cursor: pointer;
-        border-radius: 15px;
-        font-weight: bold;
-        text-decoration: none;
-        display: inline-block;
-        margin-right: 5px;
-    }
-
-    .btn-modify {
-        background-color: #00c3a5;
-        color: white;
-    }
-
-    .btn-details {
-        background-color: #c9a063;
-        color: white;
-    }
-
-    .btn-delete {
-        background-color: #c75d5d;
-        color: white;
-    }
-
-    .btn-create {
-        background-color: #a0a0a0;
-        color: white;
-        display: block;
-        margin-left: auto;
-        padding: 10px 20px;
-    }
-</style>
-
-<div class="tipo-cliente-container">
-    <div class="tipo-cliente-header">
+<div class="main-container">
+    <div class="page-header">
         <h1>Tipo Cliente</h1>
     </div>
 
-    <p>
-        <a class="btn btn-create" asp-action="Create">Crear Nuevo</a>
-    </p>
-
-    <table class="tipo-cliente-table">
+    <table class="data-table">
         <thead>
             <tr>
                 <th>
@@ -100,7 +21,7 @@
                 <th>
                     @Html.DisplayNameFor(model => model.First().Descripcion)
                 </th>
-                <th></th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -117,12 +38,14 @@
                         @Html.DisplayFor(modelItem => item.Descripcion)
                     </td>
                     <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-modify" }) |
-                        @Html.ActionLink("Details", "GetById", new { id = item.Id }, new { @class = "btn btn-details" }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-delete" })
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-edit" })
+                        @Html.ActionLink("Detalles", "GetById", new { id = item.Id }, new { @class = "btn btn-details" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+
+    <a class="btn btn-create" asp-action="Create">Crear Nuevo</a>
 </div>
