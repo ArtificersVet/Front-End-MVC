@@ -57,6 +57,7 @@ namespace MVC_NPANTS.Controllers
             return View(talla);
         }
 
+
         // Obtener los detalles de una talla por ID
         public async Task<IActionResult> Details(int id)
         {
