@@ -47,19 +47,29 @@ namespace MVC_NPANTS.Controllers
         public async Task<IActionResult> Create(Talla talla)
         {
             SetAuthorizationHeader();
+
+            if (!ModelState.IsValid)
+            {
+                // Si el modelo no es válido, volver al formulario con los errores
+                return View(talla);
+            }
+
+            // Enviar la talla a la API
             var result = await _httpClient.PostAsJsonAsync("tallas/create", talla);
 
             if (result.IsSuccessStatusCode)
             {
+                // Si la creación es exitosa, redirigir al índice o a donde desees
                 return RedirectToAction(nameof(Index));
             }
 
+            // Si hubo algún error, mostrar el formulario de nuevo
+            ModelState.AddModelError("", "No se pudo crear la talla");
             return View(talla);
         }
-
-
-        // Obtener los detalles de una talla por ID
-        public async Task<IActionResult> Details(int id)
+    
+    // Obtener los detalles de una talla por ID
+    public async Task<IActionResult> Details(int id)
         {
             SetAuthorizationHeader();
             var talla = await _httpClient.GetFromJsonAsync<Talla>($"tallas/{id}");

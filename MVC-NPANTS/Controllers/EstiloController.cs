@@ -35,25 +35,41 @@ namespace MVC_NPANTS.Controllers
             return View(estilos);
         }
 
-        public ActionResult create()
+        public async Task<IActionResult> Create()
         {
             SetAuthorizationHeader();
+
+            // Obtener todas las tallas para el select
+            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas");
+
+            ViewBag.Tallas = tallas;  // Pasar tallas a la vista
+
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> create(Estilo estiloOBJ)
+        public async Task<IActionResult> Create(Estilo estiloOBJ, List<EstiloTalla> EstiloTallas)
         {
             SetAuthorizationHeader();
-            var estilo = await _httpClient.PostAsJsonAsync("estilos/create", estiloOBJ);
 
-            if (estilo.IsSuccessStatusCode)
+            // Asegúrate de que EstiloTallas no sea nulo
+            if (EstiloTallas != null && EstiloTallas.Count > 0)
+            {
+                estiloOBJ.EstiloTallas = EstiloTallas;
+            }
+
+            var response = await _httpClient.PostAsJsonAsync("estilos/create", estiloOBJ);
+
+            if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));
             }
 
-            return View();
+            return View(estiloOBJ);
         }
+
+
+
 
         public async Task<IActionResult> GetById(int id)
         {
@@ -79,15 +95,23 @@ namespace MVC_NPANTS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Estilo estiloOBJ)
+        public async Task<IActionResult> Edit(int id, Estilo estiloOBJ, List<EstiloTalla> estilotallas)
         {
             SetAuthorizationHeader();
-            var estilo = await _httpClient.PutAsJsonAsync($"estilos/{id}", estiloOBJ);
 
-            if(estilo.IsSuccessStatusCode) return RedirectToAction(nameof(Index));
+            // Añadir las nuevas tallas al objeto estilo
+            estiloOBJ.EstiloTallas = estilotallas;
 
-            return View();
+            var response = await _httpClient.PutAsJsonAsync($"estilos/{id}", estiloOBJ);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(estiloOBJ);
         }
+
 
         public async Task<IActionResult> Delete(int id)
         {

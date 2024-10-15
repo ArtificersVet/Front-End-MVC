@@ -16,36 +16,9 @@
             <span asp-validation-for="Nombre" class="text-danger"></span>
         </div>
 
-        <!-- Campos para los estilos asociados -->
-        <div id="estilosContainer">
-            <h4>Estilos Asociados</h4>
-            <div class="form-group mb-3" id="estiloTemplate">
-                <label>Estilo ID</label>
-                <input type="number" name="Estilos[0].EstiloId" class="form-control" required />
-
-                <label>Consumo Tela</label>
-                <input type="number" step="0.01" name="Estilos[0].consumoTela" class="form-control" required />
-            </div>
-        </div>
-
-        <button type="button" onclick="addEstilo()">Agregar Estilo</button>
-
         <div class="d-flex justify-content-between mt-4">
             <button type="submit" class="btn btn-primary">Crear</button>
             <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
         </div>
     </form>
 </div>
-
-<script>
-    let estiloIndex = 0;
-
-    function addEstilo() {
-        estiloIndex++;
-        const template = document.getElementById('estiloTemplate').cloneNode(true);
-        template.querySelectorAll('input').forEach(input => {
-            input.name = input.name.replace('[0]', `[${estiloIndex}]`);
-        });
-        document.getElementById('estilosContainer').appendChild(template);
-    }
-</script>
