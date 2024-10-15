@@ -89,28 +89,64 @@ namespace MVC_NPANTS.Controllers
             SetAuthorizationHeader();
             var estilo = await _httpClient.GetFromJsonAsync<Estilo>($"estilos/{id}");
 
-            if (estilo == null) Console.WriteLine("no se encontro el estilo");
+            if (estilo == null)
+            {
+                Console.WriteLine("No se encontró el estilo");
+                return NotFound(); // Maneja el error según sea necesario
+            }
+
+            // Obtener todas las tallas para el select
+            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas");
+            ViewBag.Tallas = tallas;  // Pasar tallas a la vista
 
             return View(estilo);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Estilo estiloOBJ, List<EstiloTalla> estilotallas)
+        public async Task<IActionResult> Edit(int id, Estilo estiloOBJ)
         {
             SetAuthorizationHeader();
 
-            // Añadir las nuevas tallas al objeto estilo
-            estiloOBJ.EstiloTallas = estilotallas;
-
-            var response = await _httpClient.PutAsJsonAsync($"estilos/{id}", estiloOBJ);
-
-            if (response.IsSuccessStatusCode)
+            if (id != estiloOBJ.Id)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
 
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Asegúrate de que todas las tallas tengan el EstiloId correcto
+                    foreach (var talla in estiloOBJ.EstiloTallas)
+                    {
+                        talla.EstiloId = estiloOBJ.Id;
+                    }
+
+                    var response = await _httpClient.PutAsJsonAsync($"estilos/{id}", estiloOBJ);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        var errorContent = await response.Content.ReadAsStringAsync();
+                        ModelState.AddModelError("", $"Error al actualizar: {errorContent}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Ocurrió un error al actualizar el estilo: " + ex.Message);
+                }
+            }
+
+            // Si llegamos aquí, algo falló; volvemos a cargar las tallas y mostramos el formulario nuevamente
+            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas");
+            ViewBag.Tallas = tallas;
             return View(estiloOBJ);
         }
+
+
 
 
         public async Task<IActionResult> Delete(int id)

@@ -16,6 +16,6 @@ namespace MVC_NPANTS.Models
         public string? Tipo { get; set; }
 
         public virtual ICollection<PrendaVestir> PrendaVestirs { get; set; }
-        public virtual ICollection<EstiloTalla> EstiloTallas { get; set; } // Asociación a EstiloTalla
+        public virtual List<EstiloTalla> EstiloTallas { get; set; } // Cambiado a List
     }
 }
