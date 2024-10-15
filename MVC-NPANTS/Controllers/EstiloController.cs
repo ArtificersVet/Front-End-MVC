@@ -74,14 +74,39 @@ namespace MVC_NPANTS.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             SetAuthorizationHeader();
-            var estilo = await _httpClient.GetFromJsonAsync<Estilo>($"estilos/{id}");
-
-            if (estilo == null)
+            try
             {
-                Console.WriteLine($"Found {id}");
-            }
+                var response = await _httpClient.GetAsync($"estilos/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var estilo = System.Text.Json.JsonSerializer.Deserialize<Estilo>(content, new System.Text.Json.JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
 
-            return View(estilo);
+                    if (estilo == null)
+                    {
+                        Console.WriteLine($"Estilo with ID {id} not found");
+                        return NotFound();
+                    }
+
+                    // Ensure EstiloTallas is not null
+                    estilo.EstiloTallas ??= new List<EstiloTalla>();
+
+                    return View(estilo);
+                }
+                else
+                {
+                    Console.WriteLine($"Error fetching estilo with ID {id}: {response.StatusCode}");
+                    return StatusCode((int)response.StatusCode, "Error fetching estilo");
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine($"Error fetching estilo with ID {id}: {e.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         public async Task<IActionResult> Edit(int id)

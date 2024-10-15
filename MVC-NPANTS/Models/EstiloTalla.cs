@@ -1,4 +1,6 @@
-﻿namespace MVC_NPANTS.Models
+﻿using System.Text.Json.Serialization;
+
+namespace MVC_NPANTS.Models
 {
     public partial class EstiloTalla
     {
@@ -6,5 +8,8 @@
         public double consumoTela { get; set; }
         public long EstiloId { get; set; }
         public long TallaId { get; set; }
+
+        [JsonPropertyName("Talla")]
+        public virtual Talla? Talla { get; set; }
     }
 }

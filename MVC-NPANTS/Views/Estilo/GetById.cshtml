@@ -1,35 +1,50 @@
 ﻿@model MVC_NPANTS.Models.Estilo
-
 @{
     ViewData["Title"] = "Detalles del Estilo";
 }
-
 <div class="main-container">
     <div class="page-header">
         <h1>Detalles del Estilo</h1>
     </div>
-
     <div class="form-group">
         <label>ID:</label>
         <div class="form-control">
             @Html.DisplayFor(model => model.Id)
         </div>
     </div>
-
     <div class="form-group">
         <label>Nombre:</label>
         <div class="form-control">
             @Html.DisplayFor(model => model.Nombre)
         </div>
     </div>
-
     <div class="form-group">
         <label>Tipo:</label>
         <div class="form-control">
             @Html.DisplayFor(model => model.Tipo)
         </div>
     </div>
+    <h2>Tallas asociadas</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Talla ID</th>
+                <th>Nombre de Talla</th>
+                <th>Consumo de Tela</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var estiloTalla in Model.EstiloTallas)
+            {
+                <tr>
+                    <td>@estiloTalla.TallaId</td>
+                    <td>@estiloTalla.Talla.Nombre</td> <!-- Asegúrate de que estés accediendo a la propiedad correcta -->
+                    <td>@estiloTalla.consumoTela</td>
+                </tr>
+            }
+        </tbody>
 
+    </table>
     <div class="btn-container">
         @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-edit" })
         <a asp-action="Index" class="btn btn-secondary">Volver</a>
