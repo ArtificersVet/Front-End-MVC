@@ -6,60 +6,47 @@
 
 <div class="main-container">
     <div class="page-header">
-        <h1>Eliminar Prenda de Vestir</h1>
+        <h1 class="text-center">¿Estás seguro de que deseas eliminar esta prenda de vestir?</h1>
     </div>
 
-    <h4>¿Estás seguro de que deseas eliminar esta prenda de vestir?</h4>
-    <hr />
+    <form asp-action="Delete" class="shadow p-4 rounded bg-light">
+        <div class="row">
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">ID:</label>
+                <div class="form-control">@Html.DisplayFor(model => model.Id)</div>
+            </div>
 
-    <div class="form-group">
-        <label>ID:</label>
-        <div class="form-control">
-            @Html.DisplayFor(model => model.Id)
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Nombre:</label>
+                <div class="form-control">@Html.DisplayFor(model => model.Nombre)</div>
+            </div>
+
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Descripción:</label>
+                <div class="form-control">@Html.DisplayFor(model => model.Descripcion)</div>
+            </div>
+
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Tela:</label>
+                <div class="form-control">@Html.DisplayFor(model => model.Tela.Nombre)</div>
+            </div>
+
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Estilo:</label>
+                <div class="form-control">@Html.DisplayFor(model => model.Estilo.Nombre)</div>
+            </div>
+
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Tipo de Prenda de Vestir:</label>
+                <div class="form-control">@Html.DisplayFor(model => model.Tipoprendavestir.Nombre)</div>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label>Nombre:</label>
-        <div class="form-control">
-            @Html.DisplayFor(model => model.Nombre)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Descripción:</label>
-        <div class="form-control">
-            @Html.DisplayFor(model => model.Descripcion)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Tela:</label>
-        <div class="form-control">
-            @Html.DisplayFor(model => model.Tela.Nombre)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Estilo:</label>
-        <div class="form-control">
-            @Html.DisplayFor(model => model.Estilo.Nombre)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Tipo de Prenda de Vestir:</label>
-        <div class="form-control">
-            @Html.DisplayFor(model => model.Tipoprendavestir.Nombre)
-        </div>
-    </div>
-
-    <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <div class="btn-container">
+
+        <div class="d-flex justify-content-between mt-4">
             <button type="submit" class="btn btn-danger">Eliminar</button>
-            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            <a asp-action="Index" class="btn btn-primary">Cancelar</a>
         </div>
     </form>
 </div>
-

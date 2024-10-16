@@ -20,5 +20,7 @@ namespace MVC_NPANTS.Models
         public virtual Estilo? Estilo { get; set; }
         public virtual Tela? Tela { get; set; }
         public virtual TipoPrendaVestir? Tipoprendavestir { get; set; }
+        public ICollection<DetalleProducto> Detalles { get; set; }
+
     }
 }
