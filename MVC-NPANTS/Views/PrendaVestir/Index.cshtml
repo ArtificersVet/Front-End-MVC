@@ -13,6 +13,26 @@
         @foreach (var prenda in Model)
         {
             <div class="product-card">
+
+                <!-- Imagen condicional según el tipo de prenda -->
+                <div class="product-image">
+                    @if (prenda.Tipoprendavestir.Nombre == "Camisa")
+                    {
+                        <img src="~/img/2.png" alt="Camisa" class="img-fluid" />
+                    }
+                    else if (prenda.Tipoprendavestir.Nombre == "Pantalon")
+                    {
+                        <img src="~/img/1.png" alt="Pantalon" class="img-fluid" />
+                    }
+                    else if (prenda.Tipoprendavestir.Nombre == "Corbatin")
+                    {
+                        <img src="~/img/3.png" alt="Pantalon" class="img-fluid" />
+                    }
+                    else
+                    {
+                        <img src="~/img/4.png" alt="Imagen Predeterminada" class="img-fluid" />
+                    }
+                </div>
                 
                 <a href="@Url.Action("Details", new { id = prenda.Id })" class="product-name">@prenda.Nombre</a>
                 <div class="product-detail">

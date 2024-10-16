@@ -169,6 +169,22 @@ body {
     color: #e0e0e0;
 }
 
+/* Estilo para las imágenes dentro de las tarjetas de productos */
+.product-image img {
+    width: 100%; /* Ocupa todo el ancho de la tarjeta */
+    max-height: 200px;
+    position:center;/* Limita la altura máxima */
+    object-fit: contain; /* Asegura que la imagen se recorte para llenar el espacio sin deformarse */
+    border-radius: 8px; /* Bordes redondeados para una apariencia suave */
+    margin-bottom: 10px; /* Espacio debajo de la imagen */
+    transition: transform 0.3s ease; /* Efecto de zoom suave al pasar el ratón */
+}
+
+    .product-image img:hover {
+        transform: scale(1.05); /* Zoom al pasar el ratón sobre la imagen */
+    }
+
+
 .product-label {
     font-weight: 600;
     color: #7fdbda;
@@ -179,8 +195,10 @@ body {
 .action-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 2px;
-    white-space:normal;
+    margin-top: 40px;
+    margin-right: -10px;
+    margin-left: -14px;
+    white-space: normal;
 }
 
 .btn-action {
