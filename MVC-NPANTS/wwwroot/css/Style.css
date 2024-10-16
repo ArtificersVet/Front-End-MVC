@@ -166,6 +166,7 @@
 }
 
     .product-name::after {
+        content: "";
         position: absolute;
         bottom: -5px;
         left: 0;
@@ -181,6 +182,12 @@
         color: white;
     }
 
+
+
+    a:hover {
+        color: wheat; 
+        text-decoration: none; 
+    }
 .product-detail {
     margin-bottom: 12px;
     color: #e0e0e0;
@@ -608,19 +615,32 @@ form {
         width: 1300px;
         margin: 56px -270px;
     }
+    .blanco {
+        width: 1300px;
+        margin: 56px -268px;
+    }
+
 }
 
-@media (max-width:768px) {
+@media (max-width:788px) {
     .main-container {
-        width: 98%;
-        margin: 56px 10px;
+        width: 90%;
+        margin: 56px 40px;
+    }
+    .blanco {
+        width: 90%;
+        margin: 56px 40px;
     }
 }
 
 @media (max-width: 576px) {
     .main-container {
-        width: 95%;
-        margin: 56px 12px;
+        width: 90%;
+        margin: 56px 16px;
+    }
+    .blanco {
+        width: 90%;
+        margin: 56px 16px;
     }
 }
 
