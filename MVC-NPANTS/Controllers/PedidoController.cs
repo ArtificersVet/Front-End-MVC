@@ -97,5 +97,28 @@ namespace MVC_NPANTS.Controllers
         }
 
 
+        public async Task<IActionResult> Details(long id)
+        {
+            SetAuthorizationHeader();
+
+            // Obtener el pedido por su ID
+            var pedido = await _httpClient.GetFromJsonAsync<Pedido>($"pedidos/{id}");
+
+            if (pedido == null)
+            {
+                return NotFound();
+            }
+
+            // Verificar si los detalles del pedido están presentes
+            if (pedido.Detalles == null || !pedido.Detalles.Any())
+            {
+                ViewBag.MensajeError = "No se encontraron detalles del producto para este pedido.";
+            }
+
+            return View(pedido);
+        }
+
+
+
     }
 }

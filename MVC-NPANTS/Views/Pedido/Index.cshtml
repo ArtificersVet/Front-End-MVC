@@ -21,13 +21,15 @@
                 <td>@pedido.FechaPedido?.ToShortDateString()</td>
                 <td>@pedido.Cliente?.Nombre</td>
                 <td>@pedido.Total</td>
-
+                <td>@pedido.EstadoPedido?.Nombre</td>
                 <td>
-                    <a href="@Url.Action("Edit", new { id = pedido.Id })">Editar</a> |
-                    <a href="@Url.Action("Delete", new { id = pedido.Id })">Eliminar</a>
+                    <a href="@Url.Action("Details", new { id = pedido.Id })" class="btn btn-info">Ver Detalles</a> <!-- Botón Ver Detalles -->
+                    <a href="@Url.Action("Edit", new { id = pedido.Id })" class="btn btn-warning">Editar</a>
+                    <a href="@Url.Action("Delete", new { id = pedido.Id })" class="btn btn-danger">Eliminar</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-<a href="@Url.Action("Create")" class="btn btn-primary">Crear Nuevo Pedido</a> 
+
+<a href="@Url.Action("Create")" class="btn btn-primary">Crear Nuevo Pedido</a>

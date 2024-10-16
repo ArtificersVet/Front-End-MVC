@@ -1,0 +1,41 @@
+﻿@model MVC_NPANTS.Models.Pedido
+
+<h2>Detalles del Pedido @Model.Id</h2>
+
+<p><strong>Fecha del Pedido:</strong> @Model.FechaPedido?.ToShortDateString()</p>
+<p><strong>Cliente:</strong> @Model.Cliente?.Nombre</p>
+<p><strong>Total del Pedido:</strong> @Model.Total</p>
+<p><strong>Estado del Pedido:</strong> @Model.EstadoPedido?.Nombre</p>
+
+<h3>Detalles del Producto</h3>
+
+@if (Model.Detalles != null && Model.Detalles.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Prenda</th>
+                <th>Talla</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Total Pieza</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detalle in Model.Detalles)
+            {
+                <tr>
+                    <td>@detalle.PrendaVestir?.Nombre</td>
+                    <td>@detalle.Talla?.Nombre</td>
+                    <td>@detalle.Cantidad</td>
+                    <td>@detalle.Precio.ToString("C")</td> <!-- Mostramos el precio como moneda -->
+                    <td>@detalle.TotalPieza.ToString("C")</td> <!-- Total por pieza como moneda -->
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No hay detalles de productos para este pedido.</p>
+}
