@@ -23,12 +23,11 @@ namespace MVC_NPANTS.Controllers
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             }
         }
+
         // GET: PedidoController
         public async Task<ActionResult> Index()
         {
             SetAuthorizationHeader();
-
-            // Obtener la lista de pedidos
             var pedidos = await _httpClient.GetFromJsonAsync<List<Pedido>>("pedidos");
 
             if (pedidos == null)
@@ -43,38 +42,89 @@ namespace MVC_NPANTS.Controllers
         public async Task<IActionResult> Create()
         {
             SetAuthorizationHeader();
+            await LoadViewBags();
+            return View(new Pedido { FechaPedido = DateTime.Now });
+        }
 
-            // Obtener todas las tallas para el select
-            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas");
+        [HttpPost]
+        public async Task<IActionResult> Create(Pedido pedido, List<DetalleProducto> detalles)
+        {
+            SetAuthorizationHeader();
 
-            // Obtener todos los estados de pedido
-            var estadosPedido = await _httpClient.GetFromJsonAsync<List<EstadoPedido>>("estadospedido");
+            // Filtrar detalles válidos
+            var detallesValidos = detalles?
+                .Where(d => d != null
+                         && d.PrendaVestirId > 0
+                         && d.TallaId > 0
+                         && d.Cantidad > 0
+                         && d.Precio > 0
+                         && d.TotalPieza > 0
+                         && d.ConsumoTela != null
+                         && d.SubTotal > 0)
+                .ToList() ?? new List<DetalleProducto>();
 
-            // Obtener todas las prendas de vestir
-            var prendasVestir = await _httpClient.GetFromJsonAsync<List<PrendaVestir>>("prendas");
+            // Comprobar si hay detalles válidos
+            if (!detallesValidos.Any())
+            {
+                ModelState.AddModelError(string.Empty, "Debe incluir al menos un detalle de producto válido");
+                await LoadViewBags();
+                return View(pedido);
+            }
 
-            // Obtener todos los clientes
-            var clientes = await _httpClient.GetFromJsonAsync<List<Cliente>>("clientes");
+            var pedidoData = new
+            {
+                fecha_pedido = pedido.FechaPedido.ToString("yyyy-MM-dd"),
+                saldo = pedido.Saldo,
+                tipo_pago = pedido.TipoPago,
+                total = pedido.Total,
+                cliente_id = pedido.ClienteId,
+                estado_pedido_id = pedido.EstadoPedidoId,
+                detalleproducto = detallesValidos.Select(d => new
+                {
+                    prenda_vestir_id = d.PrendaVestirId,
+                    talla_id = d.TallaId,
+                    cantidad = d.Cantidad,
+                    descripcion = d.Descripcion,
+                    precio = d.Precio,
+                    total_pieza = d.Cantidad * d.Precio,
+                    consumo_tela = d.ConsumoTela ?? 0,
+                    sub_total = d.Cantidad * d.Precio
+                }).ToList()
+            };
 
-            // Pasar datos a la vista
-            ViewBag.Tallas = tallas ?? new List<Talla>();  // Pasar tallas
-            ViewBag.EstadosPedido = estadosPedido ?? new List<EstadoPedido>();  // Pasar estados de pedido
-            ViewBag.PrendasVestir = prendasVestir ?? new List<PrendaVestir>();  // Pasar prendas de vestir
-            ViewBag.Clientes = clientes ?? new List<Cliente>();  // Pasar clientes
+            var response = await _httpClient.PostAsJsonAsync("pedidos/create", pedidoData);
 
-            return View();
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, $"Error al crear el pedido: {errorContent}");
+            }
+
+            await LoadViewBags();
+            return View(pedido);
         }
 
 
-
-
-        // Método para cargar los ViewBags nuevamente en caso de error
         private async Task LoadViewBags()
         {
-            ViewBag.Tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas") ?? new List<Talla>();
-            ViewBag.EstadosPedido = await _httpClient.GetFromJsonAsync<List<EstadoPedido>>("estadospedido") ?? new List<EstadoPedido>();
-            ViewBag.PrendasVestir = await _httpClient.GetFromJsonAsync<List<PrendaVestir>>("prendas") ?? new List<PrendaVestir>();
-            ViewBag.Clientes = await _httpClient.GetFromJsonAsync<List<Cliente>>("clientes") ?? new List<Cliente>();
+            try
+            {
+                ViewBag.Tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas") ?? new List<Talla>();
+                ViewBag.EstadosPedido = await _httpClient.GetFromJsonAsync<List<EstadoPedido>>("estadospedido") ?? new List<EstadoPedido>();
+                ViewBag.PrendasVestir = await _httpClient.GetFromJsonAsync<List<PrendaVestir>>("prendas") ?? new List<PrendaVestir>();
+                ViewBag.Clientes = await _httpClient.GetFromJsonAsync<List<Cliente>>("clientes") ?? new List<Cliente>();
+            }
+            catch (Exception)
+            {
+                ViewBag.Tallas = new List<Talla>();
+                ViewBag.EstadosPedido = new List<EstadoPedido>();
+                ViewBag.PrendasVestir = new List<PrendaVestir>();
+                ViewBag.Clientes = new List<Cliente>();
+            }
         }
 
         public async Task<IActionResult> Delete(long id)
@@ -106,12 +156,9 @@ namespace MVC_NPANTS.Controllers
             }
         }
 
-
         public async Task<IActionResult> Details(long id)
         {
             SetAuthorizationHeader();
-
-            // Obtener el pedido por su ID
             var pedido = await _httpClient.GetFromJsonAsync<Pedido>($"pedidos/{id}");
 
             if (pedido == null)
@@ -119,7 +166,6 @@ namespace MVC_NPANTS.Controllers
                 return NotFound();
             }
 
-            // Verificar si los detalles del pedido están presentes
             if (pedido.Detalles == null || !pedido.Detalles.Any())
             {
                 ViewBag.MensajeError = "No se encontraron detalles del producto para este pedido.";
@@ -127,8 +173,6 @@ namespace MVC_NPANTS.Controllers
 
             return View(pedido);
         }
-
-
-
     }
+
 }

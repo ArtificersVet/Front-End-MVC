@@ -12,7 +12,7 @@ namespace MVC_NPANTS.Models
         }
 
         public long Id { get; set; }
-        public DateTime? FechaPedido { get; set; }
+        public DateTime FechaPedido { get; set; }
         public decimal? Saldo { get; set; }
         public sbyte? TipoPago { get; set; }
         public decimal? Total { get; set; }
