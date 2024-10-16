@@ -1,0 +1,33 @@
+﻿@model List<MVC_NPANTS.Models.Pedido>
+
+<h2>Lista de Pedidos</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Fecha de Pedido</th>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pedido in Model)
+        {
+            <tr>
+                <td>@pedido.Id</td>
+                <td>@pedido.FechaPedido?.ToShortDateString()</td>
+                <td>@pedido.Cliente?.Nombre</td>
+                <td>@pedido.Total</td>
+
+                <td>
+                    <a href="@Url.Action("Edit", new { id = pedido.Id })">Editar</a> |
+                    <a href="@Url.Action("Delete", new { id = pedido.Id })">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="@Url.Action("Create")" class="btn btn-primary">Crear Nuevo Pedido</a> 

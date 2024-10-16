@@ -22,7 +22,7 @@ namespace MVC_NPANTS.Models
         public virtual Cliente? Cliente { get; set; }
         public virtual EstadoPedido? EstadoPedido { get; set; }
         public virtual ICollection<HistorialPedido> HistorialPedidos { get; set; }
-
+        public List<DetalleProducto> DetallesProducto { get; set; }
         public virtual ICollection<Pago> Pagos { get; set; }
     }
 }
