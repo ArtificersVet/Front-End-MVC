@@ -1,102 +1,224 @@
 ﻿@{
     ViewData["Title"] = "Iniciar Sesión";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Artificers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/Style.css" asp-append-version="true" />
 
-<div class="container vh-100 d-flex justify-content-center align-items-center">
-    <div class="col-md-7 col-lg-5 col-xl-5">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    <div class="alert alert-danger">
-                        @Html.ValidationSummary()
-                    </div>
+    <style>
+        /* Estilos del primer diseño */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #2c3e50, #4ca1af);
+            --accent-color: #ffd700;
+            --text-color: #ffffff;
+            --bg-color: #1a1a2e;
+            --input-bg: rgba(255, 255, 255, 0.2);
+            --input-text: #ffffff;
+            --button-gradient: linear-gradient(45deg, #3498db, #2980b9);
+            --label-color: #ffd700;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .login-container {
+            background: var(--primary-gradient);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+            .login-container::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                transform: rotate(45deg);
+                transition: all 0.6s;
+                z-index: -1;
+            }
+
+            .login-container:hover::before {
+                top: -20%;
+                left: -20%;
+            }
+
+        h1 {
+            font-size: 32px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                color: var(--label-color);
+                font-weight: 600;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            }
+
+            .form-group input {
+                width: 88%;
+                padding: 10px 5px 12px 10px;
+                border: none;
+                border-radius: 8px;
+                background-color: var(--input-bg);
+                color: var(--input-text);
+                transition: all 0.3s ease;
+                font-size: 16px;
+            }
+
+                .form-group input:focus {
+                    outline: none;
+                    box-shadow: 0 0 0 2px var(--accent-color);
+                    background-color: rgba(255, 255, 255, 0.3);
                 }
 
-                <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+            .form-group i {
+                position: absolute;
+                left: 12px;
+                top: 38px;
+                color: var(--accent-color);
+            }
 
-                <form asp-action="Login" method="post" id="loginForm">
-                    <!-- Email input -->
-                    <div class="form-outline mb-4">
-                        <input type="email" id="email" name="email" class="form-control form-control-lg" required />
-                        <label class="form-label" for="email">Correo</label>
-                    </div>
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 50px;
+            background: var(--button-gradient);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 16px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
-                    <!-- Password input -->
-                    <div class="form-outline mb-4">
-                        <input type="password" id="password" name="password" class="form-control form-control-lg" required />
-                        <label class="form-label" for="password">Contraseña</label>
-                    </div>
+            .btn-login::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+                transition: all 0.4s;
+            }
 
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="rememberMe" checked />
-                            <label class="form-check-label" for="rememberMe"> Remember me </label>
-                        </div>
-                        <a asp-controller="Usuario" asp-action="Create">¿Tienes usuario?</a>
-                    </div>
+            .btn-login:hover::before {
+                left: 100%;
+            }
 
-                    <!-- Submit button -->
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary btn-lg btn-block btn-custom">Iniciar Sesión</button>
-                    </div>
-                </form>
+            .btn-login:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+            .login-footer a {
+                color: var(--accent-color);
+                text-decoration: none;
+                transition: all 0.3s ease;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+                position: relative;
+            }
+
+                .login-footer a::after {
+                    content: '';
+                    position: absolute;
+                    width: 100%;
+                    height: 2px;
+                    bottom: -2px;
+                    left: 0;
+                    background-color: var(--accent-color);
+                    visibility: hidden;
+                    transform: scaleX(0);
+                    transition: all 0.3s ease-in-out;
+                }
+
+                .login-footer a:hover::after {
+                    visibility: visible;
+                    transform: scaleX(1);
+                }
+
+                .login-footer a:hover {
+                    color: #ffffff;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+                }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>ARTIFICERS</h1>
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @Html.ValidationSummary()
             </div>
+        }
+        <form asp-action="Login" method="post" id="loginForm">
+            <div class="form-group">
+                <label for="email">Correo</label>
+                <input type="email" id="email" name="email" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+               
+                <input type="password" id="password" name="password" required />
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="rememberMe" checked />
+                    <label class="form-check-label" for="rememberMe">Recuérdame</label>
+                </div>
+            </div>
+            <button type="submit" class="btn-login">Iniciar Sesión</button>
+        </form>
+        <div class="login-footer">
+            <p>¿No tienes una cuenta? <a href="Usuario/Create">Regístrate</a></p>
+            <p><a href="#">¿Olvidaste tu contraseña?</a></p>
         </div>
     </div>
-</div>
-
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-    }
-
-    .card {
-        border-radius: 15px; /* Esquinas redondeadas */
-    }
-
-    .form-outline {
-        position: relative;
-    }
-
-    .form-control {
-        border-radius: 10px;
-        border: 1px solid #a3c4f3;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        transition: border 0.3s ease;
-    }
-
-        .form-control:focus {
-            border-color: #2d3748;
-            box-shadow: 0 0 5px rgba(45, 55, 72, 0.5);
-        }
-
-    .btn-custom {
-        transition: transform 0.2s ease;
-    }
-
-        .btn-custom:hover {
-            transform: translateY(-5px); /* Mueve el botón hacia arriba */
-        }
-
-    .alert {
-        border-radius: 10px;
-    }
-
-    /* Animación al enviar el formulario */
-    #loginForm {
-        opacity: 1;
-        transition: opacity 0.3s ease;
-    }
-
-        #loginForm.submitting {
-            opacity: 0.5; /* Disminuir la opacidad al enviar */
-        }
-</style>
-
-<script>
-    document.getElementById('loginForm').addEventListener('submit', function () {
-        this.classList.add('submitting');
-    });
-</script>
+</body>
+</html>
