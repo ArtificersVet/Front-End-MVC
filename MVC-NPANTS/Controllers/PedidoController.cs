@@ -77,12 +77,23 @@ namespace MVC_NPANTS.Controllers
             ViewBag.Clientes = await _httpClient.GetFromJsonAsync<List<Cliente>>("clientes") ?? new List<Cliente>();
         }
 
+        public async Task<IActionResult> Delete(long id)
+        {
+            SetAuthorizationHeader();
+            var pedido = await _httpClient.GetFromJsonAsync<Pedido>($"pedidos/{id}");
 
-        [HttpPost, ActionName("Delete")]
+            if (pedido == null)
+            {
+                return NotFound();
+            }
+
+            return View(pedido);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             SetAuthorizationHeader();
-
             var response = await _httpClient.DeleteAsync($"pedidos/{id}");
 
             if (response.IsSuccessStatusCode)
@@ -91,7 +102,6 @@ namespace MVC_NPANTS.Controllers
             }
             else
             {
-                // Manejar el error
                 return View("Error", new { message = "Error al eliminar el pedido" });
             }
         }

@@ -23,10 +23,11 @@
                 <td>@pedido.Total</td>
                 <td>@pedido.EstadoPedido?.Nombre</td>
                 <td>
-                    <a href="@Url.Action("Details", new { id = pedido.Id })" class="btn btn-info">Ver Detalles</a> <!-- Botón Ver Detalles -->
+                    <a href="@Url.Action("Details", new { id = pedido.Id })" class="btn btn-info">Ver Detalles</a>
                     <a href="@Url.Action("Edit", new { id = pedido.Id })" class="btn btn-warning">Editar</a>
                     <a href="@Url.Action("Delete", new { id = pedido.Id })" class="btn btn-danger">Eliminar</a>
                 </td>
+
             </tr>
         }
     </tbody>
