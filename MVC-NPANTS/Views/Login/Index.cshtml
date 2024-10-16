@@ -1,8 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Iniciar Sesión";
+    Layout = null;
 }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
-<div class="container vh-100 d-flex justify-content-center align-items-center">
+<link rel="stylesheet" href="~/css/layout-styles.css" asp-append-version="true" />
+
+<div class="container">
     <div class="col-md-7 col-lg-5 col-xl-5">
         <div class="card shadow-sm">
             <div class="card-body">
@@ -18,13 +22,14 @@
                 <form asp-action="Login" method="post" id="loginForm">
                     <!-- Email input -->
                     <div class="form-outline mb-4">
-                        <input type="email" id="email" name="email" class="form-control form-control-lg" required />
+                        <input type="email" id="email" name="email" class="form-control form-control-lg" required placeholder=" " />
                         <label class="form-label" for="email">Correo</label>
                     </div>
 
                     <!-- Password input -->
                     <div class="form-outline mb-4">
-                        <input type="password" id="password" name="password" class="form-control form-control-lg" required />
+                        <input type="password" id="password" name="password" class="form-control form-control-lg" required placeholder=" " />
+
                         <label class="form-label" for="password">Contraseña</label>
                     </div>
 
@@ -46,54 +51,6 @@
     </div>
 </div>
 
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-    }
-
-    .card {
-        border-radius: 15px; /* Esquinas redondeadas */
-    }
-
-    .form-outline {
-        position: relative;
-    }
-
-    .form-control {
-        border-radius: 10px;
-        border: 1px solid #a3c4f3;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        transition: border 0.3s ease;
-    }
-
-        .form-control:focus {
-            border-color: #2d3748;
-            box-shadow: 0 0 5px rgba(45, 55, 72, 0.5);
-        }
-
-    .btn-custom {
-        transition: transform 0.2s ease;
-    }
-
-        .btn-custom:hover {
-            transform: translateY(-5px); /* Mueve el botón hacia arriba */
-        }
-
-    .alert {
-        border-radius: 10px;
-    }
-
-    /* Animación al enviar el formulario */
-    #loginForm {
-        opacity: 1;
-        transition: opacity 0.3s ease;
-    }
-
-        #loginForm.submitting {
-            opacity: 0.5; /* Disminuir la opacidad al enviar */
-        }
-</style>
 
 <script>
     document.getElementById('loginForm').addEventListener('submit', function () {

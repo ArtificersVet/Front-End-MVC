@@ -2,79 +2,20 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="container main-content text-center">
-    <div class="content-card">
-        <h1 class="display-4">Kowalski, ¿cuál es nuestra trayectoria?</h1>
-        <p class="lead">
+<div class="main-container">
+    <div class="page-header">
+        <h1 class="page-header__title">Kowalski, ¿cuál es nuestra trayectoria?</h1>
+        <p class="page-header__description">
             95% seguro de que estamos perdidos 🐧 ¿Y el otro 5%? Aventura y gloria como ningún otro pingüino ha vivido 🌊✨
         </p>
-        <hr>
-        <h2 class="mt-4">🦝 ARTIFICERS 🦝</h2>
-        <p>
-            Desarrollamos soluciones innovadoras para tus necesidades tecnológicas 💡.
-        </p>
-        <p>
-            Aprende sobre <a href="https://www.youtube.com/watch?v=H0mYMeGXGAM">cómo construir aplicaciones web con ASP.NET Core</a> 📚.
-        </p>
-        <a href="#" class="cta-button">Descubre Más</a>
+        <button class="btn-create">¡Descubre Más!</button>
     </div>
+
+    <section class="form-label">
+        <h2> 🦝 ARTIFICERS 🦝 </h2>
+        <p>Desarrollamos soluciones innovadoras para tus necesidades tecnológicas .</p>
+        <p class="form-label">
+            Aprende sobre <a href="https://www.youtube.com/watch?v=H0mYMeGXGAM">cómo construir aplicaciones web con ASP.NET Core</a> .
+        </p>
+    </section>
 </div>
-
-<style>
-    .main-content {
-        padding: 40px;
-        background-color: #e0f7fa; /* Color de fondo suave */
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        font-family: 'Arial', sans-serif; /* Tipo de fuente más amigable */
-    }
-
-    .content-card {
-        max-width: 600px;
-        margin: 0 auto;
-        text-align: center;
-        background-color: #ffffff; /* Fondo blanco para el contenido */
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    .display-4 {
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin-bottom: 20px;
-        color: #007bff; /* Color azul para destacar */
-    }
-
-    .lead {
-        font-size: 1.25rem;
-        margin-bottom: 20px;
-        color: #333; /* Texto en gris oscuro */
-    }
-
-    h2 {
-        margin-top: 20px;
-        font-size: 1.5rem;
-        color: #333; /* Color de encabezado */
-    }
-
-    .cta-button {
-        display: inline-block;
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: background-color 0.3s;
-    }
-
-        .cta-button:hover {
-            background-color: #0056b3;
-        }
-
-    /* Agregando un toque divertido */
-    .emoji {
-        font-size: 1.2rem; /* Tamaño de emoji */
-    }
-</style>

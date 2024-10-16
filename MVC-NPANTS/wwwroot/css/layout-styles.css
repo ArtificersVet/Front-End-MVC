@@ -1,1 +1,172 @@
-﻿
+﻿:root {
+    --primary-color: #ff6b6b;
+    --secondary-color: #4ecdc4;
+    --accent-color: #feca57;
+    --text-color: #2d3436;
+    --bg-color: #f7f1e3;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 30px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 500px;
+}
+
+.card-body {
+    padding: 3rem 2rem;
+}
+
+h2 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    position: relative;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    h2::before,
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        width: 40px;
+        height: 3px;
+        background: var(--accent-color);
+    }
+
+    h2::before {
+        left: 50%;
+        transform: translateX(-150%);
+    }
+
+    h2::after {
+        right: 50%;
+        transform: translateX(150%);
+    }
+
+.form-outline {
+    position: relative;
+    margin-bottom: 2.5rem;
+}
+
+.form-control {
+    border: none;
+    border-bottom: 2px solid var(--secondary-color);
+    border-radius: 0;
+    padding: 0.75rem 0;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: var(--primary-color);
+    }
+
+.form-label {
+    position: absolute;
+    top: 0.75rem;
+    left: 0;
+    transition: all 0.3s ease;
+    color: #999;
+    pointer-events: none;
+}
+
+.form-control:focus + .form-label,
+.form-control:not(:placeholder-shown) + .form-label {
+    top: -1.25rem;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.btn-custom {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+.form-check-label {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+    a:hover {
+        color: var(--secondary-color);
+        text-decoration: underline;
+    }
+
+.d-flex {
+    margin-top: 1.5rem;
+    justify-content: space-between;
+}
+
+@media (max-width: 576px) {
+    .card-body {
+        padding: 2rem 1.5rem;
+    }
+
+    .d-flex {
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .d-flex > * {
+            margin-bottom: 1rem;
+        }
+}
