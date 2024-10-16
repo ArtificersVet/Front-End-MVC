@@ -8,9 +8,9 @@ body {
 }
 
 .main-container {
-    width: 1450px;
-    max-width: 1450px;
-    margin: 56px -350px;
+    width: 1470px;
+    max-width: 1420px;
+    margin: 56px -330px;
     padding: 30px;
     background-color: #fff;
     border-radius: 20px;
@@ -560,4 +560,31 @@ form {
     color: #ff6b6b;
     font-size: 14px;
     margin-top: 5px;
+}
+
+.main-container {
+    /* ... otros estilos ... */
+    max-width: 1350px;
+    margin: 56px -300px; /* Centra el contenedor horizontalmente */
+}
+
+@media (max-width: 1440px) {
+    .main-container {
+        width: 1300px;
+        margin: 56px -270px;
+    }
+}
+
+@media (max-width:768px) {
+    .main-container {
+        width: 98%;
+        margin: 56px 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-container {
+        width: 95%;
+        margin: 56px 12px;
+    }
 }
