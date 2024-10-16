@@ -1,18 +1,19 @@
 ﻿@model IEnumerable<MVC_NPANTS.Models.Role>
 
 @{
-    ViewData["Title"] = "Roles";
+    ViewData["Title"] = "Catálogo de Roles";
 }
 
 <div class="main-container">
     <div class="page-header">
-        <h1>@ViewData["Title"]</h1>
+        <h1 style="color:white">@ViewData["Title"]</h1>
+        <a class="btn-create" asp-action="Create">Agregar nuevo rol</a>
     </div>
 
     <form asp-action="Index" method="get" class="mb-3">
         <div class="form-group d-flex">
+            <input type="text" class="form-control me-2" id="searchString" name="searchString" placeholder="Ingrese nombre" value="@ViewBag.SearchString">
             <button type="submit" class="btn btn-primary">Buscar</button>
-            <input type="text" class="form-control me-2" id="searchString" name="searchString" placeholder="Ingrese nombre">
         </div>
     </form>
 
@@ -21,54 +22,29 @@
         <p>Resultados de búsqueda para: "@ViewBag.SearchString"</p>
     }
 
-    <div class="btn-container mb-3">
-        <a class="btn btn-create" asp-action="Create">CREAR NUEVO ROL</a>
+    <div class="product-grid">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var role in Model)
+            {
+                <div class="product-card">
+                    <a href="@Url.Action("Details", new { id = role.Id })" class="product-name">@role.Nombre</a>
+                    <div class="product-detail">
+                        <span class="product-label">Descripción:</span> @role.Descripcion
+                    </div>
+                    <div class="action-buttons">
+                        @Html.ActionLink("Editar", "Edit", new { id = role.Id }, new { @class = "btn-action btn-edit" })
+                        @Html.ActionLink("Detalles", "Details", new { id = role.Id }, new { @class = "btn-action btn-details" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = role.Id }, new { @class = "btn-action btn-delete" })
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info" role="alert">
+                No se encontraron roles.
+            </div>
+        }
     </div>
-
-    @if (Model != null && Model.Any())
-    {
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.First().Id)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.First().Nombre)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.First().Descripcion)
-                    </th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Descripcion)
-                        </td>
-                        <td>
-                            @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-edit" }) |
-                            @Html.ActionLink("Detalles", "Details", new { id = item.Id }, new { @class = "btn btn-details" }) |
-                            @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <div class="alert alert-info" role="alert">
-            No se encontraron roles.
-        </div>
-    }
 </div>

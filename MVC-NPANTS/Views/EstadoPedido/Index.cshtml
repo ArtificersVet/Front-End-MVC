@@ -1,46 +1,30 @@
 ﻿@model IEnumerable<MVC_NPANTS.Models.EstadoPedido>
 
 @{
-    ViewData["Title"] = "Lista de Estados de Pedido";
+    ViewData["Title"] = "Catálogo de Estados de Pedido";
 }
 
 <div class="main-container">
     <div class="page-header">
-        <h1>@ViewData["Title"]</h1>
-    </div>
-
-    <div class="btn-container mb-3">
-        <a class="btn btn-create" asp-action="Create">Crear Nuevo Estado de Pedido</a>
+        <h1 style="color:white">@ViewData["Title"]</h1>
+        <a class="btn-create" asp-action="Create">Agregar nuevo estado de pedido</a>
     </div>
 
     @if (Model != null && Model.Any())
     {
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Nombre)
-                    </th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var estado in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => estado.Nombre)
-                        </td>
-                        <td>
-                          
-                            @Html.ActionLink("Editar", "Edit", new { id = estado.Id }, new { @class = "btn btn-edit" }) |
-                            @Html.ActionLink("Detalles", "Details", new { id = estado.Id }, new { @class = "btn btn-details" }) |
-                            @Html.ActionLink("Eliminar", "Delete", new { id = estado.Id }, new { @class = "btn btn-danger" })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="product-grid">
+            @foreach (var estado in Model)
+            {
+                <div class="product-card">
+                    <a href="@Url.Action("Details", new { id = estado.Id })" class="product-name">@estado.Nombre</a>
+                    <div class="action-buttons">
+                        @Html.ActionLink("Editar", "Edit", new { id = estado.Id }, new { @class = "btn-action btn-edit" })
+                        @Html.ActionLink("Detalles", "Details", new { id = estado.Id }, new { @class = "btn-action btn-details" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = estado.Id }, new { @class = "btn-action btn-delete" })
+                    </div>
+                </div>
+            }
+        </div>
     }
     else
     {

@@ -1,62 +1,41 @@
 ﻿@model IEnumerable<MVC_NPANTS.Models.Estilo>
 
 @{
-    ViewData["Title"] = "Lista de Estilos";
+    ViewData["Title"] = "Catálogo de Estilos";
 }
 
 <div class="main-container">
     <div class="page-header">
-        <h1>@ViewData["Title"]</h1>
+        <h1 style="color:white">@ViewData["Title"]</h1>
+        <a class="btn-create" asp-action="Create">Agregar nuevo estilo</a>
     </div>
 
-    <div class="btn-container mb-3">
-        <a class="btn btn-create" asp-action="Create">Crear Nuevo Estilo</a>
+    <div class="product-grid">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var estilo in Model)
+            {
+                <div class="product-card">
+                    <a href="@Url.Action("GetById", new { id = estilo.Id })" class="product-name">@estilo.Nombre</a>
+                    <div class="product-detail">
+                        <span class="product-label">ID:</span> @estilo.Id
+                    </div>
+                    <div class="product-detail">
+                        <span class="product-label">Tipo:</span> @estilo.Tipo
+                    </div>
+                    <div class="action-buttons">
+                        @Html.ActionLink("Editar", "Edit", new { id = estilo.Id }, new { @class = "btn-action btn-edit" })
+                        @Html.ActionLink("Detalles", "GetById", new { id = estilo.Id }, new { @class = "btn-action btn-details" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = estilo.Id }, new { @class = "btn-action btn-delete" })
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info" role="alert">
+                No se encontraron estilos.
+            </div>
+        }
     </div>
-
-    @if (Model != null && Model.Any())
-    {
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Id)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Nombre)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Tipo)
-                    </th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var estilo in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => estilo.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => estilo.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => estilo.Tipo)
-                        </td>
-                        <td>
-                            @Html.ActionLink("Ver", "GetById", new { id = estilo.Id }, new { @class = "btn btn-details" }) |
-                            @Html.ActionLink("Editar", "Edit", new { id = estilo.Id }, new { @class = "btn btn-edit" }) |
-                            @Html.ActionLink("Eliminar", "Delete", new { id = estilo.Id }, new { @class = "btn btn-danger" })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <div class="alert alert-info" role="alert">
-            No se encontraron estilos.
-        </div>
-    }
 </div>

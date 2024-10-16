@@ -1,18 +1,19 @@
 ﻿@model IEnumerable<MVC_NPANTS.Models.usuario>
 
 @{
-    ViewData["Title"] = "Lista de Usuarios";
+    ViewData["Title"] = "Catálogo de Usuarios";
 }
 
 <div class="main-container">
     <div class="page-header">
-        <h1>@ViewData["Title"]</h1>
+        <h1 style="color:white">@ViewData["Title"]</h1>
+        <a class="btn-create" asp-action="Create">Agregar nuevo usuario</a>
     </div>
 
     <form asp-action="Index" method="get" class="mb-3">
         <div class="form-group d-flex">
+            <input type="text" class="form-control me-2" id="searchString" name="searchString" placeholder="Ingrese nombre o email" value="@ViewBag.SearchString">
             <button type="submit" class="btn btn-primary">Buscar</button>
-            <input type="text" class="form-control me-2" id="searchString" name="searchString" placeholder="Ingrese nombre o email">
         </div>
     </form>
 
@@ -21,54 +22,40 @@
         <p>Resultados de búsqueda para: "@ViewBag.SearchString"</p>
     }
 
-    <div class="btn-container mb-3">
-        <a class="btn btn-create" asp-action="Create">CREAR NUEVO USUARIO</a>
+    <div class="product-grid">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var usuario in Model)
+            {
+                <div class="product-card">
+                    <a href="@Url.Action("Details", new { id = usuario.id })" class="product-name">@usuario.nombre</a>
+                    <div class="product-detail">
+                        <span class="product-label">Email:</span> @usuario.email
+                    </div>
+                    <div class="product-detail">
+                        <span class="product-label">Rol:</span>
+                        @if (usuario.rolid != null)
+                        {
+                            <span class="badge badge-info">@usuario.rolid.Nombre</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Sin roles</span>
+                        }
+                    </div>
+                    <div class="action-buttons">
+                        @Html.ActionLink("Editar", "Edit", new { id = usuario.id }, new { @class = "btn-action btn-edit" })
+                        @Html.ActionLink("Detalles", "Details", new { id = usuario.id }, new { @class = "btn-action btn-details" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = usuario.id }, new { @class = "btn-action btn-delete" })
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info" role="alert">
+                No se encontraron usuarios.
+            </div>
+        }
     </div>
-
-    @if (Model != null && Model.Any())
-    {
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.First().id)</th>
-                    <th>@Html.DisplayNameFor(model => model.First().nombre)</th>
-                    <th>@Html.DisplayNameFor(model => model.First().email)</th>
-                    <th>@Html.DisplayNameFor(model => model.First().rolid)</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var usuario in Model)
-                {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => usuario.id)</td>
-                        <td>@Html.DisplayFor(modelItem => usuario.nombre)</td>
-                        <td>@Html.DisplayFor(modelItem => usuario.email)</td>
-                        <td>
-                            @if (usuario.rolid != null)
-                            {
-                                <span class="badge badge-info">@usuario.rolid.Nombre</span>
-                            }
-                            else
-                            {
-                                <span class="text-muted">Sin roles</span>
-                            }
-                        </td>
-                        <td>
-                         
-                            @Html.ActionLink("Editar", "Edit", new { id = usuario.id }, new { @class = "btn btn-edit" }) |
-                            @Html.ActionLink("Detalles", "Details", new { id = usuario.id }, new { @class = "btn btn-details" }) |
-                            @Html.ActionLink("Eliminar", "Delete", new { id = usuario.id }, new { @class = "btn btn-danger" })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <div class="alert alert-info" role="alert">
-            No se encontraron usuarios.
-        </div>
-    }
 </div>

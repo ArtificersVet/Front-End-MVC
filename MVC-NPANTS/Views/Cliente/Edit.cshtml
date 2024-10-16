@@ -4,9 +4,10 @@
     ViewData["Title"] = "Editar Cliente";
 }
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
-
+<div class="blanco">
+    <div class="page-header">
+        <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+    </div>
     <form asp-action="Edit" method="post" class="shadow p-4 rounded bg-light">
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
         <input type="hidden" asp-for="Id" />
@@ -45,7 +46,7 @@
             </div>
 
             <div class="col-md-6 col-12">
-                <div class="form-group mb-4">
+                <div class="form-group mb-3">
                     <label asp-for="TipoclienteId" class="form-label">Tipo de Cliente</label>
                     @Html.DropDownListFor(model => model.TipoclienteId, (SelectList)ViewBag.TiposClientes, "Seleccione un tipo de cliente", new { @class = "form-control" })
                     <span asp-validation-for="TipoclienteId" class="text-danger"></span>
@@ -54,11 +55,12 @@
         </div>
 
         <div class="d-flex justify-content-between mt-4">
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
 </div>
+
 @section Scripts {
     @Html.Partial("_ValidationScriptsPartial")
 }

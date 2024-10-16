@@ -1,25 +1,30 @@
 ﻿@model MVC_NPANTS.Models.TipoPrendaVestir
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Tipo de Prenda de Vestir";
 }
 
-
-<div class="main-container">
+<div class="blanco">
     <div class="page-header">
-        <h1>Edit Tipo Prenda</h1>
+        <h2 class="text-center mb-4">@ViewData["Title"]</h2>
     </div>
 
-    <form asp-action="Edit">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <form asp-action="Edit" method="post" class="shadow p-4 rounded bg-light">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
         <input type="hidden" asp-for="Id" />
-       
-        <div class="form-group">
-            <label asp-for="Nombre">Nombre:</label>
-            <input asp-for="Nombre" class="form-control" />
-            <span asp-validation-for="Nombre" class="text-danger"></span>
+
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="Nombre" class="form-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" required />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+            </div>
+
         </div>
-        <div class="btn-container">
+
+        <div class="d-flex justify-content-between mt-4">
             <button type="submit" class="btn btn-primary">Guardar</button>
             <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
         </div>
@@ -27,7 +32,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

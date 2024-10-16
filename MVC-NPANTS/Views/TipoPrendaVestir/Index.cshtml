@@ -1,49 +1,25 @@
 ﻿@model IEnumerable<MVC_NPANTS.Models.TipoPrendaVestir>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Catálogo de Tipos de Prenda de Vestir";
 }
-
 
 <div class="main-container">
     <div class="page-header">
-        <h1>Tipo prenda vestir</h1>
+        <h1 style="color:white">Catálogo de Tipos de Prenda de Vestir</h1>
+        <a class="btn-create" asp-action="Create">Agregar nuevo tipo de prenda</a>
     </div>
-    <p>
-    <a class="btn btn-create" asp-action="Create">Crear Nuevo tipo de prenda</a>
-    </p>
-    <table class="data-table">
-
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Nombre)
-                </th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Nombre)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-edit" })
-                        @Html.ActionLink("Detalles", "GetById", new { id = item.Id }, new { @class = "btn btn-details" })
-                        @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
- 
+    <div class="product-grid">
+        @foreach (var tipoPrenda in Model)
+        {
+            <div class="product-card">
+                <a href="@Url.Action("GetById", new { id = tipoPrenda.Id })" class="product-name">@tipoPrenda.Nombre</a>
+                <div class="action-buttons">
+                    @Html.ActionLink("Editar", "Edit", new { id = tipoPrenda.Id }, new { @class = "btn-action btn-edit" })
+                    @Html.ActionLink("Detalles", "GetById", new { id = tipoPrenda.Id }, new { @class = "btn-action btn-details" })
+                    @Html.ActionLink("Eliminar", "Delete", new { id = tipoPrenda.Id }, new { @class = "btn-action btn-delete" })
+                </div>
+            </div>
+        }
+    </div>
 </div>

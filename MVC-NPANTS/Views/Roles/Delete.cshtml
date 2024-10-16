@@ -6,36 +6,33 @@
 
 <div class="main-container">
     <div class="page-header">
-        <h1>@ViewData["Title"]</h1>
+        <h1 class="text-center">¿Estás seguro de que deseas eliminar este rol?</h1>
     </div>
 
-    <h4>¿Estás seguro de que deseas eliminar este rol? Esta acción es irreversible.</h4>
-    <hr />
+    <form asp-action="DeleteConfirmed" method="post" class="shadow p-4 rounded bg-light">
+        <h4 class="text-danger">Esta acción es irreversible.</h4>
+        <hr />
 
-    <div class="form-group">
-        <label>ID:</label>
-        <div class="form-control">
-            @Html.DisplayFor(model => model.Id)
+        <div class="row">
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">ID:</label>
+                <div class="form-control">@Html.DisplayFor(model => model.Id)</div>
+            </div>
+
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Nombre:</label>
+                <div class="form-control">@Html.DisplayFor(model => model.Nombre)</div>
+            </div>
+
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Descripción:</label>
+                <div class="form-control">@Html.DisplayFor(model => model.Descripcion)</div>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label>Nombre:</label>
-        <div class="form-control">
-            @Html.DisplayFor(model => model.Nombre)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Descripción:</label>
-        <div class="form-control">
-            @Html.DisplayFor(model => model.Descripcion)
-        </div>
-    </div>
-
-    <form asp-action="DeleteConfirmed" method="post">
         <input type="hidden" asp-for="Id" />
-        <div class="btn-container">
+
+        <div class="d-flex justify-content-between mt-4">
             <button type="submit" class="btn btn-danger">Eliminar</button>
             <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
         </div>

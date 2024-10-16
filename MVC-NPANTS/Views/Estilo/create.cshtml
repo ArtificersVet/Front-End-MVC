@@ -1,31 +1,38 @@
 ﻿@model MVC_NPANTS.Models.Estilo
 
 @{
-    ViewData["Title"] = "Crear Nuevo Estilo";
+    ViewData["Title"] = "Agregar Nuevo Estilo";
 }
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+<div class="blanco">
+    <div class="page-header">
+        <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+    </div>
 
-    <form asp-action="Create" method="post" class="shadow p-4 rounded bg-light" id="estiloForm">
-
+    <form asp-action="Create" method="post" class="shadow p-4 rounded bg-light">
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-        <div class="form-group mb-3">
-            <label asp-for="Nombre" class="form-label">Nombre</label>
-            <input asp-for="Nombre" class="form-control" required />
-            <span asp-validation-for="Nombre" class="text-danger"></span>
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="Nombre" class="form-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" required />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="Tipo" class="form-label">Tipo</label>
+                    <input asp-for="Tipo" class="form-control" required />
+                    <span asp-validation-for="Tipo" class="text-danger"></span>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group mb-3">
-            <label asp-for="Tipo" class="form-label">Tipo</label>
-            <input asp-for="Tipo" class="form-control" required />
-            <span asp-validation-for="Tipo" class="text-danger"></span>
-        </div>
-
-        <div id="tallasContainer">
+        <div id="tallasContainer" class="row">
             <h5>Tallas y Consumo de Tela</h5>
-            <div class="talla-row mb-2">
+            <div class="col-md-6 col-12 talla-row mb-3">
                 <select name="EstiloTallas[0].TallaId" class="form-control" required>
                     <option value="">Seleccione una talla</option>
                     @foreach (var talla in ViewBag.Tallas as List<Talla>)
@@ -33,6 +40,9 @@
                         <option value="@talla.Id">@talla.Nombre</option>
                     }
                 </select>
+            </div>
+
+            <div class="col-md-6 col-12 mb-3">
                 <input type="number" name="EstiloTallas[0].consumoTela" class="form-control" placeholder="Consumo de Tela" step="0.01" required />
             </div>
         </div>
@@ -41,7 +51,7 @@
 
         <div class="d-flex justify-content-between mt-4">
             <button type="submit" class="btn btn-primary">Crear</button>
-            <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+            <a asp-action="Index" class="btn btn-secondary">Volver al Catálogo</a>
         </div>
     </form>
 </div>
@@ -57,15 +67,15 @@
         newTallaRow.classList.add('talla-row', 'mb-2');
 
         newTallaRow.innerHTML = `
-                <select name="EstiloTallas[${tallaCount}].TallaId" class="form-control" required>
-                    <option value="">Seleccione una talla</option>
+                    <select name="EstiloTallas[${tallaCount}].TallaId" class="form-control" required>
+                        <option value="">Seleccione una talla</option>
     @foreach (var talla in ViewBag.Tallas as List<Talla>)
     {
-                            <option value="@talla.Id">@talla.Nombre</option>
+                                    <option value="@talla.Id">@talla.Nombre</option>
     }
-                </select>
-                <input type="number" name="EstiloTallas[${tallaCount}].consumoTela" class="form-control" placeholder="Consumo de Tela" step="0.01" required />
-            `;
+                    </select>
+                    <input type="number" name="EstiloTallas[${tallaCount}].consumoTela" class="form-control" placeholder="Consumo de Tela" step="0.01" required />
+                `;
 
         tallaContainer.appendChild(newTallaRow);
         tallaCount++; // Incrementar el contador

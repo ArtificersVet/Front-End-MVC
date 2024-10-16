@@ -1,51 +1,28 @@
 ﻿@model IEnumerable<MVC_NPANTS.Models.TipoCliente>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Catálogo de Tipos de Clientes";
 }
 
 <div class="main-container">
     <div class="page-header">
-        <h1>Tipo Cliente</h1>
+        <h1 style="color:white">Catálogo de Tipos de Clientes</h1>
+        <a class="btn-create" asp-action="Create">Agregar nuevo tipo de cliente</a>
     </div>
-
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.First().Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.First().Nombre)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.First().Descripcion)
-                </th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Nombre)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Descripcion)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-edit" })
-                        @Html.ActionLink("Detalles", "GetById", new { id = item.Id }, new { @class = "btn btn-details" })
-                        @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <a class="btn btn-create" asp-action="Create">Crear Nuevo</a>
+    <div class="product-grid">
+        @foreach (var tipoCliente in Model)
+        {
+            <div class="product-card">
+                <a href="@Url.Action("GetById", new { id = tipoCliente.Id })" class="product-name">@tipoCliente.Nombre</a>
+                <div class="product-detail">
+                    <span class="product-label">Descripción:</span> @tipoCliente.Descripcion
+                </div>
+                <div class="action-buttons">
+                    @Html.ActionLink("Editar", "Edit", new { id = tipoCliente.Id }, new { @class = "btn-action btn-edit" })
+                    @Html.ActionLink("Detalles", "GetById", new { id = tipoCliente.Id }, new { @class = "btn-action btn-details" })
+                    @Html.ActionLink("Eliminar", "Delete", new { id = tipoCliente.Id }, new { @class = "btn-action btn-delete" })
+                </div>
+            </div>
+        }
+    </div>
 </div>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MVC_NPANTS.Models;
 
 namespace MVC_NPANTS.Controllers
@@ -54,12 +55,10 @@ namespace MVC_NPANTS.Controllers
         public async Task<IActionResult> Create()
         {
             SetAuthorizationHeader();
-            var metodosPago = await _httpClient.GetFromJsonAsync<List<MetodoPago>>("metodospago");  
-            ViewBag.MetodosPago = metodosPago;
-
-             var pedidos = await _httpClient.GetFromJsonAsync<List<Pedido>>("pedidos");  
-            ViewBag.Pedidos = pedidos;
-
+            var metodosPago = await _httpClient.GetFromJsonAsync<List<MetodoPago>>("metodospago");
+            ViewBag.MetodosPago = new SelectList(metodosPago, "Id", "Nombre");
+            var pedidos = await _httpClient.GetFromJsonAsync<List<Pedido>>("pedidos");
+            ViewBag.Pedidos = new SelectList(pedidos, "Id", "Id");  // Asumiendo que quieres mostrar el Id del pedido
             return View();
         }
 
@@ -71,17 +70,26 @@ namespace MVC_NPANTS.Controllers
             try
             {
                 var pagoCreate = await _httpClient.PostAsJsonAsync("pagos/create", pagoOBJ);
-
                 if (pagoCreate.IsSuccessStatusCode) return RedirectToAction(nameof(Index));
-
-                else Console.WriteLine("dio error");
-
-                return View();
+                else
+                {
+                    // Si hay un error, volvemos a cargar las listas para el formulario
+                    var metodosPago = await _httpClient.GetFromJsonAsync<List<MetodoPago>>("metodospago");
+                    ViewBag.MetodosPago = new SelectList(metodosPago, "Id", "Nombre");
+                    var pedidos = await _httpClient.GetFromJsonAsync<List<Pedido>>("pedidos");
+                    ViewBag.Pedidos = new SelectList(pedidos, "Id", "Id");
+                    return View(pagoOBJ);
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return View();
+                // Si hay una excepción, también volvemos a cargar las listas
+                var metodosPago = await _httpClient.GetFromJsonAsync<List<MetodoPago>>("metodospago");
+                ViewBag.MetodosPago = new SelectList(metodosPago, "Id", "Nombre");
+                var pedidos = await _httpClient.GetFromJsonAsync<List<Pedido>>("pedidos");
+                ViewBag.Pedidos = new SelectList(pedidos, "Id", "Id");
+                return View(pagoOBJ);
             }
         }
 
@@ -89,20 +97,16 @@ namespace MVC_NPANTS.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             SetAuthorizationHeader();
-            var pedidoEdit = await _httpClient.GetFromJsonAsync<Pago>($"pagos/{id}");
-
-            if (pedidoEdit == null)
+            var pagoEdit = await _httpClient.GetFromJsonAsync<Pago>($"pagos/{id}");
+            if (pagoEdit == null)
             {
-                Console.WriteLine("no se encontro el id");
+                return NotFound();
             }
-
             var metodosPago = await _httpClient.GetFromJsonAsync<List<MetodoPago>>("metodospago");
-            ViewBag.MetodosPago = metodosPago;
-
+            ViewBag.MetodosPago = new SelectList(metodosPago, "Id", "Nombre", pagoEdit.MetodoPagoId);
             var pedidos = await _httpClient.GetFromJsonAsync<List<Pedido>>("pedidos");
-            ViewBag.Pedidos = pedidos;
-
-            return View(pedidoEdit);
+            ViewBag.Pedidos = new SelectList(pedidos, "Id", "Id", pagoEdit.PedidoId);
+            return View(pagoEdit);
         }
 
         // POST: PagoController/Edit/5
@@ -114,23 +118,31 @@ namespace MVC_NPANTS.Controllers
             try
             {
                 var pagosEdit = await _httpClient.PutAsJsonAsync($"pagos/{id}", pago);
-
                 if (pagosEdit.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(Index));
                 }
-                else 
+                else
                 {
-                    return View();
+                    // Si hay un error, volvemos a cargar las listas para el formulario
+                    var metodosPago = await _httpClient.GetFromJsonAsync<List<MetodoPago>>("metodospago");
+                    ViewBag.MetodosPago = new SelectList(metodosPago, "Id", "Nombre", pago.MetodoPagoId);
+                    var pedidos = await _httpClient.GetFromJsonAsync<List<Pedido>>("pedidos");
+                    ViewBag.Pedidos = new SelectList(pedidos, "Id", "Id", pago.PedidoId);
+                    return View(pago);
                 }
             }
             catch
             {
-                return View();
+                // Si hay una excepción, también volvemos a cargar las listas
+                var metodosPago = await _httpClient.GetFromJsonAsync<List<MetodoPago>>("metodospago");
+                ViewBag.MetodosPago = new SelectList(metodosPago, "Id", "Nombre", pago.MetodoPagoId);
+                var pedidos = await _httpClient.GetFromJsonAsync<List<Pedido>>("pedidos");
+                ViewBag.Pedidos = new SelectList(pedidos, "Id", "Id", pago.PedidoId);
+                return View(pago);
             }
         }
-  
-         public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             SetAuthorizationHeader();
             try

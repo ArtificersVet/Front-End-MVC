@@ -1,72 +1,41 @@
 ﻿@model IEnumerable<MVC_NPANTS.Models.Pago>
-
 @{
     ViewData["Title"] = "Listado de pagos";
 }
-
 <div class="main-container">
     <div class="page-header">
-        <h1>Pago</h1>
+        <h1 style="color:white">Listado de pagos</h1>
+        <a class="btn-create" asp-action="Create">Crear Nuevo Pago</a>
     </div>
-
-    <p>
-        <a class="btn btn-primary" asp-action="Create">Crear Nuevo</a>
-    </p>
-
     @if (ViewBag.Message != null)
     {
         <div class="alert alert-warning">
             @ViewBag.Message
         </div>
     }
-
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FechaPago)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Monto)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.MetodoPagoId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PedidoId)
-                </th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FechaPago)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Monto)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.MetodoPago.Nombre)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Pedido.Saldo)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-edit" }) |
-                        @Html.ActionLink("Detalles", "Details", new { id = item.Id }, new { @class = "btn btn-details" }) |
-                        @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="product-grid">
+        @foreach (var item in Model)
+        {
+            <div class="product-card">
+                <a href="@Url.Action("Details", new { id = item.Id })" class="product-name">Pago #@item.Id</a>
+                <div class="product-detail">
+                    <span class="product-label">Fecha:</span> @(item.FechaPago.HasValue ? item.FechaPago.Value.ToShortDateString() : "N/A")
+                </div>
+                <div class="product-detail">
+                    <span class="product-label">Monto:</span> @(item.Monto != null ? string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", item.Monto) : "N/A")
+                </div>
+                <div class="product-detail">
+                    <span class="product-label">Método:</span> @(item.MetodoPago?.Nombre ?? "N/A")
+                </div>
+                <div class="product-detail">
+                    <span class="product-label">Pedido:</span> #@item.PedidoId
+                </div>
+                <div class="action-buttons">
+                    @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn-action btn-edit" })
+                    @Html.ActionLink("Detalles", "Details", new { id = item.Id }, new { @class = "btn-action btn-details" })
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn-action btn-delete" })
+                </div>
+            </div>
+        }
+    </div>
 </div>

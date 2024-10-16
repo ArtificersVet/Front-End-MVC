@@ -6,70 +6,39 @@
 
 <div class="main-container">
     <div class="page-header">
-        <h1>@ViewData["Title"]</h1>
-    </div>
-
-    <div class="btn-container mb-3">
-        <a class="btn btn-create" asp-action="Create">Crear Nuevo Cliente</a>
+        <h1 style="color:white">@ViewData["Title"]</h1>
+        <a class="btn-create" asp-action="Create">Agregar nuevo cliente</a>
     </div>
 
     @if (Model != null && Model.Any())
     {
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Id)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Nombre)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Direccion)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Email)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Telefono)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Tipocliente.Nombre)
-                    </th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var cliente in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => cliente.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => cliente.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => cliente.Direccion)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => cliente.Email)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => cliente.Telefono)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => cliente.Tipocliente.Nombre)
-                        </td>
-                        <td>
-                            @Html.ActionLink("Ver", "Details", new { id = cliente.Id }, new { @class = "btn btn-details" })
-                            @Html.ActionLink("Editar", "Edit", new { id = cliente.Id }, new { @class = "btn btn-edit" })
-                            @Html.ActionLink("Eliminar", "Delete", new { id = cliente.Id }, new { @class = "btn btn-danger" })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="product-grid">
+            @foreach (var cliente in Model)
+            {
+                <div class="product-card">
+                    <a href="@Url.Action("Details", new { id = cliente.Id })" class="product-name">@cliente.Nombre</a>
+
+                    <div class="product-detail">
+                        <span class="product-label">Dirección:</span> @cliente.Direccion
+                    </div>
+                    <div class="product-detail">
+                        <span class="product-label">Email:</span> @cliente.Email
+                    </div>
+                    <div class="product-detail">
+                        <span class="product-label">Teléfono:</span> @cliente.Telefono
+                    </div>
+                    <div class="product-detail">
+                        <span class="product-label">Tipo de Cliente:</span> @cliente.Tipocliente.Nombre
+                    </div>
+
+                    <div class="action-buttons">
+                        @Html.ActionLink("Editar", "Edit", new { id = cliente.Id }, new { @class = "btn-action btn-edit" })
+                        @Html.ActionLink("Detalles", "Details", new { id = cliente.Id }, new { @class = "btn-action btn-details" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = cliente.Id }, new { @class = "btn-action btn-delete" })
+                    </div>
+                </div>
+            }
+        </div>
     }
     else
     {

@@ -4,36 +4,47 @@
     ViewData["Title"] = "Crear Nuevo Usuario";
 }
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+<div class="blanco">
+    <div class="page-header">
+        <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+    </div>
 
     <form asp-action="Create" method="post" class="shadow p-4 rounded bg-light">
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="nombre" class="form-label">Nombre</label>
+                    <input asp-for="nombre" class="form-control" required />
+                    <span asp-validation-for="nombre" class="text-danger"></span>
+                </div>
+            </div>
 
-        <div class="form-group mb-3">
-            <label asp-for="nombre" class="form-label">Nombre</label>
-            <input asp-for="nombre" class="form-control" required />
-            <span asp-validation-for="nombre" class="text-danger"></span>
-        </div>
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="email" class="form-label">Email</label>
+                    <input asp-for="email" class="form-control" required />
+                    <span asp-validation-for="email" class="text-danger"></span>
+                </div>
+            </div>
 
-        <div class="form-group mb-3">
-            <label asp-for="email" class="form-label">Email</label>
-            <input asp-for="email" class="form-control" required />
-            <span asp-validation-for="email" class="text-danger"></span>
-        </div>
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="password" class="form-label">Contraseña</label>
+                    <input asp-for="password" class="form-control" type="password" required />
+                    <span asp-validation-for="password" class="text-danger"></span>
+                </div>
+            </div>
 
-        <div class="form-group mb-3">
-            <label asp-for="password" class="form-label">Contraseña</label>
-            <input asp-for="password" class="form-control" type="password" required />
-            <span asp-validation-for="password" class="text-danger"></span>
-        </div>
-
-        <div class="form-group mb-3">
-            <label asp-for="rolid" class="form-label">Rol</label>
-            <select asp-for="rolid" asp-items="ViewBag.Roles" class="form-select" required>
-                <option value="" selected>Selecciona un rol</option>
-            </select>
-            <span asp-validation-for="rolid" class="text-danger"></span>
+            <div class="col-md-6 col-12">
+                <div class="form-group mb-3">
+                    <label asp-for="rolid" class="form-label">Rol</label>
+                    <select asp-for="rolid" asp-items="ViewBag.Roles" class="form-select" required>
+                        <option value="" selected>Selecciona un rol</option>
+                    </select>
+                    <span asp-validation-for="rolid" class="text-danger"></span>
+                </div>
+            </div>
         </div>
 
         <div class="d-flex justify-content-between mt-4">
@@ -44,6 +55,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
