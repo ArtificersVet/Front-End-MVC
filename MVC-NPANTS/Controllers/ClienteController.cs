@@ -181,7 +181,7 @@ namespace MVC_NPANTS.Controllers
         // POST: ClienteController/DeleteConfirmed/5
         [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult>DeleteConfirmed(int id)
         {
             SetAuthorizationHeader();
 
