@@ -22,15 +22,14 @@ namespace MVC_NPANTS.Controllers
             }
         }
         // Método para listar todos los roles
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string searchString = null)
+         public async Task<IActionResult> Index()
         {
             SetAuthorizationHeader();
             List<Role> roles = new List<Role>();
 
             try
             {
-                // Agregar el número de página y el tamaño de la página a la URL de la API
-                var response = await _httpClient.GetFromJsonAsync<List<Role>>($"https://api-npants.onrender.com/roles?page={page}&pageSize={pageSize}&searchString={searchString}");
+                var response = await _httpClient.GetFromJsonAsync<List<Role>>("/roles");
                 if (response != null)
                 {
                     roles = response;
@@ -45,12 +44,9 @@ namespace MVC_NPANTS.Controllers
                 Console.WriteLine($"Error al hacer la solicitud: {ex.Message}");
             }
 
-            // Configurar ViewBag para la paginación
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-
             return View(roles);
         }
+
 
         // Método para obtener un rol por su ID
         public async Task<IActionResult> Details(int id)
