@@ -1,41 +1,114 @@
 ﻿@model MVC_NPANTS.Models.Pedido
 
-<h2>Detalles del Pedido @Model.Id</h2>
+@{
+    ViewData["Title"] = $"Detalles del Pedido {Model.Id}";
+}
 
-<p><strong>Fecha del Pedido:</strong> @Model.FechaPedido.ToShortDateString()</p>
-<p><strong>Cliente:</strong> @Model.Cliente?.Nombre</p>
-<p><strong>Total del Pedido:</strong> @Model.Total</p>
-<p><strong>Estado del Pedido:</strong> @Model.EstadoPedido?.Nombre</p>
+<div class="main-container">
+    <div class="page-header">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+    </div>
 
-<h3>Detalles del Producto</h3>
+    <form class="shadow p-4 rounded bg-light">
+        <div class="row">
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Fecha del Pedido:</label>
+                <div class="form-control">@Model.FechaPedido.ToShortDateString()</div>
+            </div>
 
-@if (Model.Detalles != null && Model.Detalles.Any())
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Prenda</th>
-                <th>Talla</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
-                <th>Total Pieza</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var detalle in Model.Detalles)
-            {
-                <tr>
-                    <td>@detalle.PrendaVestir?.Nombre</td>
-                    <td>@detalle.Talla?.Nombre</td>
-                    <td>@detalle.Cantidad</td>
-                    <td>@detalle.Precio.ToString("C")</td> <!-- Mostramos el precio como moneda -->
-                    <td>@detalle.TotalPieza.ToString("C")</td> <!-- Total por pieza como moneda -->
-                </tr>
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Cliente:</label>
+                <div class="form-control">@Model.Cliente?.Nombre</div>
+            </div>
+
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Total del Pedido:</label>
+                <div class="form-control">@Model.Total</div> <!-- Formato de moneda -->
+            </div>
+
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Estado del Pedido:</label>
+                <div class="form-control">@Model.EstadoPedido?.Nombre</div>
+            </div>
+        </div>
+
+        <h3 class="mt-4">Detalles del Producto</h3>
+
+
+        <style>
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+                font-size: 16px;
+                text-align: left;
+                border-radius: 0.5rem;
+                overflow: hidden;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No hay detalles de productos para este pedido.</p>
-}
+
+                .table thead {
+                    background-color: #007bff;
+                    color: #ffffff;
+                    text-align: center;
+                }
+
+                .table th, .table td {
+                    padding: 12px;
+                    border: none;
+                    color: #333;
+                }
+
+                .table tbody tr {
+                    transition: background-color 0.3s;
+                }
+
+                    .table tbody tr:nth-child(even) {
+                        background-color: #f9f9f9;
+                    }
+
+                    .table tbody tr:hover {
+                        background-color: #d1e7fd; /* Color al pasar el cursor */
+                    }
+
+                .table th {
+                    font-weight: bold;
+                }
+        </style>
+        @if (Model.Detalles != null && Model.Detalles.Any())
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Prenda</th>
+                        <th>Talla</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Total Pieza</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detalle in Model.Detalles)
+                    {
+                        <tr>
+                            <td>@detalle.PrendaVestir?.Nombre</td>
+                            <td>@detalle.Talla?.Nombre</td>
+                            <td>@detalle.Cantidad</td>
+                            <td>@detalle.Precio.ToString("C")</td>
+                            <td>@detalle.TotalPieza.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No hay detalles de productos para este pedido.</p>
+        }
+
+        <div class="d-flex justify-content-between mt-4">
+            @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+            <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+        </div>
+    </form>
+</div>
