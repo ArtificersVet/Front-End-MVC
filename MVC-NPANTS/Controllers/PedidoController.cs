@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MVC_NPANTS.Models;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 
@@ -25,19 +26,48 @@ namespace MVC_NPANTS.Controllers
         }
 
         // GET: PedidoController
-        public async Task<ActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize =12)
         {
-            SetAuthorizationHeader();
-            var pedidos = await _httpClient.GetFromJsonAsync<List<Pedido>>("pedidos");
-
-            if (pedidos == null)
+            try
             {
-                Console.WriteLine("No se encontraron pedidos.");
-                return View(new List<Pedido>());
-            }
+                var response = await _httpClient.GetAsync($"pedidos?page={page}&pageSize={pageSize}");
 
-            return View(pedidos);
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return View(new PedidoResponse
+                    {
+                        Pedidos = new List<Pedido>(),
+                        CurrentPage = 1,
+                        PageSize = pageSize,
+                        TotalItems = 0,
+                        TotalPages = 1
+                    });
+                }
+
+                response.EnsureSuccessStatusCode();
+
+                // Leer el contenido como string para depuración
+                var jsonString = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"JSON recibido: {jsonString}");
+
+                var pedidoResponse = await response.Content.ReadFromJsonAsync<PedidoResponse>();
+                return View(pedidoResponse);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                // Devolver una respuesta vacía en caso de error
+                return View(new PedidoResponse
+                {
+                    Pedidos = new List<Pedido>(),
+                    CurrentPage = 1,
+                    PageSize = pageSize,
+                    TotalItems = 0,
+                    TotalPages = 1
+                });
+            }
         }
+
 
         public async Task<IActionResult> Create()
         {
