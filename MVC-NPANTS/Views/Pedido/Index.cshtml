@@ -1,41 +1,89 @@
-﻿@model List<MVC_NPANTS.Models.Pedido>
+﻿@model IEnumerable<MVC_NPANTS.Models.Pedido>
 
-<h2>Lista de Pedidos</h2>
+@{
+    ViewData["Title"] = "Lista de Pedidos";
+}
+
+<div class="main-container">
+    <div class="page-header">
+        <h1 style="color:white">@ViewData["Title"]</h1>
+        <a class="btn-create" asp-action="Create">Crear Nuevo Pedido</a>
+    </div>
+    <div class="product-grid">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var pedido in Model)
+            {
+                <div class="product-card">
+                    <h5 class="product-name">Pedido ID: @pedido.Id</h5>
+                    <div class="product-detail">
+                        <span class="product-label">Fecha de Pedido:</span> @pedido.FechaPedido.ToShortDateString()
+                    </div>
+                    <div class="product-detail">
+                        <span class="product-label">Cliente:</span> @pedido.Cliente?.Nombre
+                    </div>
+                    <div class="product-detail">
+                        <span class="product-label">Total:</span> @pedido.Total
+                    </div>
+                    <div class="product-detail">
+                        <span class="product-label">Estado:</span> @pedido.EstadoPedido?.Nombre
+                    </div>
+                    <div class="action-buttons">
+                        @Html.ActionLink("Editar", "Edit", new { id = pedido.Id }, new { @class = "btn-action btn-edit" })
+                        @Html.ActionLink("Detalles", "Details", new { id = pedido.Id }, new { @class = "btn-action btn-details" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = pedido.Id }, new { @class = "btn-action btn-delete" })
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info" role="alert">
+                No se encontraron pedidos.
+            </div>
+        }
+    </div>
+
+  
+</div>
+
 <style>
     body {
         color: white;
     }
-</style>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Fecha de Pedido</th>
-            <th>Cliente</th>
-            <th>Total</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var pedido in Model)
-        {
-            <tr>
-                <td>@pedido.Id</td>
-                <td>@pedido.FechaPedido.ToShortDateString()</td>
-                <td>@pedido.Cliente?.Nombre</td>
-                <td>@pedido.Total</td>
-                <td>@pedido.EstadoPedido?.Nombre</td>
-                <td>
-                    <a href="@Url.Action("Details", new { id = pedido.Id })" class="btn btn-info">Ver Detalles</a>
-                    <a href="@Url.Action("Edit", new { id = pedido.Id })" class="btn btn-warning">Editar</a>
-                    <a href="@Url.Action("Delete", new { id = pedido.Id })" class="btn btn-danger">Eliminar</a>
-                </td>
+    .product-grid {
+        display: flex;
+        flex-wrap: wrap;
+    }
 
-            </tr>
+    .product-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px;
+        flex: 1 1 calc(33% - 20px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .action-buttons .btn-action {
+        margin-right: 5px;
+    }
+
+    .pagination {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+        .pagination .btn {
+            margin: 0 2px;
         }
-    </tbody>
-</table>
 
-<a href="@Url.Action("Create")" class="btn btn-primary">Crear Nuevo Pedido</a>
+    .btn-create {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+</style>
