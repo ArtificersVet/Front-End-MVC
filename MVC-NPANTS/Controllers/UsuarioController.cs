@@ -24,17 +24,25 @@ namespace MVC_NPANTS.Controllers
         }
 
         // Método para listar todos los usuarios
-        public async Task<IActionResult> Index(string searchString)
+        // Método para listar todos los usuarios con paginación
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string searchString = null)
         {
             SetAuthorizationHeader(); // Establecer el encabezado de autorización
 
             List<usuario> usuarios = new List<usuario>();
+            int totalPages = 0;
+
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<List<usuario>>("usuarios");
-                usuarios = response ?? new List<usuario>();
+                // Realizar solicitud con paginación
+                var response = await _httpClient.GetFromJsonAsync<PaginationResponse>("usuarios?page=" + page + "&pageSize=" + pageSize);
+                if (response != null)
+                {
+                    usuarios = response.Usuarios;
+                    totalPages = response.TotalPages;
+                }
 
-                // Filtrar usuarios según el searchString
+                // Filtrar usuarios si hay un término de búsqueda
                 if (!string.IsNullOrEmpty(searchString))
                 {
                     usuarios = usuarios.Where(u => u.nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
@@ -47,8 +55,13 @@ namespace MVC_NPANTS.Controllers
                 ModelState.AddModelError("", "Error al obtener la lista de usuarios: " + ex.Message);
             }
 
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
             return View(usuarios);
         }
+    
+
 
 
         // Método para obtener un usuario por su ID
@@ -262,5 +275,11 @@ namespace MVC_NPANTS.Controllers
             var allRoles = await _httpClient.GetFromJsonAsync<List<Role>>("roles");
             return allRoles.FirstOrDefault(r => selectedRoleIds.Contains(r.Id)); // Asumiendo que 'Id' es la propiedad en 'Role'
         }
+    }
+    // Clase para manejar la respuesta con paginación
+    public class PaginationResponse
+    {
+        public int TotalPages { get; set; }
+        public List<usuario> Usuarios { get; set; }
     }
 }

@@ -58,4 +58,18 @@
             </div>
         }
     </div>
+
+    <div class="pagination-controls">
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-pageSize="10" class="btn btn-secondary">Anterior</a>
+        }
+
+        <span>Página @ViewBag.CurrentPage de @ViewBag.TotalPages</span>
+
+        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+        {
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" asp-route-pageSize="10" class="btn btn-secondary">Siguiente</a>
+        }
+    </div>
 </div>
