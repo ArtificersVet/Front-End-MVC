@@ -28,7 +28,9 @@ namespace MVC_NPANTS.Controllers
         {
             SetAuthorizationHeader();
 
-            var clientes = await _httpClient.GetFromJsonAsync<List<Cliente>>("clientes");
+            var pagedResponse = await _httpClient.GetFromJsonAsync<PagedClientesResponse>("clientes");
+
+            var clientes = pagedResponse?.Clientes;
 
             // Cargar los tipos de cliente para cada cliente
             if (clientes != null)
@@ -43,8 +45,9 @@ namespace MVC_NPANTS.Controllers
                 }
             }
 
-            return View(clientes ?? new List<Cliente>());
+            return View(clientes); // O ajusta según tu lógica para renderizar la vista
         }
+
 
         // GET: ClienteController/Details/5
         public async Task<IActionResult> Details(int id)
@@ -181,7 +184,7 @@ namespace MVC_NPANTS.Controllers
         // POST: ClienteController/DeleteConfirmed/5
         [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult>DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             SetAuthorizationHeader();
 
@@ -207,4 +210,13 @@ namespace MVC_NPANTS.Controllers
 
         }
     }
+    public class PagedClientesResponse
+    {
+        public int TotalItems { get; set; }
+        public int TotalPages { get; set; }
+        public int CurrentPage { get; set; }
+        public int PageSize { get; set; }
+        public List<Cliente> Clientes { get; set; }
+    }
+
 }
