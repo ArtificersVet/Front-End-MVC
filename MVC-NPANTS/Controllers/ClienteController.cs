@@ -23,30 +23,24 @@ namespace MVC_NPANTS.Controllers
             }
         }
 
-        // GET: ClienteController/Index
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(int page = 1)
         {
             SetAuthorizationHeader();
 
-            var pagedResponse = await _httpClient.GetFromJsonAsync<PagedClientesResponse>("clientes");
+            var pagedResponse = await _httpClient.GetFromJsonAsync<PagedClientesResponse>($"clientes?page={page}");
 
-            var clientes = pagedResponse?.Clientes;
-
-            // Cargar los tipos de cliente para cada cliente
-            if (clientes != null)
+            var viewModel = new PagedClientesResponse
             {
-                foreach (var cliente in clientes)
-                {
-                    if (cliente.TipoclienteId.HasValue)
-                    {
-                        var tipoCliente = await _httpClient.GetFromJsonAsync<TipoCliente>($"tipoclientes/{cliente.TipoclienteId.Value}");
-                        cliente.Tipocliente = tipoCliente;
-                    }
-                }
-            }
+                Clientes = pagedResponse?.Clientes,
+                CurrentPage = pagedResponse?.CurrentPage ?? 1,
+                TotalPages = pagedResponse?.TotalPages ?? 1,
+                PageSize = pagedResponse?.PageSize ?? 10
+            };
 
-            return View(clientes); // O ajusta según tu lógica para renderizar la vista
+            return View(viewModel);
         }
+
 
 
         // GET: ClienteController/Details/5
@@ -209,14 +203,6 @@ namespace MVC_NPANTS.Controllers
 
 
         }
-    }
-    public class PagedClientesResponse
-    {
-        public int TotalItems { get; set; }
-        public int TotalPages { get; set; }
-        public int CurrentPage { get; set; }
-        public int PageSize { get; set; }
-        public List<Cliente> Clientes { get; set; }
     }
 
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MVC_NPANTS.Models.Cliente>
+﻿@model PagedClientesResponse
 
 @{
     ViewData["Title"] = "Lista de Clientes";
@@ -10,10 +10,10 @@
         <a class="btn-create" asp-action="Create">Agregar nuevo cliente</a>
     </div>
 
-    @if (Model != null && Model.Any())
+    @if (Model != null && Model.Clientes != null && Model.Clientes.Any())
     {
         <div class="product-grid">
-            @foreach (var cliente in Model)
+            @foreach (var cliente in Model.Clientes)
             {
                 <div class="product-card">
                     <a href="@Url.Action("Details", new { id = cliente.Id })" class="product-name">@cliente.Nombre</a>
@@ -28,7 +28,7 @@
                         <span class="product-label">Teléfono:</span> @cliente.Telefono
                     </div>
                     <div class="product-detail">
-                        <span class="product-label">Tipo de Cliente:</span> @cliente.Tipocliente.Nombre
+                        <span class="product-label">Tipo de Cliente:</span> @cliente.Tipocliente?.Nombre ?? "No especificado"
                     </div>
 
                     <div class="action-buttons">
@@ -38,6 +38,31 @@
                     </div>
                 </div>
             }
+        </div>
+
+        <div class="pagination-container">
+            <ul class="pagination">
+                @if (Model.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)" class="page-link">Anterior</a>
+                    </li>
+                }
+
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a asp-action="Index" asp-route-page="@i" class="page-link">@i</a>
+                    </li>
+                }
+
+                @if (Model.CurrentPage < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)" class="page-link">Siguiente</a>
+                    </li>
+                }
+            </ul>
         </div>
     }
     else
