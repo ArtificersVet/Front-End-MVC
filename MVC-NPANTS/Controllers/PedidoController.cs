@@ -189,7 +189,7 @@ namespace MVC_NPANTS.Controllers
         public async Task<IActionResult> Details(long id)
         {
             SetAuthorizationHeader();
-            var pedido = await _httpClient.GetFromJsonAsync<Pedido>($"pedidos/{id}");
+            var pedido = await _httpClient.GetFromJsonAsync<Pedido>($"pedido/{id}");
 
             if (pedido == null)
             {
