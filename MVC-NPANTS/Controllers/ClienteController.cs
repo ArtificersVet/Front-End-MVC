@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVC_NPANTS.Models;
@@ -118,17 +119,47 @@ namespace MVC_NPANTS.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             SetAuthorizationHeader();
-            var cliente = await _httpClient.GetFromJsonAsync<Cliente>($"clientes/{id}");
-            if (cliente == null)
+
+            // Realiza la solicitud a la API
+            var response = await _httpClient.GetAsync($"clientes/{id}"); // Asegúrate de que esta URL sea correcta
+
+            // Verifica si la respuesta es exitosa
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                // Intenta deserializar la respuesta
+                var pagedResponse = await response.Content.ReadFromJsonAsync<PagedClientesResponse>();
+
+                // Verifica si la deserialización fue exitosa
+                if (pagedResponse == null)
+                {
+                    return StatusCode(500, "Error al deserializar la respuesta del servidor.");
+                }
+
+                // Verifica si la lista de clientes no es nula y está inicializada
+                if (pagedResponse.Clientes == null)
+                {
+                    return StatusCode(500, "La lista de clientes no está disponible.");
+                }
+
+                // Busca el cliente con el ID especificado
+                var cliente = pagedResponse.Clientes.FirstOrDefault(c => c.Id == id);
+
+                if (cliente != null)
+                {
+                    // Devuelve la vista con el cliente encontrado
+                    return View(cliente);
+                }
+                else
+                {
+                    // Manejar el caso en que no se encuentra el cliente
+                    return NotFound($"Cliente con ID {id} no encontrado.");
+                }
             }
-
-
-            var tiposClientes = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
-            ViewBag.TiposClientes = new SelectList(tiposClientes, "Id", "Nombre", cliente.TipoclienteId);
-
-            return View(cliente);
+            else
+            {
+                // Manejar el error de respuesta
+                return StatusCode((int)response.StatusCode, "Error al obtener el cliente.");
+            }
         }
 
         // POST: ClienteController/Edit/5
@@ -203,6 +234,12 @@ namespace MVC_NPANTS.Controllers
 
 
         }
+    }
+
+    public class EditClienteViewModel
+    {
+        public Cliente Cliente { get; set; }
+        public IEnumerable<SelectListItem> TiposClientes { get; set; } // Asegúrate de que sea IEnumerable<SelectListItem>
     }
 
 }

@@ -2,6 +2,15 @@
 
 @{
     ViewData["Title"] = "Lista de Clientes";
+    const int maxVisiblePages = 5; // Número máximo de páginas visibles
+    int startPage = Math.Max(1, Model.CurrentPage - (maxVisiblePages / 2));
+    int endPage = Math.Min(Model.TotalPages, startPage + maxVisiblePages - 1);
+
+    // Ajustar startPage si estamos cerca del final
+    if (endPage - startPage + 1 < maxVisiblePages)
+    {
+        startPage = Math.Max(1, endPage - maxVisiblePages + 1);
+    }
 }
 
 <div class="main-container">
@@ -40,29 +49,55 @@
             }
         </div>
 
-        <div class="pagination-container">
-            <ul class="pagination">
-                @if (Model.CurrentPage > 1)
-                {
-                    <li class="page-item">
-                        <a asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)" class="page-link">Anterior</a>
-                    </li>
-                }
+        <div class="pagination">
+            @if (Model.CurrentPage > 1)
+            {
+                <a class="btn btn-primary"
+                   asp-action="Index"
+                   asp-route-page="1"
+                   asp-route-pageSize="@Model.PageSize">Primera</a>
 
-                @for (var i = 1; i <= Model.TotalPages; i++)
-                {
-                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                        <a asp-action="Index" asp-route-page="@i" class="page-link">@i</a>
-                    </li>
-                }
+                <a class="btn btn-primary"
+                   asp-action="Index"
+                   asp-route-page="@(Model.CurrentPage - 1)"
+                   asp-route-pageSize="@Model.PageSize">Anterior</a>
+            }
 
-                @if (Model.CurrentPage < Model.TotalPages)
-                {
-                    <li class="page-item">
-                        <a asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)" class="page-link">Siguiente</a>
-                    </li>
-                }
-            </ul>
+            @if (startPage > 1)
+            {
+                <span class="pagination-ellipsis">...</span>
+            }
+
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <a class="btn @(i == Model.CurrentPage ? "btn-success" : "btn-primary")"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-pageSize="@Model.PageSize">@i</a>
+            }
+
+            @if (endPage < Model.TotalPages)
+            {
+                <span class="pagination-ellipsis">...</span>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <a class="btn btn-primary"
+                   asp-action="Index"
+                   asp-route-page="@(Model.CurrentPage + 1)"
+                   asp-route-pageSize="@Model.PageSize">Siguiente</a>
+
+                <a class="btn btn-primary"
+                   asp-action="Index"
+                   asp-route-page="@Model.TotalPages"
+                   asp-route-pageSize="@Model.PageSize">Última</a>
+            }
+
+            <span class="pagination-info">
+                Página @Model.CurrentPage de @Model.TotalPages
+                (Total: @Model.TotalItems registros)
+            </span>
         </div>
     }
     else
