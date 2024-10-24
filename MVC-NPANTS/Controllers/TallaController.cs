@@ -12,6 +12,7 @@ namespace MVC_NPANTS.Controllers
         {
             _httpClient = httpClientFactory.CreateClient("CRMAPI");
         }
+
         private void SetAuthorizationHeader()
         {
             var token = HttpContext.Session.GetString("AccessToken");
@@ -21,28 +22,69 @@ namespace MVC_NPANTS.Controllers
             }
         }
 
-        // Listar todas las tallas
-        public async Task<IActionResult> Index()
+        // Modelo para la respuesta paginada
+        public class PaginatedResponse<T>
         {
-            SetAuthorizationHeader();
-            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas");
-
-            if (tallas == null)
-            {
-                Console.WriteLine("No se encontraron tallas");
-            }
-
-            return View(tallas);
+            public List<T> Data { get; set; }
+            public PaginationInfo Pagination { get; set; }
         }
 
-        // Mostrar el formulario para crear una nueva talla
+        public class PaginationInfo
+        {
+            public int TotalItems { get; set; }
+            public int TotalPages { get; set; }
+            public int CurrentPage { get; set; }
+            public int ItemsPerPage { get; set; }
+            public bool HasNextPage { get; set; }
+            public bool HasPrevPage { get; set; }
+        }
+
+        // Listar todas las tallas con paginación
+        public async Task<IActionResult> Index(int page = 1, int limit = 10)
+        {
+            SetAuthorizationHeader();
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<Talla>>($"tallas?page={page}&limit={limit}");
+
+                if (response == null || response.Data == null)
+                {
+                    TempData["Error"] = "No se encontraron tallas";
+                    return View(new PaginatedResponse<Talla>
+                    {
+                        Data = new List<Talla>(),
+                        Pagination = new PaginationInfo()
+                    });
+                }
+
+                // Pasar los datos de paginación a la vista a través de ViewBag
+                ViewBag.CurrentPage = response.Pagination.CurrentPage;
+                ViewBag.TotalPages = response.Pagination.TotalPages;
+                ViewBag.HasNextPage = response.Pagination.HasNextPage;
+                ViewBag.HasPrevPage = response.Pagination.HasPrevPage;
+                ViewBag.ItemsPerPage = response.Pagination.ItemsPerPage;
+                ViewBag.TotalItems = response.Pagination.TotalItems;
+
+                return View(response);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al cargar las tallas: " + ex.Message;
+                return View(new PaginatedResponse<Talla>
+                {
+                    Data = new List<Talla>(),
+                    Pagination = new PaginationInfo()
+                });
+            }
+        }
+
+        // El resto de los métodos permanecen igual
         public IActionResult Create()
         {
             SetAuthorizationHeader();
             return View();
         }
 
-        // Procesar el formulario de creación de talla
         [HttpPost]
         public async Task<IActionResult> Create(Talla talla)
         {
@@ -50,80 +92,110 @@ namespace MVC_NPANTS.Controllers
 
             if (!ModelState.IsValid)
             {
-                // Si el modelo no es válido, volver al formulario con los errores
                 return View(talla);
             }
 
-            // Enviar la talla a la API
             var result = await _httpClient.PostAsJsonAsync("tallas/create", talla);
 
             if (result.IsSuccessStatusCode)
             {
-                // Si la creación es exitosa, redirigir al índice o a donde desees
+                TempData["Success"] = "Talla creada exitosamente";
                 return RedirectToAction(nameof(Index));
             }
 
-            // Si hubo algún error, mostrar el formulario de nuevo
             ModelState.AddModelError("", "No se pudo crear la talla");
             return View(talla);
         }
-    
-    // Obtener los detalles de una talla por ID
-    public async Task<IActionResult> Details(int id)
+
+        public async Task<IActionResult> Details(int id)
         {
             SetAuthorizationHeader();
-            var talla = await _httpClient.GetFromJsonAsync<Talla>($"tallas/{id}");
-
-            if (talla == null)
+            try
             {
-                Console.WriteLine($"No se encontró la talla con ID {id}");
-            }
+                var talla = await _httpClient.GetFromJsonAsync<Talla>($"tallas/{id}");
 
-            return View(talla);
+                if (talla == null)
+                {
+                    TempData["Error"] = $"No se encontró la talla con ID {id}";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(talla);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al cargar los detalles: " + ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
-        // Mostrar el formulario de edición de una talla
         public async Task<IActionResult> Edit(int id)
         {
             SetAuthorizationHeader();
-            var talla = await _httpClient.GetFromJsonAsync<Talla>($"tallas/{id}");
-
-            if (talla == null)
+            try
             {
-                Console.WriteLine("No se encontró la talla");
-            }
+                var talla = await _httpClient.GetFromJsonAsync<Talla>($"tallas/{id}");
 
-            return View(talla);
+                if (talla == null)
+                {
+                    TempData["Error"] = "No se encontró la talla";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(talla);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al cargar la talla para editar: " + ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
-        // Procesar el formulario de edición
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Talla talla)
         {
             SetAuthorizationHeader();
-            var result = await _httpClient.PutAsJsonAsync($"tallas/{id}", talla);
-
-            if (result.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction(nameof(Index));
-            }
+                var result = await _httpClient.PutAsJsonAsync($"tallas/{id}", talla);
 
-            return View(talla);
+                if (result.IsSuccessStatusCode)
+                {
+                    TempData["Success"] = "Talla actualizada exitosamente";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                TempData["Error"] = "No se pudo actualizar la talla";
+                return View(talla);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al actualizar la talla: " + ex.Message;
+                return View(talla);
+            }
         }
 
-        // Eliminar una talla
         public async Task<IActionResult> Delete(int id)
         {
             SetAuthorizationHeader();
-            var result = await _httpClient.DeleteAsync($"tallas/{id}");
-
-            if (result.IsSuccessStatusCode)
+            try
             {
+                var result = await _httpClient.DeleteAsync($"tallas/{id}");
+
+                if (result.IsSuccessStatusCode)
+                {
+                    TempData["Success"] = "Talla eliminada exitosamente";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                TempData["Error"] = "No se pudo eliminar la talla";
                 return RedirectToAction(nameof(Index));
             }
-
-            Console.WriteLine("No se pudo eliminar la talla");
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al eliminar la talla: " + ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }
