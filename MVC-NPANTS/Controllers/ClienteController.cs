@@ -119,47 +119,23 @@ namespace MVC_NPANTS.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             SetAuthorizationHeader();
-
-            // Realiza la solicitud a la API
-            var response = await _httpClient.GetAsync($"clientes/{id}"); // Asegúrate de que esta URL sea correcta
-
-            // Verifica si la respuesta es exitosa
-            if (response.IsSuccessStatusCode)
+            // Obtener el cliente específico
+            var clienteResponse = await _httpClient.GetFromJsonAsync<Cliente>($"clientes/{id}");
+            if (clienteResponse == null)
             {
-                // Intenta deserializar la respuesta
-                var pagedResponse = await response.Content.ReadFromJsonAsync<PagedClientesResponse>();
-
-                // Verifica si la deserialización fue exitosa
-                if (pagedResponse == null)
-                {
-                    return StatusCode(500, "Error al deserializar la respuesta del servidor.");
-                }
-
-                // Verifica si la lista de clientes no es nula y está inicializada
-                if (pagedResponse.Clientes == null)
-                {
-                    return StatusCode(500, "La lista de clientes no está disponible.");
-                }
-
-                // Busca el cliente con el ID especificado
-                var cliente = pagedResponse.Clientes.FirstOrDefault(c => c.Id == id);
-
-                if (cliente != null)
-                {
-                    // Devuelve la vista con el cliente encontrado
-                    return View(cliente);
-                }
-                else
-                {
-                    // Manejar el caso en que no se encuentra el cliente
-                    return NotFound($"Cliente con ID {id} no encontrado.");
-                }
+                return NotFound();
             }
-            else
+
+             List<TipoCliente> tiposClientes = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
+            if (tiposClientes == null)
             {
-                // Manejar el error de respuesta
-                return StatusCode((int)response.StatusCode, "Error al obtener el cliente.");
+                 return NotFound();
             }
+
+             ViewBag.TiposClientes = tiposClientes;
+
+            return View(clienteResponse);
+
         }
 
         // POST: ClienteController/Edit/5

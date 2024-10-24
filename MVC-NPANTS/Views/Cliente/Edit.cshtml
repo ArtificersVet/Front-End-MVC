@@ -48,7 +48,7 @@
             <div class="col-md-6 col-12">
                 <div class="form-group mb-3">
                     <label asp-for="TipoclienteId" class="form-label">Tipo de Cliente</label>
-                    @Html.DropDownListFor(model => model.TipoclienteId, (SelectList)ViewBag.TiposClientes, "Seleccione un tipo de cliente", new { @class = "form-control" })
+                    <select class="form-select" asp-for="TipoclienteId" asp-items="@(new SelectList(ViewBag.TiposClientes, "Id", "Nombre"))"></select>
                     <span asp-validation-for="TipoclienteId" class="text-danger"></span>
                 </div>
             </div>
