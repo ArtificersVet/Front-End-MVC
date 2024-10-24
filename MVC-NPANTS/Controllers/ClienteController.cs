@@ -119,20 +119,27 @@ namespace MVC_NPANTS.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             SetAuthorizationHeader();
-            // Obtener el cliente específico
-            var clienteResponse = await _httpClient.GetFromJsonAsync<Cliente>($"clientes/{id}");
+             var clienteResponse = await _httpClient.GetFromJsonAsync<Cliente>($"clientes/{id}");
             if (clienteResponse == null)
             {
                 return NotFound();
             }
 
-             List<TipoCliente> tiposClientes = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
-            if (tiposClientes == null)
+             try
             {
-                 return NotFound();
-            }
+                TipoClientesResponse tiposClientesResponse = await _httpClient.GetFromJsonAsync<TipoClientesResponse>("tipoclientes");
+                if (tiposClientesResponse?.TipoClientes == null)
+                {
+                    return NotFound();
+                }
 
-             ViewBag.TiposClientes = tiposClientes;
+                ViewBag.TiposClientes = tiposClientesResponse.TipoClientes;
+            }
+            catch (JsonException ex)
+            {
+                 Console.WriteLine($"Error de deserialización: {ex.Message}");
+                return BadRequest("Error al obtener tipos de clientes");
+            }
 
             return View(clienteResponse);
 
@@ -212,10 +219,13 @@ namespace MVC_NPANTS.Controllers
         }
     }
 
-    public class EditClienteViewModel
+    public class TipoClientesResponse
     {
-        public Cliente Cliente { get; set; }
-        public IEnumerable<SelectListItem> TiposClientes { get; set; } // Asegúrate de que sea IEnumerable<SelectListItem>
+        public int TotalItems { get; set; }
+        public int TotalPages { get; set; }
+        public int CurrentPage { get; set; }
+        public int PageSize { get; set; }
+        public List<TipoCliente> TipoClientes { get; set; }
     }
 
 }
