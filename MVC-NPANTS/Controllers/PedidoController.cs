@@ -76,7 +76,7 @@ namespace MVC_NPANTS.Controllers
             await LoadViewBags();
 
             var response = await _httpClient.GetFromJsonAsync<PagedClientesResponse>("clientes");
-            var clientes = response?.Clientes; // Usa "Clientes" con C mayúscula
+            var clientes = response?.Clientes;  
 
              if (clientes == null || !clientes.Any())
             {
@@ -85,8 +85,13 @@ namespace MVC_NPANTS.Controllers
             }
             else
             {
-                ViewBag.Clientes = new SelectList(clientes, "Id", "Nombre"); // Usa "Id" y "Nombre" que deben estar definidos en la clase Cliente
+                ViewBag.Clientes = new SelectList(clientes, "Id", "Nombre");  
             }
+
+            var responseEs = await _httpClient.GetFromJsonAsync<EstadoPedidosResponse>("estadosPedido");
+            var estadosPedidos = responseEs?.estadoPedidos;
+
+            ViewBag.EstadoPedido = new SelectList(estadosPedidos, "Id", "Nombre");
 
             return View(new Pedido { FechaPedido = DateTime.Now });
         }
