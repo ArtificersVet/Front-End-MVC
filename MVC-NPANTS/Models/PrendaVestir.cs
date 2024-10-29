@@ -22,4 +22,14 @@ namespace MVC_NPANTS.Models
         public virtual TipoPrendaVestir? Tipoprendavestir { get; set; }
 
     }
+
+    class PrendaVestirResponse
+    {
+        public int TotalItems { get; set; }
+        public int TotalPages { get; set; }
+        public int CurrentPage { get; set; }
+        public int PageSize { get; set; }
+        [JsonPropertyName("prendas")]
+        public List<PrendaVestir> prendaVestirs { get; set; }
+    }
 }

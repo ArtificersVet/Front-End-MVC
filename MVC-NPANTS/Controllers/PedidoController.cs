@@ -77,21 +77,16 @@ namespace MVC_NPANTS.Controllers
 
             var response = await _httpClient.GetFromJsonAsync<PagedClientesResponse>("clientes");
             var clientes = response?.Clientes;  
-
-             if (clientes == null || !clientes.Any())
-            {
-                ModelState.AddModelError("", "No se encontraron clientes.");
-                ViewBag.Clientes = new SelectList(Enumerable.Empty<Cliente>(), "Id", "Nombre");
-            }
-            else
-            {
-                ViewBag.Clientes = new SelectList(clientes, "Id", "Nombre");  
-            }
+            ViewBag.Clientes = new SelectList(clientes, "Id", "Nombre");  
+            
 
             var responseEs = await _httpClient.GetFromJsonAsync<EstadoPedidosResponse>("estadosPedido");
             var estadosPedidos = responseEs?.estadoPedidos;
-
             ViewBag.EstadoPedido = new SelectList(estadosPedidos, "Id", "Nombre");
+
+            var responsePrenda = await _httpClient.GetFromJsonAsync<PrendaVestirResponse>("prendas");
+            var prendasVestir = responsePrenda?.prendaVestirs;
+            ViewBag.PrendasVestir = new SelectList(prendasVestir, "Id", "Nombre");
 
             return View(new Pedido { FechaPedido = DateTime.Now });
         }
