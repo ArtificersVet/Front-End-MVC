@@ -25,7 +25,7 @@ namespace MVC_NPANTS.Controllers
             }
         }
 
-        // GET: PedidoController
+        
         public async Task<IActionResult> Index(int page = 1, int pageSize =12)
         {
             try
@@ -189,7 +189,7 @@ namespace MVC_NPANTS.Controllers
         public async Task<IActionResult> Details(long id)
         {
             SetAuthorizationHeader();
-            var pedido = await _httpClient.GetFromJsonAsync<Pedido>($"pedido/{id}");
+            var pedido = await _httpClient.GetFromJsonAsync<Pedido>($"pedidos/{id}");
 
             if (pedido == null)
             {

@@ -69,7 +69,10 @@ namespace MVC_NPANTS.Controllers
         {
             SetAuthorizationHeader();
 
-            var tiposClientes = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
+            // Cambia List<TipoClienteResponse> por TipoClienteResponse
+            var response = await _httpClient.GetFromJsonAsync<TipoClientesResponse>("tipoclientes");
+            var tiposClientes = response?.TipoClientes;
+
             if (tiposClientes == null || !tiposClientes.Any())
             {
                 ModelState.AddModelError("", "No se encontraron tipos de clientes.");
@@ -79,6 +82,7 @@ namespace MVC_NPANTS.Controllers
             {
                 ViewBag.TiposClientes = new SelectList(tiposClientes, "Id", "Nombre");
             }
+
 
             return View();
         }

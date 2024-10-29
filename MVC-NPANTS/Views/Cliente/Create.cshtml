@@ -44,13 +44,13 @@
                 </div>
             </div>
 
-            <div class="col-md-6 col-12">
+             <div class="col-md-6 col-12">
                 <div class="form-group mb-3">
                     <label asp-for="TipoclienteId" class="form-label">Tipo de Cliente</label>
                     @Html.DropDownListFor(model => model.TipoclienteId, (SelectList)ViewBag.TiposClientes, "Seleccione un tipo de cliente", new { @class = "form-control" })
                     <span asp-validation-for="TipoclienteId" class="text-danger"></span>
                 </div>
-            </div>
+            </div> 
         </div>
 
         <div class="d-flex justify-content-between mt-4">
