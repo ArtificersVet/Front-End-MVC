@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVC_NPANTS.Models;
 using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
@@ -47,9 +48,7 @@ namespace MVC_NPANTS.Controllers
 
                 response.EnsureSuccessStatusCode();
 
-                // Leer el contenido como string para depuración
-                var jsonString = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"JSON recibido: {jsonString}");
+            
 
                 var pedidoResponse = await response.Content.ReadFromJsonAsync<PedidoResponse>();
                 return View(pedidoResponse);
@@ -87,6 +86,9 @@ namespace MVC_NPANTS.Controllers
             var responsePrenda = await _httpClient.GetFromJsonAsync<PrendaVestirResponse>("prendas");
             var prendasVestir = responsePrenda?.prendaVestirs;
             ViewBag.PrendasVestir = new SelectList(prendasVestir, "Id", "Nombre");
+
+            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas");
+            ViewBag.Tallas = new SelectList(tallas, "Id", "Nombre");
 
             return View(new Pedido { FechaPedido = DateTime.Now });
         }

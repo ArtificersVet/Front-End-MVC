@@ -90,22 +90,21 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Prenda de Vestir</label>
                                           <select name="detalles[${detalleCount}].PrendaVestirId" class="form-select" required>
-                <option value="">Selecciona</option>
-        @foreach (var prenda in ViewBag.PrendasVestir)
-        {
-                        <option value="@prenda.Value">@prenda.Text</option>
-        }
-            </select>
+                                            <option value="">Selecciona</option>
+                                            @foreach (var prenda in ViewBag.PrendasVestir)
+                                            {
+                                               <option value="@prenda.Value">@prenda.Text</option>
+                                            }
+                                           </select>
                                 </div>
-
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Talla</label>
                                     <select name="detalles[${detalleCount}].TallaId" class="form-select" required>
                                         <option value="">Selecciona</option>
-        @foreach (var talla in ViewBag.Tallas)
-        {
-                                                <option value="@talla.Id">@talla.Nombre</option>
-        }
+                                        @foreach (var talla in ViewBag.Tallas)
+                                        {
+                                                <option value="@talla.Value">@talla.Text</option>
+                                        }
                                     </select>
                                 </div>
 
