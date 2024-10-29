@@ -37,7 +37,7 @@
                         <span class="product-label">Teléfono:</span> @cliente.Telefono
                     </div>
                     <div class="product-detail">
-                        <span class="product-label">Tipo de Cliente:</span> @cliente.Tipocliente?.Nombre ?? "No especificado"
+                        <span>Tipo de Cliente: @(cliente.Tipocliente != null ? cliente.Tipocliente.Nombre : "No especificado")</span>
                     </div>
 
                     <div class="action-buttons">

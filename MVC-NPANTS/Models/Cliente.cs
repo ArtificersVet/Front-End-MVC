@@ -20,6 +20,7 @@ namespace MVC_NPANTS.Models
 
         [JsonPropertyName("tipocliente_id")]
         public long? TipoclienteId { get; set; }
+        [JsonPropertyName("tipo_cliente")]
 
         public virtual TipoCliente? Tipocliente { get; set; }
         public virtual ICollection<Pedido> Pedidos { get; set; }
