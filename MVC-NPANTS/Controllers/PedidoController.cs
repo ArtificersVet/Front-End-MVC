@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MVC_NPANTS.Models;
 using System.Net;
 using System.Text;
@@ -73,6 +74,20 @@ namespace MVC_NPANTS.Controllers
         {
             SetAuthorizationHeader();
             await LoadViewBags();
+
+            var response = await _httpClient.GetFromJsonAsync<PagedClientesResponse>("clientes");
+            var clientes = response?.Clientes; // Usa "Clientes" con C mayúscula
+
+             if (clientes == null || !clientes.Any())
+            {
+                ModelState.AddModelError("", "No se encontraron clientes.");
+                ViewBag.Clientes = new SelectList(Enumerable.Empty<Cliente>(), "Id", "Nombre");
+            }
+            else
+            {
+                ViewBag.Clientes = new SelectList(clientes, "Id", "Nombre"); // Usa "Id" y "Nombre" que deben estar definidos en la clase Cliente
+            }
+
             return View(new Pedido { FechaPedido = DateTime.Now });
         }
 

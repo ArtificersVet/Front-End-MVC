@@ -11,11 +11,15 @@ namespace MVC_NPANTS.Models
             Pedidos = new HashSet<Pedido>();
         }
 
+        [JsonPropertyName("id")]
         public long Id { get; set; }
-
+        [JsonPropertyName("nombre")]
         public string? Nombre { get; set; }
+        [JsonPropertyName("direccion")]
         public string? Direccion { get; set; }
+        [JsonPropertyName("email")]
         public string? Email { get; set; }
+        [JsonPropertyName("telefono")]
         public string? Telefono { get; set; }
 
         [JsonPropertyName("tipocliente_id")]

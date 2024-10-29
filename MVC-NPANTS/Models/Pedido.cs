@@ -20,7 +20,7 @@ namespace MVC_NPANTS.Models
         public long? ClienteId { get; set; } 
         
         public long? EstadoPedidoId { get; set; }
-
+        [JsonPropertyName("clientes")]
         public virtual Cliente? Cliente { get; set; }
         [JsonPropertyName("estado_pedido")]
         public virtual EstadoPedido? EstadoPedido { get; set; }

@@ -32,10 +32,10 @@
 
             <div class="col-md-6 mb-3">
                 <label asp-for="ClienteId" class="form-label">Cliente</label>
-                <select asp-for="ClienteId" class="form-select" required
-                        asp-items="@(new SelectList(ViewBag.Clientes, "Id", "Nombre"))">
-                    <option value="">Selecciona un cliente</option>
-                </select>
+   <select asp-for="ClienteId" class="form-select" required asp-items="ViewBag.Clientes">
+        <option value="">Selecciona un cliente</option>
+    </select>
+
             </div>
 
             <div class="col-md-6 mb-3">
