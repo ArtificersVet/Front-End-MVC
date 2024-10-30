@@ -30,6 +30,7 @@
                     <div class="product-detail">
                         <span class="product-label">Descripción:</span> @tipoCliente.Descripcion
                     </div>
+
                     <div class="action-buttons">
                         @Html.ActionLink("Editar", "Edit", new { id = tipoCliente.Id }, new { @class = "btn-action btn-edit" })
                         @Html.ActionLink("Detalles", "GetById", new { id = tipoCliente.Id }, new { @class = "btn-action btn-details" })

@@ -1,20 +1,34 @@
-﻿@model IEnumerable<MVC_NPANTS.Models.PrendaVestir>
+﻿@model PagePrendaVestirResponse
 @{
     ViewData["Title"] = "Catálogo de Prendas de Vestir";
+    const int maxVisiblePages = 5; 
+    int startPage = Math.Max(1, Model.CurrentPage - (maxVisiblePages / 2));
+    int endPage = Math.Min(Model.TotalPages, startPage + maxVisiblePages - 1);
+
+    
+    if (endPage - startPage + 1 < maxVisiblePages)
+    {
+        startPage = Math.Max(1, endPage - maxVisiblePages + 1);
+    }
 }
 
 
 <div class="main-container">
     <div class="page-header">
-        <h1 style="color:white">Catálogo de Prendas de Vestir</h1>
+        <h1 style="color:white">@ViewData["Title"]</h1>
         <a class="btn-create" asp-action="Create">Agregar nueva prenda</a>
     </div>
+
+    @if (Model != null && Model.PrendasVestir != null && Model.PrendasVestir.Any())
+    {
+
     <div class="product-grid">
-        @foreach (var prenda in Model)
+
+        @foreach (var prenda in Model.PrendasVestir)
         {
             <div class="product-card">
 
-                <!-- Imagen condicional según el tipo de prenda -->
+               
                 <div class="product-image">
                     @if (prenda.Tipoprendavestir.Nombre == "Camisa")
                     {
@@ -44,6 +58,8 @@
                 <div class="product-detail">
                     <span class="product-label">Tipo:</span> @prenda.Tipoprendavestir.Nombre
                 </div>
+
+
                 <div class="action-buttons">
                     @Html.ActionLink("Editar", "Edit", new { id = prenda.Id }, new { @class = "btn-action btn-edit" })
                     @Html.ActionLink("Detalles", "Details", new { id = prenda.Id }, new { @class = "btn-action btn-details" })
@@ -51,5 +67,62 @@
                 </div>
             </div>
         }
-    </div>
+        </div>
+        <div class="pagination">
+            @if (Model.CurrentPage > 1)
+            {
+                <a class="btn btn-primary"
+                   asp-action="Index"
+                   asp-route-page="1"
+                   asp-route-pageSize="@Model.PageSize">Primera</a>
+
+                <a class="btn btn-primary"
+                   asp-action="Index"
+                   asp-route-page="@(Model.CurrentPage - 1)"
+                   asp-route-pageSize="@Model.PageSize">Anterior</a>
+            }
+
+            @if (startPage > 1)
+            {
+                <span class="pagination-ellipsis">...</span>
+            }
+
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <a class="btn @(i == Model.CurrentPage ? "btn-success" : "btn-primary")"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-pageSize="@Model.PageSize">@i</a>
+            }
+
+            @if (endPage < Model.TotalPages)
+            {
+                <span class="pagination-ellipsis">...</span>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <a class="btn btn-primary"
+                   asp-action="Index"
+                   asp-route-page="@(Model.CurrentPage + 1)"
+                   asp-route-pageSize="@Model.PageSize">Siguiente</a>
+
+                <a class="btn btn-primary"
+                   asp-action="Index"
+                   asp-route-page="@Model.TotalPages"
+                   asp-route-pageSize="@Model.PageSize">Última</a>
+            }
+
+            <span class="pagination-info">
+                Página @Model.CurrentPage de @Model.TotalPages
+                (Total: @Model.TotalItems registros)
+            </span>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No se encontraron clientes.
+        </div>
+    }
 </div>

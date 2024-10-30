@@ -24,13 +24,21 @@ namespace MVC_NPANTS.Controllers
         }
 
         // GET: PrendaVestirController/Index
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             SetAuthorizationHeader();
 
-            var prendasVestir = await _httpClient.GetFromJsonAsync<List<PrendaVestir>>("prendas");
+            var pagedResponse = await _httpClient.GetFromJsonAsync<PagePrendaVestirResponse>($"prendas?page={page}");
 
-            return View(prendasVestir ?? new List<PrendaVestir>());
+            var viewModel = new PagePrendaVestirResponse
+            {
+                PrendasVestir = pagedResponse?.PrendasVestir,
+                CurrentPage = pagedResponse?.CurrentPage ?? 1,
+                TotalPages = pagedResponse?.TotalPages ?? 1,
+                PageSize = pagedResponse?.PageSize ?? 10
+            };
+
+            return View(viewModel);
         }
 
         // GET: PrendaVestirController/Details/5
@@ -52,13 +60,47 @@ namespace MVC_NPANTS.Controllers
         {
             SetAuthorizationHeader();
 
-            var estilos = await _httpClient.GetFromJsonAsync<List<Estilo>>("estilos");
-            var telas = await _httpClient.GetFromJsonAsync<List<Tela>>("telas");
-            var tiposPrendaVestir = await _httpClient.GetFromJsonAsync<List<TipoPrendaVestir>>("tipoprendasvestir");
+            // Obtener la lista de estilos
+            var estilosResponse = await _httpClient.GetFromJsonAsync<Estilo>("estilos");
+            var estilos = estilosResponse?.Estilos;
 
-            ViewBag.Estilos = new SelectList(estilos, "Id", "Nombre");
-            ViewBag.Telas = new SelectList(telas, "Id", "Nombre");
-            ViewBag.TiposPrendaVestir = new SelectList(tiposPrendaVestir, "Id", "Nombre");
+            if (estilos == null || !estilos.Any())
+            {
+                ModelState.AddModelError("", "No se encontraron estilos.");
+                ViewBag.Estilos = new SelectList(Enumerable.Empty<Estilo>(), "Id", "Nombre");
+            }
+            else
+            {
+                ViewBag.Estilos = new SelectList(estilos, "Id", "Nombre");
+            }
+
+            // Obtener la lista de telas
+            var telasResponse = await _httpClient.GetFromJsonAsync<Tela>("telas");
+            var telas = telasResponse?.Telas;
+
+            if (telas == null || !telas.Any())
+            {
+                ModelState.AddModelError("", "No se encontraron telas.");
+                ViewBag.Telas = new SelectList(Enumerable.Empty<Tela>(), "Id", "Nombre");
+            }
+            else
+            {
+                ViewBag.Telas = new SelectList(telas, "Id", "Nombre");
+            }
+
+            // Obtener la lista de tipos de prenda
+            var tiposPrendaResponse = await _httpClient.GetFromJsonAsync<TipoPrendaVestir>("tipoprendasvestir");
+            var tiposPrenda = tiposPrendaResponse?.TiposPrenda;
+
+            if (tiposPrenda == null || !tiposPrenda.Any())
+            {
+                ModelState.AddModelError("", "No se encontraron tipos de prenda.");
+                ViewBag.TiposPrendaVestir = new SelectList(Enumerable.Empty<TipoPrendaVestir>(), "Id", "Nombre");
+            }
+            else
+            {
+                ViewBag.TiposPrendaVestir = new SelectList(tiposPrenda, "Id", "Nombre");
+            }
 
             return View();
         }
@@ -72,22 +114,35 @@ namespace MVC_NPANTS.Controllers
 
             if (ModelState.IsValid)
             {
-                var response = await _httpClient.PostAsJsonAsync("prendas/create", prendaVestir);
-
-                if (response.IsSuccessStatusCode)
+                // Validar que se haya seleccionado un tipo de prenda
+                if (prendaVestir.TipoprendavestirId == null)
                 {
-                    return RedirectToAction(nameof(Index));
+                    ModelState.AddModelError("", "Debe seleccionar un tipo de prenda.");
                 }
-                ModelState.AddModelError("", "No se pudo crear la prenda de vestir.");
+                else
+                {
+                    var response = await _httpClient.PostAsJsonAsync("prendas/create", prendaVestir);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    ModelState.AddModelError("", "No se pudo crear la prenda de vestir.");
+                }
             }
 
-            var estilos = await _httpClient.GetFromJsonAsync<List<Estilo>>("estilos");
-            var telas = await _httpClient.GetFromJsonAsync<List<Tela>>("telas");
-            var tiposPrendaVestir = await _httpClient.GetFromJsonAsync<List<TipoPrendaVestir>>("tipoprendasvestir");
+            // Obtener nuevamente las listas en caso de que haya errores
+            var estilosResponse = await _httpClient.GetFromJsonAsync<Estilo>("estilos");
+            var estilos = estilosResponse?.Estilos;
+            ViewBag.Estilos = new SelectList(estilos ?? Enumerable.Empty<Estilo>(), "Id", "Nombre");
 
-            ViewBag.Estilos = new SelectList(estilos, "Id", "Nombre");
-            ViewBag.Telas = new SelectList(telas, "Id", "Nombre");
-            ViewBag.TiposPrendaVestir = new SelectList(tiposPrendaVestir, "Id", "Nombre");
+            var telasResponse = await _httpClient.GetFromJsonAsync<Tela>("telas");
+            var telas = telasResponse?.Telas;
+            ViewBag.Telas = new SelectList(telas ?? Enumerable.Empty<Tela>(), "Id", "Nombre");
+
+            var tiposPrendaResponse = await _httpClient.GetFromJsonAsync<TipoPrendaVestir>("tipoprendasvestir");
+            var tiposPrenda = tiposPrendaResponse?.TiposPrenda;
+            ViewBag.TiposPrendaVestir = new SelectList(tiposPrenda ?? Enumerable.Empty<TipoPrendaVestir>(), "Id", "Nombre");
 
             return View(prendaVestir);
         }

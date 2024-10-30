@@ -23,23 +23,25 @@ namespace MVC_NPANTS.Controllers
         }
 
         // Listar todas las telas
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(int page = 1)
         {
             SetAuthorizationHeader();
 
-            var telas = await _httpClient.GetFromJsonAsync<List<Tela>>("telas");
+            var pagedResponse = await _httpClient.GetFromJsonAsync<PageTelaResponse>($"telas?page={page}");
 
-            if (!string.IsNullOrEmpty(searchString))
+            var viewModel = new PageTelaResponse
             {
-                // Apply search filter
-                telas = telas.Where(s => s.Nombre.Contains(searchString) || s.Color.Contains(searchString)).ToList();
-            }
+                Telas = pagedResponse?.Telas,
+                CurrentPage = pagedResponse?.CurrentPage ?? 1,
+                TotalPages = pagedResponse?.TotalPages ?? 1,
+                PageSize = pagedResponse?.PageSize ?? 10
+            };
 
-            return View(telas);
+            return View(viewModel);
         }
 
         // Mostrar el formulario para crear una nueva tela
-        public IActionResult Create()
+        public ActionResult Create()
         {
             SetAuthorizationHeader();
             return View();
@@ -52,16 +54,14 @@ namespace MVC_NPANTS.Controllers
         {
 
             SetAuthorizationHeader();
-            if (ModelState.IsValid)
-            {
-                var result = await _httpClient.PostAsJsonAsync("telas/create", tela);
+            var tipo = await _httpClient.PostAsJsonAsync("telas/create", tela);
 
-                if (result.IsSuccessStatusCode)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+            if (tipo.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
             }
-            return View(tela);
+
+            return View();
         }
 
         // Obtener los detalles de una tela por ID

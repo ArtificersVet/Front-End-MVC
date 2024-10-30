@@ -17,5 +17,6 @@ namespace MVC_NPANTS.Models
 
         public virtual ICollection<PrendaVestir> PrendaVestirs { get; set; }
         public virtual List<EstiloTalla> EstiloTallas { get; set; } // Cambiado a List
+        public IEnumerable<Estilo>? Estilos { get; internal set; }
     }
 }

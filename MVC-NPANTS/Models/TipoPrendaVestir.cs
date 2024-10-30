@@ -14,5 +14,6 @@ namespace MVC_NPANTS.Models
         public string? Nombre { get; set; }
 
         public virtual ICollection<PrendaVestir> PrendaVestirs { get; set; }
+        public IEnumerable<TipoPrendaVestir>? TiposPrenda { get; internal set; }
     }
 }

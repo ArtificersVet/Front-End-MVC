@@ -16,5 +16,6 @@ namespace MVC_NPANTS.Models
         public double? Stock { get; set; }
 
         public virtual ICollection<PrendaVestir> PrendaVestirs { get; set; }
+        public IEnumerable<Tela>? Telas { get; internal set; }
     }
 }
