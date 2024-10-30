@@ -17,10 +17,11 @@ namespace MVC_NPANTS.Models
         public decimal? Saldo { get; set; }
         public sbyte? TipoPago { get; set; }
         public decimal? Total { get; set; }
+        [JsonPropertyName("cliente_id")]
         public long? ClienteId { get; set; } 
         
         public long? EstadoPedidoId { get; set; }
-        [JsonPropertyName("clientes")]
+        [JsonPropertyName("cliente")]
         public virtual Cliente? Cliente { get; set; }
         [JsonPropertyName("estado_pedido")]
         public virtual EstadoPedido? EstadoPedido { get; set; }
