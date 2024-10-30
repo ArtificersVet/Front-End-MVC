@@ -21,17 +21,21 @@ namespace MVC_NPANTS.Controllers
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             }
         }
-        public async Task <IActionResult> Index()
+        public async Task <IActionResult> Index(int page = 1)
         {
             SetAuthorizationHeader();
-            var tipos = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
 
-            if (tipos == null)
+            var pagedResponse = await _httpClient.GetFromJsonAsync<PageTipoClienteResponse>($"tipoclientes?page={page}");
+
+            var viewModel = new PageTipoClienteResponse
             {
-                Console.WriteLine("no se encontraron los tipos de cliente");
-            }
+                TipoClientes = pagedResponse?.TipoClientes,
+                CurrentPage = pagedResponse?.CurrentPage ?? 1,
+                TotalPages = pagedResponse?.TotalPages ?? 1,
+                PageSize = pagedResponse?.PageSize ?? 10
+            };
 
-            return View(tipos);
+            return View(viewModel);
         }
 
         

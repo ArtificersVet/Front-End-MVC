@@ -17,7 +17,7 @@ namespace MVC_NPANTS.Models
         public virtual ICollection<Cliente> Clientes { get; set; }
     }
 
-    public class PagedTipoClientesResponse
+    public class PagedTipoClienteResponse
     {
         public int TotalItems { get; set; }
         public int TotalPages { get; set; }
