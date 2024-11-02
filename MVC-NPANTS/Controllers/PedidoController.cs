@@ -79,8 +79,8 @@ namespace MVC_NPANTS.Controllers
             ViewBag.Clientes = new SelectList(clientes, "Id", "Nombre");  
             
 
-            var responseEs = await _httpClient.GetFromJsonAsync<EstadoPedidosResponse>("estadosPedido");
-            var estadosPedidos = responseEs?.estadoPedidos;
+            var responseEs = await _httpClient.GetFromJsonAsync<PageEstadoPedidoResponse>("estadosPedido");
+            var estadosPedidos = responseEs?.EstadosPedido;
             ViewBag.EstadoPedido = new SelectList(estadosPedidos, "Id", "Nombre");
 
             var responsePrenda = await _httpClient.GetFromJsonAsync<PrendaVestirResponse>("prendas");

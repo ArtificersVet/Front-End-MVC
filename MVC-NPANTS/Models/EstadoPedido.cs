@@ -19,13 +19,5 @@ namespace MVC_NPANTS.Models
         public virtual ICollection<Pedido> Pedidos { get; set; }
     }
 
-    public class EstadoPedidosResponse
-    {
-        public int TotalItems { get; set; }
-        public int TotalPages { get; set; }
-        public int CurrentPage { get; set; }
-        public int PageSize { get; set; }
-        [JsonPropertyName("estadosPedido")]
-        public List<EstadoPedido> estadoPedidos { get; set; }
-    }
+   
 }

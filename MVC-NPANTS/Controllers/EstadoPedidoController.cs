@@ -24,17 +24,20 @@ namespace MVC_NPANTS.Controllers
         }
 
         // GET: EstadoPedido
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             SetAuthorizationHeader();
-            var estadosPedido = await _httpClient.GetFromJsonAsync<List<EstadoPedido>>("estadospedido");
+            var pagedResponse = await _httpClient.GetFromJsonAsync<PageEstadoPedidoResponse>($"estadospedido?page={page}");
 
-            if (estadosPedido == null)
+            var viewModel = new PageEstadoPedidoResponse
             {
-                ViewBag.ErrorMessage = "No se encontraron estados de pedido.";
-            }
+                EstadosPedido = pagedResponse?.EstadosPedido,
+                CurrentPage = pagedResponse?.CurrentPage ?? 1,
+                TotalPages = pagedResponse?.TotalPages ?? 1,
+                PageSize = pagedResponse?.PageSize ?? 10
+            };
 
-            return View(estadosPedido);
+            return View(viewModel);
         }
 
         // GET: EstadoPedido/Create
