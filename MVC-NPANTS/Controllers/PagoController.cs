@@ -24,18 +24,22 @@ namespace MVC_NPANTS.Controllers
             }
         }
         // GET: PagoController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             
             SetAuthorizationHeader();
-            var pagos = await _httpClient.GetFromJsonAsync<List<Pago>>("pagos");
 
-            if (pagos == null || !pagos.Any())
+            var pagedResponse = await _httpClient.GetFromJsonAsync<PagePagoResponse>($"pagos?page={page}");
+
+            var viewModel = new PagePagoResponse
             {
-                ViewBag.Message = "No se encontraron registros de pagos.";
-            }
+                Pagos = pagedResponse?.Pagos,
+                CurrentPage = pagedResponse?.CurrentPage ?? 1,
+                TotalPages = pagedResponse?.TotalPages ?? 1,
+                PageSize = pagedResponse?.PageSize ?? 10
+            };
 
-            return View(pagos);
+            return View(viewModel);
         }
 
         // GET: PagoController/Details/5
