@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MVC_NPANTS.Models;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
 
 namespace MVC_NPANTS.Controllers
@@ -12,10 +11,12 @@ namespace MVC_NPANTS.Controllers
     public class PedidoController : Controller
     {
         private readonly HttpClient _httpClient;
+        private readonly ILogger<PedidoController> _logger;
 
-        public PedidoController(IHttpClientFactory httpClientFactory)
+        public PedidoController(IHttpClientFactory httpClientFactory, ILogger<PedidoController> logger)
         {
             _httpClient = httpClientFactory.CreateClient("CRMAPI");
+            _logger = logger;
         }
 
         private void SetAuthorizationHeader()
@@ -27,98 +28,156 @@ namespace MVC_NPANTS.Controllers
             }
         }
 
-        
-        public async Task<IActionResult> Index(int page = 1, int pageSize =12)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 12)
         {
             try
             {
+                SetAuthorizationHeader();
                 var response = await _httpClient.GetAsync($"pedidos?page={page}&pageSize={pageSize}");
 
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    return View(new PedidoResponse
-                    {
-                        Pedidos = new List<Pedido>(),
-                        CurrentPage = 1,
-                        PageSize = pageSize,
-                        TotalItems = 0,
-                        TotalPages = 1
-                    });
+                    return View(CreateEmptyPedidoResponse(pageSize));
                 }
 
                 response.EnsureSuccessStatusCode();
-
-            
-
                 var pedidoResponse = await response.Content.ReadFromJsonAsync<PedidoResponse>();
-                return View(pedidoResponse);
+                return View(pedidoResponse ?? CreateEmptyPedidoResponse(pageSize));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
-                // Devolver una respuesta vacía en caso de error
-                return View(new PedidoResponse
-                {
-                    Pedidos = new List<Pedido>(),
-                    CurrentPage = 1,
-                    PageSize = pageSize,
-                    TotalItems = 0,
-                    TotalPages = 1
-                });
+                _logger.LogError(ex, "Error retrieving pedidos");
+                return View(CreateEmptyPedidoResponse(pageSize));
             }
         }
 
-
         public async Task<IActionResult> Create()
         {
-            SetAuthorizationHeader();
-            await LoadViewBags();
+            try
+            {
+                SetAuthorizationHeader();
 
-            var response = await _httpClient.GetFromJsonAsync<PagedClientesResponse>("clientes");
-            var clientes = response?.Clientes;  
-            ViewBag.Clientes = new SelectList(clientes, "Id", "Nombre");  
-            
+                // Cargar clientes
+                var clientesResponse = await GetApiResponse<PagedClientesResponse>("clientes");
+                ViewBag.Clientes = new SelectList(clientesResponse?.Clientes ?? new List<Cliente>(), "Id", "Nombre");
 
-            var responseEs = await _httpClient.GetFromJsonAsync<PageEstadoPedidoResponse>("estadosPedido");
-            var estadosPedidos = responseEs?.EstadosPedido;
-            ViewBag.EstadoPedido = new SelectList(estadosPedidos, "Id", "Nombre");
+                // Cargar estados de pedido
+                var estadosResponse = await GetApiResponse<List<EstadoPedido>>("estadosPedido");
+                ViewBag.EstadoPedido = new SelectList(estadosResponse ?? new List<EstadoPedido>(), "Id", "Nombre");
 
-            var responsePrenda = await _httpClient.GetFromJsonAsync<PrendaVestirResponse>("prendas");
-            var prendasVestir = responsePrenda?.prendaVestirs;
-            ViewBag.PrendasVestir = new SelectList(prendasVestir, "Id", "Nombre");
+                // Cargar prendas
+                var prendasResponse = await GetApiResponse<PrendaVestirResponse>("prendas");
+                ViewBag.PrendasVestir = new SelectList(prendasResponse?.prendaVestirs ?? new List<PrendaVestir>(), "Id", "Nombre");
 
-            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas");
-            ViewBag.Tallas = new SelectList(tallas, "Id", "Nombre");
+                // Cargar tallas
+                var tallasResponse = await GetApiResponse<List<Talla>>("tallas");
+                ViewBag.Tallas = new SelectList(tallasResponse ?? new List<Talla>(), "Id", "Nombre");
 
-            return View(new Pedido { FechaPedido = DateTime.Now });
+                return View(new Pedido { FechaPedido = DateTime.Now });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in Create GET action");
+                ModelState.AddModelError(string.Empty, "Error al cargar los datos necesarios para crear el pedido");
+                return View(new Pedido { FechaPedido = DateTime.Now });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(Pedido pedido, List<DetalleProducto> detalles)
         {
-            SetAuthorizationHeader();
-
-            // Filtrar detalles válidos
-            var detallesValidos = detalles?
-                .Where(d => d != null
-                         && d.PrendaVestirId > 0
-                         && d.TallaId > 0
-                         && d.Cantidad > 0
-                         && d.Precio > 0
-                         && d.TotalPieza > 0
-                         && d.ConsumoTela != null
-                         && d.SubTotal > 0)
-                .ToList() ?? new List<DetalleProducto>();
-
-            // Comprobar si hay detalles válidos
-            if (!detallesValidos.Any())
+            try
             {
-                ModelState.AddModelError(string.Empty, "Debe incluir al menos un detalle de producto válido");
+                SetAuthorizationHeader();
+
+                var detallesValidos = ValidateAndFilterDetalles(detalles);
+                if (!detallesValidos.Any())
+                {
+                    ModelState.AddModelError(string.Empty, "Debe incluir al menos un detalle de producto válido");
+                    await LoadViewBags();
+                    return View(pedido);
+                }
+
+                var pedidoData = CreatePedidoData(pedido, detallesValidos);
+                var response = await _httpClient.PostAsJsonAsync("pedidos/create", pedidoData);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                var errorContent = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, $"Error al crear el pedido: {errorContent}");
                 await LoadViewBags();
                 return View(pedido);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating pedido");
+                ModelState.AddModelError(string.Empty, "Error al procesar la solicitud");
+                await LoadViewBags();
+                return View(pedido);
+            }
+        }
 
-            var pedidoData = new
+        private async Task LoadViewBags()
+        {
+            try
+            {
+                ViewBag.Tallas = await GetApiResponse<List<Talla>>("tallas") ?? new List<Talla>();
+                ViewBag.EstadosPedido = await GetApiResponse<List<EstadoPedido>>("estadospedido") ?? new List<EstadoPedido>();
+                ViewBag.PrendasVestir = await GetApiResponse<List<PrendaVestir>>("prendas") ?? new List<PrendaVestir>();
+                ViewBag.Clientes = await GetApiResponse<List<Cliente>>("clientes") ?? new List<Cliente>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading ViewBags");
+                InitializeEmptyViewBags();
+            }
+        }
+
+        private async Task<T> GetApiResponse<T>(string endpoint)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<T>();
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, $"JSON deserialization error for endpoint {endpoint}");
+                return default;
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, $"HTTP request error for endpoint {endpoint}");
+                return default;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unexpected error for endpoint {endpoint}");
+                return default;
+            }
+        }
+
+        private List<DetalleProducto> ValidateAndFilterDetalles(List<DetalleProducto> detalles)
+        {
+            return detalles?
+                .Where(d => d != null
+                    && d.PrendaVestirId > 0
+                    && d.TallaId > 0
+                    && d.Cantidad > 0
+                    && d.Precio > 0
+                    && d.TotalPieza > 0
+                    && d.ConsumoTela != null
+                    && d.SubTotal > 0)
+                .ToList() ?? new List<DetalleProducto>();
+        }
+
+        private object CreatePedidoData(Pedido pedido, List<DetalleProducto> detalles)
+        {
+            return new
             {
                 fecha_pedido = pedido.FechaPedido.ToString("yyyy-MM-dd"),
                 saldo = pedido.Saldo,
@@ -126,7 +185,7 @@ namespace MVC_NPANTS.Controllers
                 total = pedido.Total,
                 cliente_id = pedido.ClienteId,
                 estado_pedido_id = pedido.EstadoPedidoId,
-                detalleproducto = detallesValidos.Select(d => new
+                detalleproducto = detalles.Select(d => new
                 {
                     prenda_vestir_id = d.PrendaVestirId,
                     talla_id = d.TallaId,
@@ -138,88 +197,97 @@ namespace MVC_NPANTS.Controllers
                     sub_total = d.Cantidad * d.Precio
                 }).ToList()
             };
-
-            var response = await _httpClient.PostAsJsonAsync("pedidos/create", pedidoData);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                ModelState.AddModelError(string.Empty, $"Error al crear el pedido: {errorContent}");
-            }
-
-            await LoadViewBags();
-            return View(pedido);
         }
 
-
-        private async Task LoadViewBags()
+        private void InitializeEmptyViewBags()
         {
-            try
+            ViewBag.Tallas = new List<Talla>();
+            ViewBag.EstadosPedido = new List<EstadoPedido>();
+            ViewBag.PrendasVestir = new List<PrendaVestir>();
+            ViewBag.Clientes = new List<Cliente>();
+        }
+
+        private PedidoResponse CreateEmptyPedidoResponse(int pageSize)
+        {
+            return new PedidoResponse
             {
-                ViewBag.Tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas") ?? new List<Talla>();
-                ViewBag.EstadosPedido = await _httpClient.GetFromJsonAsync<List<EstadoPedido>>("estadospedido") ?? new List<EstadoPedido>();
-                ViewBag.PrendasVestir = await _httpClient.GetFromJsonAsync<List<PrendaVestir>>("prendas") ?? new List<PrendaVestir>();
-                ViewBag.Clientes = await _httpClient.GetFromJsonAsync<List<Cliente>>("clientes") ?? new List<Cliente>();
-            }
-            catch (Exception)
-            {
-                ViewBag.Tallas = new List<Talla>();
-                ViewBag.EstadosPedido = new List<EstadoPedido>();
-                ViewBag.PrendasVestir = new List<PrendaVestir>();
-                ViewBag.Clientes = new List<Cliente>();
-            }
+                Pedidos = new List<Pedido>(),
+                CurrentPage = 1,
+                PageSize = pageSize,
+                TotalItems = 0,
+                TotalPages = 1
+            };
         }
 
         public async Task<IActionResult> Delete(long id)
         {
-            SetAuthorizationHeader();
-            var pedido = await _httpClient.GetFromJsonAsync<Pedido>($"pedidos/{id}");
-
-            if (pedido == null)
+            try
             {
+                SetAuthorizationHeader();
+                var pedido = await GetApiResponse<Pedido>($"pedidos/{id}");
+
+                if (pedido == null)
+                {
+                    return NotFound();
+                }
+
+                return View(pedido);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving pedido {id} for deletion");
                 return NotFound();
             }
-
-            return View(pedido);
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            SetAuthorizationHeader();
-            var response = await _httpClient.DeleteAsync($"pedidos/{id}");
+            try
+            {
+                SetAuthorizationHeader();
+                var response = await _httpClient.DeleteAsync($"pedidos/{id}");
 
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError($"Error deleting pedido {id}: {errorContent}");
+                return View("Error", new { message = "Error al eliminar el pedido" });
             }
-            else
+            catch (Exception ex)
             {
+                _logger.LogError(ex, $"Error deleting pedido {id}");
                 return View("Error", new { message = "Error al eliminar el pedido" });
             }
         }
 
         public async Task<IActionResult> Details(long id)
         {
-            SetAuthorizationHeader();
-            var pedido = await _httpClient.GetFromJsonAsync<Pedido>($"pedidos/{id}");
-
-            if (pedido == null)
+            try
             {
+                SetAuthorizationHeader();
+                var pedido = await GetApiResponse<Pedido>($"pedidos/{id}");
+
+                if (pedido == null)
+                {
+                    return NotFound();
+                }
+
+                if (pedido.Detalles == null || !pedido.Detalles.Any())
+                {
+                    ViewBag.MensajeError = "No se encontraron detalles del producto para este pedido.";
+                }
+
+                return View(pedido);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving pedido details {id}");
                 return NotFound();
             }
-
-            if (pedido.Detalles == null || !pedido.Detalles.Any())
-            {
-                ViewBag.MensajeError = "No se encontraron detalles del producto para este pedido.";
-            }
-
-            return View(pedido);
         }
     }
-
 }
