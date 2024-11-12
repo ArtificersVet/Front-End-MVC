@@ -1,10 +1,13 @@
-﻿namespace MVC_NPANTS.Models
+﻿using System.Text.Json.Serialization;
+
+namespace MVC_NPANTS.Models
 {
     public partial  class DetalleProducto
     {
         public long Id { get; set; }
         public long PedidoId { get; set; }
         public long PrendaVestirId { get; set; }
+        //[JsonPropertyName("talla_id")]
         public long TallaId { get; set; }
         public int Cantidad { get; set; }
         public string? Descripcion { get; set; }

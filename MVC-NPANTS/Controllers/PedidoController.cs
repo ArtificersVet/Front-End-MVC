@@ -70,8 +70,8 @@ namespace MVC_NPANTS.Controllers
                 ViewBag.PrendasVestir = new SelectList(prendasResponse?.prendaVestirs ?? new List<PrendaVestir>(), "Id", "Nombre");
 
                 // Cargar tallas
-                var tallasResponse = await GetApiResponse<List<Talla>>("tallas");
-                ViewBag.Tallas = new SelectList(tallasResponse ?? new List<Talla>(), "Id", "Nombre");
+                var tallasResponse = await GetApiResponse<TallasResponse>("tallas");
+                ViewBag.Tallas = new SelectList(tallasResponse?.Data ?? new List<Talla>(), "Id", "Nombre");
 
                 return View(new Pedido { FechaPedido = DateTime.Now });
             }
