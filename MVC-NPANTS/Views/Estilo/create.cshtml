@@ -1,83 +1,155 @@
-﻿@model MVC_NPANTS.Models.Estilo
+﻿@model MVC_NPANTS.Models.EstiloCreateViewModel
 
-@{
-    ViewData["Title"] = "Agregar Nuevo Estilo";
-}
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+</head>
 
-<div class="blanco">
-    <div class="page-header">
-        <h2 class="text-center mb-4">@ViewData["Title"]</h2>
-    </div>
+<h2>Crear Estilo</h2>
 
-    <form asp-action="Create" method="post" class="shadow p-4 rounded bg-light">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<div asp-validation-summary="All" class="text-danger"></div>
 
-        <div class="row">
-            <div class="col-md-6 col-12">
-                <div class="form-group mb-3">
-                    <label asp-for="Nombre" class="form-label">Nombre</label>
-                    <input asp-for="Nombre" class="form-control" required />
-                    <span asp-validation-for="Nombre" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-12">
-                <div class="form-group mb-3">
-                    <label asp-for="Tipo" class="form-label">Tipo</label>
-                    <input asp-for="Tipo" class="form-control" required />
-                    <span asp-validation-for="Tipo" class="text-danger"></span>
-                </div>
-            </div>
+@if (ViewBag.Tallas != null && ViewBag.Tallas.Count > 0)
+{
+    <form asp-action="Create" method="post" id="createForm">
+        <div class="form-group mb-3">
+            <label asp-for="Nombre" class="control-label">Nombre</label>
+            <input asp-for="Nombre" class="form-control" required />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
         </div>
 
-        <div id="tallasContainer" class="row">
-            <h5>Tallas y Consumo de Tela</h5>
-            <div class="col-md-6 col-12 talla-row mb-3">
-                <select name="EstiloTallas[0].TallaId" class="form-control" required>
-                    <option value="">Seleccione una talla</option>
-                    @foreach (var talla in ViewBag.Tallas as List<Talla>)
-                    {
-                        <option value="@talla.Id">@talla.Nombre</option>
-                    }
-                </select>
-            </div>
-
-            <div class="col-md-6 col-12 mb-3">
-                <input type="number" name="EstiloTallas[0].consumoTela" class="form-control" placeholder="Consumo de Tela" step="0.01" required />
-            </div>
+        <div class="form-group mb-3">
+            <label asp-for="Tipo" class="control-label">Tipo</label>
+            <input asp-for="Tipo" class="form-control" required />
+            <span asp-validation-for="Tipo" class="text-danger"></span>
         </div>
 
-        <button type="button" class="btn btn-secondary mb-3" id="addTallaBtn">Agregar Talla</button>
+        <h3>Tallas</h3>
+        <div id="tallas-container">
+            <!-- Las tallas se agregarán dinámicamente aquí -->
+        </div>
 
-        <div class="d-flex justify-content-between mt-4">
-            <button type="submit" class="btn btn-primary">Crear</button>
-            <a asp-action="Index" class="btn btn-secondary">Volver al Catálogo</a>
+        <button type="button" class="btn btn-secondary mt-2 mb-3" id="agregar-talla">Agregar Talla</button>
+
+        <div class="form-group">
+            <input type="submit" value="Crear" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
         </div>
     </form>
-</div>
+}
+else
+{
+    <p class="text-danger">No se encontraron tallas disponibles.</p>
+    <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+}
 
-<script>
-    let tallaCount = 1; // Contador para las tallas agregadas
-
-    document.getElementById('addTallaBtn').addEventListener('click', function () {
-        const tallaContainer = document.getElementById('tallasContainer');
-
-        // Crear un nuevo div para la nueva talla
-        const newTallaRow = document.createElement('div');
-        newTallaRow.classList.add('talla-row', 'mb-2');
-
-        newTallaRow.innerHTML = `
-                    <select name="EstiloTallas[${tallaCount}].TallaId" class="form-control" required>
-                        <option value="">Seleccione una talla</option>
-    @foreach (var talla in ViewBag.Tallas as List<Talla>)
+    <script>
+    $(document).ready(function () {
+        function agregarTalla() {
+            var index = $("#tallas-container .talla-row").length;
+            var nuevaTalla = `
+                <div class="form-group talla-row border p-3 mb-3">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="Tallas_${index}__TallaId">Talla:</label>
+                            <select id="Tallas_${index}__TallaId" name="Tallas[${index}].TallaId" class="form-control talla-select" required>
+                                <option value="">Seleccione una talla</option>
+    @foreach (var talla in ViewBag.Tallas)
     {
-                                    <option value="@talla.Id">@talla.Nombre</option>
+                                        <option value="@talla.Id">@talla.Nombre</option>
     }
-                    </select>
-                    <input type="number" name="EstiloTallas[${tallaCount}].consumoTela" class="form-control" placeholder="Consumo de Tela" step="0.01" required />
-                `;
+                            </select>
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Tallas[${index}].TallaId" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="Tallas_${index}__ConsumoTela">Consumo de Tela:</label>
+                            <input type="number" id="Tallas_${index}__ConsumoTela" name="Tallas[${index}].ConsumoTela" class="form-control" required min="0.01" step="0.01" />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Tallas[${index}].ConsumoTela" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger remove-talla mt-4">Eliminar</button>
+                        </div>
+                    </div>
+                </div>`;
+            $("#tallas-container").append(nuevaTalla);
+        }
 
-        tallaContainer.appendChild(newTallaRow);
-        tallaCount++; // Incrementar el contador
+        $("#agregar-talla").click(agregarTalla);
+
+        $("#tallas-container").on("click", ".remove-talla", function () {
+            $(this).closest(".talla-row").remove();
+
+            // Actualizar índices y validación de jQuery
+            $(".talla-row").each(function (index) {
+                $(this).find('label[for^="Tallas_"]').attr('for', `Tallas_${index}__TallaId`);
+                $(this).find('select[name^="Tallas["]').attr('name', `Tallas[${index}].TallaId`).attr('id', `Tallas_${index}__TallaId`);
+                $(this).find('label[for^="Tallas_"]').attr('for', `Tallas_${index}__ConsumoTela`);
+                $(this).find('input[name^="Tallas["]').attr('name', `Tallas[${index}].ConsumoTela`).attr('id', `Tallas_${index}__ConsumoTela`);
+
+                // Eliminar mensajes de error anteriores
+                $(this).find('.field-validation-error').remove();
+                // Agregar nuevos spans para los mensajes de error
+                $(this).find('select[name^="Tallas["]').after('<span class="text-danger field-validation-valid" data-valmsg-for="Tallas[' + index + '].TallaId" data-valmsg-replace="true"></span>');
+                $(this).find('input[name^="Tallas["]').after('<span class="text-danger field-validation-valid" data-valmsg-for="Tallas[' + index + '].ConsumoTela" data-valmsg-replace="true"></span>');
+            });
+
+            // Reiniciar la validación de jQuery Validate
+            $.validator.unobtrusive.parse("#createForm");
+        });
+
+/*// Validación de tallas duplicadas
+        $("#tallas-container").on("change", ".talla-select", function () {
+            var selectedValue = $(this).val();
+            var count = 0;
+            $('.talla-select').each(function () {
+                if ($(this).val() === selectedValue && selectedValue !== "") {
+                    count++;
+                }
+            });
+            if (count > 1) {
+                alert("Esta talla ya ha sido seleccionada");
+                $(this).val("");
+            }
+        });*/
+
+        // Validación del formulario
+        $("#createForm").submit(function (e) {
+            if ($("#tallas-container .talla-row").length === 0) {
+                e.preventDefault();
+                alert("Debe agregar al menos una talla");
+                return false;
+            }
+
+            var isValid = true;
+            $('.talla-select').each(function () {
+                if (!$(this).val()) {
+                    isValid = false;
+                    return false;
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                alert("Por favor seleccione todas las tallas");
+                return false;
+            }
+
+            // Validar consumo de tela
+            $('.talla-row input[type="number"]').each(function () {
+                var valor = parseFloat($(this).val());
+                if (isNaN(valor) || valor <= 0) {
+                    e.preventDefault();
+                    alert("El consumo de tela debe ser mayor que 0");
+                    isValid = false;
+                    return false;
+                }
+            });
+
+            return isValid;
+        });
+
+        // Agregar una talla inicial
+        agregarTalla();
     });
 </script>

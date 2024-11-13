@@ -61,8 +61,7 @@ namespace MVC_NPANTS.Controllers
             SetAuthorizationHeader();
 
             // Obtener la lista de estilos
-            var estilosResponse = await _httpClient.GetFromJsonAsync<EstilosResponse>("estilos");
-            var estilos = estilosResponse?.Estilos;
+            var estilos = await _httpClient.GetFromJsonAsync<List<Estilo>>("estilos");
 
             if (estilos == null || !estilos.Any())
             {
@@ -132,8 +131,8 @@ namespace MVC_NPANTS.Controllers
             }
 
             // Obtener nuevamente las listas en caso de que haya errores
-            var estilosResponse = await _httpClient.GetFromJsonAsync<Estilo>("estilos");
-            var estilos = estilosResponse?.Estilos;
+            var estilos = await _httpClient.GetFromJsonAsync<List<Estilo>>("estilos");
+
             ViewBag.Estilos = new SelectList(estilos ?? Enumerable.Empty<Estilo>(), "Id", "Nombre");
 
             var telasResponse = await _httpClient.GetFromJsonAsync<Tela>("telas");
@@ -162,8 +161,8 @@ namespace MVC_NPANTS.Controllers
             }
 
             // Obtener la lista de estilos
-            var estilosResponse = await _httpClient.GetFromJsonAsync<EstilosResponse>("estilos");
-            var estilos = estilosResponse?.Estilos ?? new List<Estilo>();
+            var estilos = await _httpClient.GetFromJsonAsync<List<Estilo>>("estilos");
+
 
             // Obtener la lista de telas
             var telasResponse = await _httpClient.GetFromJsonAsync<PageTelaResponse>("telas");

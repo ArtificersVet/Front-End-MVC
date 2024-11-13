@@ -1,0 +1,50 @@
+﻿@model MVC_NPANTS.Models.Estilo
+
+@{
+    ViewData["Title"] = "Detalles del Estilo";
+}
+
+<div class="main-container">
+    <div class="page-header">
+        <h1 style="color:white">@ViewData["Title"]</h1>
+    </div>
+
+    <div>
+        <h4>Estilo</h4>
+        <hr />
+        <dl class="row">
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Nombre)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Nombre)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Tipo)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Tipo)
+            </dd>
+            <dt class="col-sm-2">
+                Tallas
+            </dt>
+            <dd class="col-sm-10">
+                @if (Model.Tallas != null)
+                {
+                    <ul>
+                        @foreach (var estiloTalla in Model.Tallas) 
+                        {
+                            <li>
+                                Talla: @estiloTalla.Talla.Nombre - Consumo: @estiloTalla.ConsumoTela
+                            </li>
+                        }
+                    </ul>
+                }
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a> 
+        <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a> 
+    </div>
+</div>

@@ -1,68 +1,161 @@
-﻿@model MVC_NPANTS.Models.Estilo
+﻿@model MVC_NPANTS.Models.EstiloEditViewModel
 @{
     ViewData["Title"] = "Editar Estilo";
 }
-<div class="container mt-5">
-    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
-    <form asp-action="Edit" method="post" class="shadow p-4 rounded bg-light" id="estiloForm">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<div class="container mt-4">
+    <h2>Editar Estilo</h2>
+
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Id" />
-        <div class="form-group mb-3">
-            <label asp-for="Nombre" class="form-label">Nombre</label>
-            <input asp-for="Nombre" class="form-control" required />
-            <span asp-validation-for="Nombre" class="text-danger"></span>
-        </div>
-        <div class="form-group mb-3">
-            <label asp-for="Tipo" class="form-label">Tipo</label>
-            <input asp-for="Tipo" class="form-control" required />
-            <span asp-validation-for="Tipo" class="text-danger"></span>
-        </div>
-        <div id="tallasContainer">
-            <h5>Tallas y Consumo de Tela</h5>
-            @for (int i = 0; i < Model.EstiloTallas.Count; i++)
-            {
-                <div class="talla-row mb-2">
-                    <select asp-for="EstiloTallas[i].TallaId" class="form-control" required>
-                        <option value="">Seleccione una talla</option>
-                        @foreach (var talla in ViewBag.Tallas as List<Talla>)
-                        {
-                            <option value="@talla.Id" selected="@(Model.EstiloTallas[i].TallaId == talla.Id)">@talla.Nombre</option>
-                        }
-                    </select>
-                    <input asp-for="EstiloTallas[i].consumoTela" class="form-control" placeholder="Consumo de Tela" step="0.01" required />
-                    <input asp-for="EstiloTallas[i].Id" type="hidden" />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="Nombre" class="control-label">Nombre del Estilo</label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
                 </div>
-            }
+            </div>
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="Tipo" class="control-label">Tipo de Estilo</label>
+                    <input asp-for="Tipo" class="form-control" />
+                    <span asp-validation-for="Tipo" class="text-danger"></span>
+                </div>
+            </div>
         </div>
-        <button type="button" class="btn btn-secondary mb-3" id="addTallaBtn">Agregar Talla</button>
-        <div class="d-flex justify-content-between mt-4">
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4>Tallas y Consumo de Tela</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="tallasTable">
+                        <thead>
+                            <tr>
+                                <th>Talla</th>
+                                <th>Consumo de Tela</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var i = 0; i < Model.Tallas.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="hidden" asp-for="Tallas[i].Id" />
+                                        <select asp-for="Tallas[i].TallaId" class="form-control"
+                                                asp-items="@(new SelectList(ViewBag.Tallas, "Id", "Nombre", Model.Tallas[i].TallaId))">
+                                        </select>
+                                        <span asp-validation-for="Tallas[i].TallaId" class="text-danger"></span>
+                                    </td>
+                                    <td>
+                                        <input asp-for="Tallas[i].ConsumoTela" class="form-control" type="number" step="0.01" />
+                                        <span asp-validation-for="Tallas[i].ConsumoTela" class="text-danger"></span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="agregarFila()">
+                    <i class="fas fa-plus"></i> Agregar Talla
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver a la Lista
+            </a>
         </div>
     </form>
 </div>
 
-<script>
-    let tallaCount = @Model.EstiloTallas.Count; // Inicializar el contador con las tallas existentes
-    const tallasOptions = `
-            <option value="">Seleccione una talla</option>
-    @foreach (var talla in ViewBag.Tallas as List<Talla>)
-    {
-                    <option value="@talla.Id">@talla.Nombre</option>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-        `;
 
-    document.getElementById('addTallaBtn').addEventListener('click', function () {
-        const tallaContainer = document.getElementById('tallasContainer');
-        const newTallaRow = document.createElement('div');
-        newTallaRow.classList.add('talla-row', 'mb-2');
-        newTallaRow.innerHTML = `
-                <select name="EstiloTallas[${tallaCount}].TallaId" class="form-control" required>
-                    ${tallasOptions}
-                </select>
-                <input type="number" name="EstiloTallas[${tallaCount}].consumoTela" class="form-control" placeholder="Consumo de Tela" step="0.01" required />
-            `;
-        tallaContainer.appendChild(newTallaRow);
-        tallaCount++;
-    });
-</script>
+    <script>
+        // Guardar las tallas existentes al cargar la página
+        const tallasIniciales = @Html.Raw(Json.Serialize(Model.Tallas));
+
+        function agregarFila() {
+            const tbody = document.querySelector("#tallasTable tbody");
+            const index = tbody.children.length;
+            const newRow = document.createElement("tr");
+
+            const selectTemplate = document.querySelector("select[name^='Tallas[0].TallaId']").cloneNode(true);
+            selectTemplate.name = `Tallas[${index}].TallaId`;
+            selectTemplate.id = `Tallas_${index}__TallaId`;
+            // Limpiar la selección para la nueva fila
+            selectTemplate.selectedIndex = 0;
+
+            newRow.innerHTML = `
+                        <td>
+                            <input type="hidden" name="Tallas[${index}].Id" value="0" />
+                            ${selectTemplate.outerHTML}
+                        </td>
+                        <td>
+                            <input name="Tallas[${index}].ConsumoTela" type="number" step="0.01" class="form-control" value="0" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </td>`;
+
+            tbody.appendChild(newRow);
+        }
+
+        function eliminarFila(button) {
+            const row = button.closest('tr');
+            if (document.querySelectorAll("#tallasTable tbody tr").length > 1) {
+                // Obtener el índice de la fila
+                const rowIndex = Array.from(row.parentElement.children).indexOf(row);
+
+                // Si es una talla existente, agregar un campo hidden para marcarla como eliminada
+                if (tallasIniciales[rowIndex] && tallasIniciales[rowIndex].Id > 0) {
+                    const form = document.querySelector('form');
+                    const deletedInput = document.createElement('input');
+                    deletedInput.type = 'hidden';
+                    deletedInput.name = `TallasEliminadas`;
+                    deletedInput.value = tallasIniciales[rowIndex].Id;
+                    form.appendChild(deletedInput);
+                }
+
+                row.remove();
+                reindexTallasInputs();
+            } else {
+                alert("Debe mantener al menos una talla.");
+            }
+        }
+
+        function reindexTallasInputs() {
+            const rows = document.querySelectorAll("#tallasTable tbody tr");
+            rows.forEach((row, index) => {
+                row.querySelectorAll('select, input').forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name && name.includes('Tallas[')) {
+                        input.setAttribute('name', name.replace(/\[\d+\]/, `[${index}]`));
+                        if (input.id) {
+                            input.id = input.id.replace(/\d+/, index);
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+}

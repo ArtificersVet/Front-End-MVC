@@ -4,12 +4,22 @@ using System.Text.Json.Serialization;
 
 namespace MVC_NPANTS.Models
 {
-    public  class Talla
+
+    public partial class Talla
     {
+        public Talla()
+        {
+            EstiloTallas = new HashSet<EstiloTalla>();
+        }
+
         public long Id { get; set; }
         public string? Nombre { get; set; }
 
+        public virtual ICollection<EstiloTalla> EstiloTallas { get; set; }
+
+
     }
+
 
     public class TallasResponse
     {

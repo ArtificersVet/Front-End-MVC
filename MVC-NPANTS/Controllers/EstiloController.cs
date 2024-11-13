@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MVC_NPANTS.Models;
-using NuGet.Protocol;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace MVC_NPANTS.Controllers
 {
     public class EstiloController : Controller
     {
-        HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
-        public EstiloController(IHttpClientFactory httpClientFactory) {
-
+        public EstiloController(IHttpClientFactory httpClientFactory)
+        {
             _httpClient = httpClientFactory.CreateClient("CRMAPI");
         }
 
@@ -22,165 +23,250 @@ namespace MVC_NPANTS.Controllers
             }
         }
 
+        // GET: Estilo
         public async Task<IActionResult> Index()
         {
             SetAuthorizationHeader();
             var estilos = await _httpClient.GetFromJsonAsync<List<Estilo>>("estilos");
-
-            if (estilos == null)
-            {
-                Console.WriteLine("no se encontraron los estilos");
-            }
-
             return View(estilos);
         }
 
-        public async Task<IActionResult> Create()
-        {
-            SetAuthorizationHeader();
-
-            // Obtener todas las tallas para el select
-            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas");
-
-            ViewBag.Tallas = tallas;  // Pasar tallas a la vista
-
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create(Estilo estiloOBJ, List<EstiloTalla> EstiloTallas)
-        {
-            SetAuthorizationHeader();
-
-            // Asegúrate de que EstiloTallas no sea nulo
-            if (EstiloTallas != null && EstiloTallas.Count > 0)
-            {
-                estiloOBJ.EstiloTallas = EstiloTallas;
-            }
-
-            var response = await _httpClient.PostAsJsonAsync("estilos/create", estiloOBJ);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(estiloOBJ);
-        }
-
-
-
-
-        public async Task<IActionResult> GetById(int id)
-        {
-            SetAuthorizationHeader();
-            try
-            {
-                var response = await _httpClient.GetAsync($"estilos/{id}");
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var estilo = System.Text.Json.JsonSerializer.Deserialize<Estilo>(content, new System.Text.Json.JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-
-                    if (estilo == null)
-                    {
-                        Console.WriteLine($"Estilo with ID {id} not found");
-                        return NotFound();
-                    }
-
-                    // Ensure EstiloTallas is not null
-                    estilo.EstiloTallas ??= new List<EstiloTalla>();
-
-                    return View(estilo);
-                }
-                else
-                {
-                    Console.WriteLine($"Error fetching estilo with ID {id}: {response.StatusCode}");
-                    return StatusCode((int)response.StatusCode, "Error fetching estilo");
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine($"Error fetching estilo with ID {id}: {e.Message}");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-        public async Task<IActionResult> Edit(int id)
+        // GET: Estilo/Details/5
+        public async Task<IActionResult> Details(int id)
         {
             SetAuthorizationHeader();
             var estilo = await _httpClient.GetFromJsonAsync<Estilo>($"estilos/{id}");
 
             if (estilo == null)
             {
-                Console.WriteLine("No se encontró el estilo");
-                return NotFound(); // Maneja el error según sea necesario
+                return NotFound();
             }
-
-            // Obtener todas las tallas para el select
-            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas");
-            ViewBag.Tallas = tallas;  // Pasar tallas a la vista
 
             return View(estilo);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(int id, Estilo estiloOBJ)
+        // GET: Estilo/Create
+        // GET: Estilo/Create
+        public async Task<IActionResult> Create()
         {
             SetAuthorizationHeader();
 
-            if (id != estiloOBJ.Id)
+            // Obtener tallas de la API
+            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("talla");
+
+            if (tallas == null || !tallas.Any())
+            {
+                ViewBag.ErrorMessage = "No se pudieron cargar las tallas.";
+                tallas = new List<Talla>(); // Evita posibles errores de null
+            }
+
+            // Asignar la lista de tallas al ViewBag
+            ViewBag.Tallas = tallas;
+
+            // Crear el modelo y convertir las tallas si es necesario
+            var viewModel = new EstiloCreateViewModel
+            {
+                Tallas = new List<EstiloTallaCreateDTO>() // Cambia a EstiloTallaCreateDTO si es necesario
+            };
+
+            return View(viewModel);
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Nombre, Tipo, Tallas")] EstiloCreateViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                SetAuthorizationHeader();
+
+                try
+                {
+                    // Crear el objeto que se enviará a la API con el formato correcto
+                    var estiloRequest = new
+                    {
+                        nombre = viewModel.Nombre,
+                        tipo = viewModel.Tipo,
+                        tallas = viewModel.Tallas.Select(t => new
+                        {
+                            talla_id  = t.TallaId,
+                            consumoTela = t.ConsumoTela
+                        }).ToList()
+                    };
+
+                    // Log para verificar el JSON de solicitud
+                    Console.WriteLine("Request data: " + JsonSerializer.Serialize(estiloRequest));
+
+                    // Hacer la solicitud a la API
+                    var response = await _httpClient.PostAsJsonAsync("estilos/create", estiloRequest);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+
+                    // Leer el mensaje de error de la respuesta
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    ModelState.AddModelError("", $"Error al crear el estilo: {errorContent}");
+
+                    // Log del error para más detalles
+                    Console.WriteLine($"Response error: {errorContent}");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Error al crear el estilo: {ex.Message}");
+                }
+            }
+
+            // Si falla, recarga las tallas para mostrarlas en la vista
+            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("talla");
+            ViewBag.Tallas = tallas;
+            return View(viewModel);
+        }
+
+        // GET: Estilo/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            SetAuthorizationHeader();
+            try
+            {
+                // Obtener el estilo con sus tallas
+                var estilo = await _httpClient.GetFromJsonAsync<Estilo>($"estilos/{id}");
+                if (estilo == null)
+                {
+                    return NotFound();
+                }
+
+                // Obtener todas las tallas disponibles
+                var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("talla");
+                if (tallas == null)
+                {
+                    tallas = new List<Talla>();
+                }
+
+                // Crear el ViewModel
+                var viewModel = new EstiloEditViewModel
+                {
+                    Id = (int)estilo.Id,
+                    Nombre = estilo.Nombre,
+                    Tipo = estilo.Tipo,
+                    Tallas = estilo.Tallas.Select(t => new EstiloTallaEditDTO
+                    {
+                        Id = t.Id,
+                        TallaId = (int)t.Talla.Id,
+                        ConsumoTela = t.ConsumoTela
+                    }).ToList()
+                };
+
+                // Guardar las tallas en ViewBag para el dropdown
+                ViewBag.Tallas = tallas;
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error al cargar el estilo: {ex.Message}";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [FromForm] EstiloEditViewModel viewModel, [FromForm] List<int> TallasEliminadas)
+        {
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                SetAuthorizationHeader();
                 try
                 {
-                    // Asegúrate de que todas las tallas tengan el EstiloId correcto
-                    foreach (var talla in estiloOBJ.EstiloTallas)
+                    // Crear el objeto para la API
+                    var estiloUpdate = new
                     {
-                        talla.EstiloId = estiloOBJ.Id;
-                    }
+                        id = viewModel.Id,
+                        nombre = viewModel.Nombre,
+                        tipo = viewModel.Tipo,
+                        tallas = viewModel.Tallas.ToList(), // Usar la lista completa de Tallas sin modificar
+                        tallasEliminadas = TallasEliminadas ?? new List<int>()
+                    };
 
-                    var response = await _httpClient.PutAsJsonAsync($"estilos/{id}", estiloOBJ);
-
+                    // Realizar la petición PUT
+                    var response = await _httpClient.PutAsJsonAsync($"estilos/{id}", estiloUpdate);
                     if (response.IsSuccessStatusCode)
                     {
+                        TempData["SuccessMessage"] = "Estilo actualizado correctamente";
                         return RedirectToAction(nameof(Index));
                     }
-                    else
-                    {
-                        var errorContent = await response.Content.ReadAsStringAsync();
-                        ModelState.AddModelError("", $"Error al actualizar: {errorContent}");
-                    }
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    ModelState.AddModelError("", $"Error al actualizar: {errorContent}");
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Ocurrió un error al actualizar el estilo: " + ex.Message);
+                    ModelState.AddModelError("", $"Error al actualizar el estilo: {ex.Message}");
                 }
             }
 
-            // Si llegamos aquí, algo falló; volvemos a cargar las tallas y mostramos el formulario nuevamente
-            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("tallas");
+            // Si llegamos aquí, algo falló. Recargar las tallas y volver a mostrar el formulario
+            return await LoadTallasAndReturnView(viewModel);
+        }
+
+        private async Task<IActionResult> LoadTallasAndReturnView(EstiloEditViewModel viewModel)
+        {
+            // Obtener la lista de tallas y asignarla al ViewBag
+            var tallas = await _httpClient.GetFromJsonAsync<List<Talla>>("talla");
             ViewBag.Tallas = tallas;
-            return View(estiloOBJ);
+            return View(viewModel);
         }
 
 
-
-
+        // GET: Estilo/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             SetAuthorizationHeader();
-            var estilo = await _httpClient.DeleteAsync($"estilos/{id}");
+            var estilo = await _httpClient.GetFromJsonAsync<Estilo>($"estilos/{id}");
 
-            if (estilo.IsSuccessStatusCode) Console.WriteLine("no se encontro el id");
+            if (estilo == null)
+            {
+                return NotFound();
+            }
 
+            return View(estilo);
+        }
+
+        // POST: Estilo/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            SetAuthorizationHeader();
+
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"estilos/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    ViewBag.ErrorMessage = $"Hubo un error al eliminar el estilo. Código de estado: {response.StatusCode}. Detalles: {errorContent}";
+                    // Puedes registrar el error o mostrar un mensaje al usuario
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Hubo un error al eliminar el estilo: {ex.Message}";
+                // Puedes registrar el error o mostrar un mensaje al usuario
+            }
+
+            // Si hay un error, redirigir a la página Index
             return RedirectToAction(nameof(Index));
         }
     }

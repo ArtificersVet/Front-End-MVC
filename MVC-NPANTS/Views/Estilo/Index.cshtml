@@ -1,33 +1,55 @@
 ﻿@model IEnumerable<MVC_NPANTS.Models.Estilo>
 
 @{
-    ViewData["Title"] = "Catálogo de Estilos";
+    ViewData["Title"] = "Estilos";
 }
 
-<div class="main-container">
+<div class="main-container"> 
     <div class="page-header">
-        <h1 style="color:white">@ViewData["Title"]</h1>
-        <a class="btn-create" asp-action="Create">Agregar nuevo estilo</a>
+        <h1 style="color:white">@ViewData["Title"]</h1> 
+        <a class="btn-create" asp-action="Create">Crear Nuevo Estilo</a> 
     </div>
 
-    <div class="product-grid">
-        @if (Model != null && Model.Any())
+    @if (TempData["Success"] != null) 
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null) 
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["Error"]
+        </div>
+    }
+
+    <div class="product-grid"> 
+        @if (Model != null && Model.Any()) 
         {
-            @foreach (var estilo in Model)
+            foreach (var item in Model)
             {
-                <div class="product-card">
-                    <a href="@Url.Action("GetById", new { id = estilo.Id })" class="product-name">@estilo.Nombre</a>
-                    <div class="product-detail">
-                        <span class="product-label">ID:</span> @estilo.Id
+                <div class="product-card"> 
+                    <div class="product-name"> 
+                        @Html.DisplayFor(modelItem => item.Nombre) 
+                        <span> (@Html.DisplayFor(modelItem => item.Tipo))</span> 
                     </div>
-                    <div class="product-detail">
-                        <span class="product-label">Tipo:</span> @estilo.Tipo
-                    </div>
+
+                    @if (item.Tallas != null)
+                    {
+                        <ul class="talla-list">
+                            @foreach (var talla in item.Tallas)
+                            {
+                                <li>@talla.Talla.Nombre - Consumo: @talla.ConsumoTela</li>
+                            }
+                        </ul>
+                    }
                     <div class="action-buttons">
-                        @Html.ActionLink("Editar", "Edit", new { id = estilo.Id }, new { @class = "btn-action btn-edit" })
-                        @Html.ActionLink("Detalles", "GetById", new { id = estilo.Id }, new { @class = "btn-action btn-details" })
-                        @Html.ActionLink("Eliminar", "Delete", new { id = estilo.Id }, new { @class = "btn-action btn-delete" })
+                        @Html.ActionLink("Modificar", "Edit", new { id = item.Id }, new { @class = "btn-action btn-edit" })
+                        @Html.ActionLink("Detalles", "Details", new { id = item.Id }, new { @class = "btn-action btn-details" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn-action btn-delete" })
                     </div>
+                    
                 </div>
             }
         }
@@ -38,4 +60,5 @@
             </div>
         }
     </div>
-</div>
+
+    </div>
