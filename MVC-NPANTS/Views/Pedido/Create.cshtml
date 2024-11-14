@@ -1,4 +1,5 @@
 ﻿@model MVC_NPANTS.Models.Pedido
+
 @{
     ViewBag.Title = "Crear Pedido";
 }
@@ -33,9 +34,8 @@
             <div class="col-md-6 mb-3">
                 <label asp-for="ClienteId" class="form-label">Cliente</label>
                 <select asp-for="ClienteId" class="form-select" required asp-items="ViewBag.Clientes">
-                <option value="">Selecciona un cliente</option>
+                    <option value="">Selecciona un cliente</option>
                 </select>
-
             </div>
 
             <div class="col-md-6 mb-3">
@@ -67,10 +67,21 @@
             </button>
         </div>
 
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary">Crear Pedido</button>
-            <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
-        </div>
+        @if (ViewData.ContainsKey("ApprovalLink"))
+        {
+            <div class="mt-4">
+                <a href="@ViewData["ApprovalLink"]" class="btn btn-primary">
+                    Ir a PayPal para procesar el pago
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Crear Pedido</button>
+                <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+            </div>
+        }
     </form>
 </div>
 
@@ -85,64 +96,80 @@
             detalleDiv.id = detalleId;
             detalleDiv.className = 'card mb-3';
             detalleDiv.innerHTML = `
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Prenda de Vestir</label>
-                                          <select name="detalles[${detalleCount}].PrendaVestirId" class="form-select" required>
-                                            <option value="">Selecciona</option>
-                                            @foreach (var prenda in ViewBag.PrendasVestir)
-                                            {
-                                               <option value="@prenda.Value">@prenda.Text</option>
-                                            }
-                                           </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Talla</label>
-                                    <select name="detalles[${detalleCount}].TallaId" class="form-select" required>
-                                        <option value="">Selecciona</option>
-                                        @foreach (var talla in ViewBag.Tallas)
-                                        {
-                                                <option value="@talla.Value">@talla.Text</option>
-                                        }
-                                    </select>
-                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Prenda de Vestir</label>
+                                                         <select name="detalles[${detalleCount}].PrendaVestirId" class="form-select" required>
+                    <option value="">Selecciona</option>
+        @if (ViewBag.PrendasVestir != null)
+        {
+            @foreach (var prenda in ViewBag.PrendasVestir)
+            {
+                                            <option value="@prenda.Value">@prenda.Text</option>
+            }
+        }
+        else
+        {
+                                <option value="">No hay prendas disponibles</option>
+        }
+                </select>
 
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">Cantidad</label>
-                                    <input type="number" name="detalles[${detalleCount}].Cantidad" class="form-control cantidad-input" required min="1" />
-                                </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Talla</label>
+                                                    <select name="detalles[${detalleCount}].TallaId" class="form-select" required>
+                    <option value="">Selecciona</option>
+        @if (ViewBag.Tallas != null)
+        {
+            @foreach (var talla in ViewBag.Tallas)
+            {
+                                            <option value="@talla.Value">@talla.Text</option>
+            }
+        }
+        else
+        {
+                                <option value="">No hay tallas disponibles</option>
+        }
+                </select>
 
-                                <div class="col-md-8 mb-3">
-                                    <label class="form-label">Descripción</label>
-                                    <input type="text" name="detalles[${detalleCount}].Descripcion" class="form-control" required />
-                                </div>
+                                        </div>
 
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label">Precio</label>
-                                    <input type="number" name="detalles[${detalleCount}].Precio" step="0.01" class="form-control precio-input" required min="0.01" />
-                                </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Cantidad</label>
+                                            <input type="number" name="detalles[${detalleCount}].Cantidad" class="form-control cantidad-input" required min="1" />
+                                        </div>
 
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label">Total por Pieza</label>
-                                    <input type="number" name="detalles[${detalleCount}].TotalPieza" step="0.01" class="form-control total-pieza-input" required readonly />
-                                </div>
+                                        <div class="col-md-8 mb-3">
+                                            <label class="form-label">Descripción</label>
+                                            <input type="text" name="detalles[${detalleCount}].Descripcion" class="form-control" required />
+                                        </div>
 
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label">Consumo de Tela</label>
-                                    <input type="number" name="detalles[${detalleCount}].ConsumoTela" step="0.01" class="form-control" required min="0" />
-                                </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">Precio</label>
+                                            <input type="number" name="detalles[${detalleCount}].Precio" step="0.01" class="form-control precio-input" required min="0.01" />
+                                        </div>
 
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label">SubTotal</label>
-                                    <input type="number" name="detalles[${detalleCount}].SubTotal" step="0.01" class="form-control subtotal-input" required readonly />
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">Total por Pieza</label>
+                                            <input type="number" name="detalles[${detalleCount}].TotalPieza" step="0.01" class="form-control total-pieza-input" required readonly />
+                                        </div>
+
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">Consumo de Tela</label>
+                                            <input type="number" name="detalles[${detalleCount}].ConsumoTela" step="0.01" class="form-control" required min="0" />
+                                        </div>
+
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">SubTotal</label>
+                                            <input type="number" name="detalles[${detalleCount}].SubTotal" step="0.01" class="form-control subtotal-input" required readonly />
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeDetalle('${detalleId}')">
+                                        Eliminar Detalle
+                                    </button>
                                 </div>
-                            </div>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="removeDetalle('${detalleId}')">
-                                Eliminar Detalle
-                            </button>
-                        </div>
-                    `;
+                            `;
 
             document.getElementById('detalles-container').appendChild(detalleDiv);
             detallesIds.add(detalleId);
@@ -226,10 +253,10 @@
             const container = document.getElementById('detalles-container');
             if (container.children.length === 0) {
                 container.innerHTML = `
-                            <div class="alert alert-info">
-                                Por favor, agregue al menos un detalle al pedido usando el botón "Agregar Detalle"
-                            </div>
-                        `;
+                                    <div class="alert alert-info">
+                                        Por favor, agregue al menos un detalle al pedido usando el botón "Agregar Detalle"
+                                    </div>
+                                `;
             }
         });
     </script>

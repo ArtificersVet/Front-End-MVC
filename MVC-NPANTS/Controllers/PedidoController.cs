@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVC_NPANTS.Models;
+using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using JsonException = Newtonsoft.Json.JsonException;
 
 namespace MVC_NPANTS.Controllers
 {
@@ -83,6 +85,7 @@ namespace MVC_NPANTS.Controllers
             }
         }
 
+
         [HttpPost]
         public async Task<IActionResult> Create(Pedido pedido, List<DetalleProducto> detalles)
         {
@@ -103,7 +106,15 @@ namespace MVC_NPANTS.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    // Obtener la respuesta de la API
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var responseData = JsonConvert.DeserializeObject<dynamic>(responseContent);
+
+                    // Obtener el enlace de aprobación de PayPal
+                    ViewData["ApprovalLink"] = responseData.approvalLink;
+
+                    // Redirigir al usuario a la URL de aprobación de PayPal
+                    return View(pedido);
                 }
 
                 var errorContent = await response.Content.ReadAsStringAsync();
@@ -120,14 +131,64 @@ namespace MVC_NPANTS.Controllers
             }
         }
 
+        public async Task<IActionResult> CapturePayment(string token, string PayerID)
+        {
+            try
+            {
+                SetAuthorizationHeader();
+                var response = await _httpClient.GetAsync($"pedidos/capture-payment?token={token}&PayerID={PayerID}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // El pago se completó correctamente
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    // Hubo un error al procesar el pago
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, $"Error al procesar el pago: {errorContent}");
+                    return View("Error", new { message = "Error al procesar el pago" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error capturing payment");
+                return View("Error", new { message = "Error al procesar el pago" });
+            }
+        }
+
         private async Task LoadViewBags()
         {
             try
             {
-                ViewBag.Tallas = await GetApiResponse<List<Talla>>("tallas") ?? new List<Talla>();
-                ViewBag.EstadosPedido = await GetApiResponse<List<EstadoPedido>>("estadospedido") ?? new List<EstadoPedido>();
-                ViewBag.PrendasVestir = await GetApiResponse<List<PrendaVestir>>("prendas") ?? new List<PrendaVestir>();
-                ViewBag.Clientes = await GetApiResponse<List<Cliente>>("clientes") ?? new List<Cliente>();
+                var clientesResponse = await GetApiResponse<PagedClientesResponse>("clientes");
+                ViewBag.Clientes = clientesResponse?.Clientes?.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Nombre
+                }) ?? new List<SelectListItem>();
+
+                var estadosResponse = await GetApiResponse<List<EstadoPedido>>("estadosPedido");
+                ViewBag.EstadoPedido = estadosResponse?.Select(e => new SelectListItem
+                {
+                    Value = e.Id.ToString(),
+                    Text = e.Nombre
+                }) ?? new List<SelectListItem>();
+
+                var prendasResponse = await GetApiResponse<PrendaVestirResponse>("prendas");
+                ViewBag.PrendasVestir = prendasResponse?.prendaVestirs?.Select(p => new SelectListItem
+                {
+                    Value = p.Id.ToString(),
+                    Text = p.Nombre
+                }) ?? new List<SelectListItem>();
+
+                var tallasResponse = await GetApiResponse<TallasResponse>("tallas");
+                ViewBag.Tallas = tallasResponse?.Data?.Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = t.Nombre
+                }) ?? new List<SelectListItem>();
             }
             catch (Exception ex)
             {
@@ -135,6 +196,7 @@ namespace MVC_NPANTS.Controllers
                 InitializeEmptyViewBags();
             }
         }
+
 
         private async Task<T> GetApiResponse<T>(string endpoint)
         {
@@ -160,6 +222,7 @@ namespace MVC_NPANTS.Controllers
                 return default;
             }
         }
+
 
         private List<DetalleProducto> ValidateAndFilterDetalles(List<DetalleProducto> detalles)
         {
