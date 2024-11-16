@@ -35,23 +35,30 @@ namespace MVC_NPANTS.Controllers
             try
             {
                 SetAuthorizationHeader();
-                var response = await _httpClient.GetAsync($"pedidos?page={page}&pageSize={pageSize}");
+                 var response = await _httpClient.GetAsync($"pedidos?page={page}&pageSize={pageSize}");
 
                 if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                     return View(CreateEmptyPedidoResponse(pageSize));
+                }
+
+                response.EnsureSuccessStatusCode();
+                 var pedidoResponse = await response.Content.ReadFromJsonAsync<PedidoResponse>();
+
+                if (pedidoResponse == null)
                 {
                     return View(CreateEmptyPedidoResponse(pageSize));
                 }
 
-                response.EnsureSuccessStatusCode();
-                var pedidoResponse = await response.Content.ReadFromJsonAsync<PedidoResponse>();
-                return View(pedidoResponse ?? CreateEmptyPedidoResponse(pageSize));
+                 return View(pedidoResponse);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving pedidos");
-                return View(CreateEmptyPedidoResponse(pageSize));
+                 return View(CreateEmptyPedidoResponse(pageSize));
             }
         }
+
 
         public async Task<IActionResult> Create()
         {

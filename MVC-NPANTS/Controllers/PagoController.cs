@@ -61,8 +61,8 @@ namespace MVC_NPANTS.Controllers
             SetAuthorizationHeader();
             var metodosPago = await _httpClient.GetFromJsonAsync<List<MetodoPago>>("metodospago");
             ViewBag.MetodosPago = new SelectList(metodosPago, "Id", "Nombre");
-            var pedidos = await _httpClient.GetFromJsonAsync<List<Pedido>>("pedidos");
-            ViewBag.Pedidos = new SelectList(pedidos, "Id", "Id");  // Asumiendo que quieres mostrar el Id del pedido
+            var pedidos = await _httpClient.GetFromJsonAsync<PedidoResponse>("pedidos");
+            ViewBag.Pedidos = new SelectList(pedidos.Pedidos, "Id", "Id");  // Asumiendo que quieres mostrar el Id del pedido
             return View();
         }
 
