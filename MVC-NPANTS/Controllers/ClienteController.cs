@@ -85,16 +85,16 @@ namespace MVC_NPANTS.Controllers
         {
             SetAuthorizationHeader();
 
-            var tiposClientes = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
+            var tiposClientes = await _httpClient.GetFromJsonAsync<PagedTipoClienteResponse>("tipoclientes?page=1&pageSize=10");
 
-            if (tiposClientes == null || !tiposClientes.Any())
+            if (tiposClientes == null || !tiposClientes.TipoClientes.Any())
             {
                 ModelState.AddModelError("", "No se encontraron tipos de clientes.");
                 ViewBag.TiposClientes = new SelectList(Enumerable.Empty<TipoCliente>(), "Id", "Nombre");
             }
             else
             {
-                ViewBag.TiposClientes = new SelectList(tiposClientes, "Id", "Nombre");
+                ViewBag.TiposClientes = new SelectList(tiposClientes.TipoClientes, "Id", "Nombre");
             }
 
             return View();
@@ -126,8 +126,8 @@ namespace MVC_NPANTS.Controllers
             }
         }
 
-        var tiposClientes = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
-        ViewBag.TiposClientes = new SelectList(tiposClientes, "Id", "Nombre");
+        var tiposClientes = await _httpClient.GetFromJsonAsync<PagedTipoClienteResponse>("tipoclientes");
+        ViewBag.TiposClientes = new SelectList(tiposClientes.TipoClientes, "Id", "Nombre");
 
         return View(cliente);
     }
@@ -138,16 +138,16 @@ namespace MVC_NPANTS.Controllers
             SetAuthorizationHeader();
 
             // Cargar la lista de tipos de clientes
-            var tiposClientes = await _httpClient.GetFromJsonAsync<List<TipoCliente>>("tipoclientes");
+            var tiposClientes = await _httpClient.GetFromJsonAsync<PagedTipoClienteResponse>("tipoclientes");
 
-            if (tiposClientes == null || !tiposClientes.Any())
+            if (tiposClientes == null || !tiposClientes.TipoClientes.Any())
             {
                 ModelState.AddModelError("", "No se encontraron tipos de clientes.");
                 ViewBag.TiposClientes = new SelectList(Enumerable.Empty<TipoCliente>(), "Id", "Nombre");
             }
             else
             {
-                ViewBag.TiposClientes = new SelectList(tiposClientes, "Id", "Nombre");
+                ViewBag.TiposClientes = new SelectList(tiposClientes.TipoClientes, "Id", "Nombre");
             }
 
             // Obtener el cliente a editar
