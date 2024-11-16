@@ -19,43 +19,41 @@
         <a class="btn-create" asp-action="Create">Agregar nuevo tipo de prenda</a>
     </div>
 
-     @if (Model != null && Model.TipoPrendas != null && Model.TipoPrendas.Any()) // Asegúrate de usar llaves aquí
+    @if (Model != null && Model.TipoPrendas != null && Model.TipoPrendas.Any())
     {
-    <div class="product-grid">
-
-
-        @foreach (var tipoPrenda in Model.TipoPrendas)
-        {
-            <div class="product-card">
-
-                <!-- Imagen condicional según el tipo de prenda -->
-                <div class="product-image">
-                    @if (tipoPrenda.Nombre == "Camisa")
-                    {
-                        <img src="~/img/2.png" alt="Camisa" class="img-fluid" />
-                    }
-                    else if (tipoPrenda.Nombre == "Pantalon")
-                    {
-                        <img src="~/img/1.png" alt="Pantalon" class="img-fluid" />
-                    }
-                    else if (tipoPrenda.Nombre == "Corbatin")
-                    {
-                        <img src="~/img/3.png" alt="Pantalon" class="img-fluid" />
-                    }
-                    else
-                    {
-                        <img src="~/img/4.png" alt="Imagen Predeterminada" class="img-fluid" />
-                    }
+        <div class="product-grid">
+            @foreach (var tipoPrenda in Model.TipoPrendas)
+            {
+                <div class="product-card">
+                    <!-- Imagen condicional según el tipo de prenda -->
+                    <div class="product-image">
+                        @if (tipoPrenda.Nombre == "Camisa")
+                        {
+                            <img src="~/img/2.png" alt="Camisa" class="img-fluid" />
+                        }
+                        else if (tipoPrenda.Nombre == "Pantalon")
+                        {
+                            <img src="~/img/1.png" alt="Pantalon" class="img-fluid" />
+                        }
+                        else if (tipoPrenda.Nombre == "Corbatin")
+                        {
+                            <img src="~/img/3.png" alt="Corbatín" class="img-fluid" />
+                        }
+                        else
+                        {
+                            <img src="~/img/4.png" alt="Imagen Predeterminada" class="img-fluid" />
+                        }
+                    </div>
+                    <a href="@Url.Action("GetById", new { id = tipoPrenda.Id })" class="product-name">@tipoPrenda.Nombre</a>
+                    <div class="action-buttons">
+                        @Html.ActionLink("Editar", "Edit", new { id = tipoPrenda.Id }, new { @class = "btn-action btn-edit" })
+                        @Html.ActionLink("Detalles", "GetById", new { id = tipoPrenda.Id }, new { @class = "btn-action btn-details" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = tipoPrenda.Id }, new { @class = "btn-action btn-delete" })
+                    </div>
                 </div>
-                <a href="@Url.Action("GetById", new { id = tipoPrenda.Id })" class="product-name">@tipoPrenda.Nombre</a>
-                <div class="action-buttons">
-                    @Html.ActionLink("Editar", "Edit", new { id = tipoPrenda.Id }, new { @class = "btn-action btn-edit" })
-                    @Html.ActionLink("Detalles", "GetById", new { id = tipoPrenda.Id }, new { @class = "btn-action btn-details" })
-                    @Html.ActionLink("Eliminar", "Delete", new { id = tipoPrenda.Id }, new { @class = "btn-action btn-delete" })
-                </div>
-            </div>
-        }
+            }
         </div>
+
         <div class="pagination">
             @if (Model.CurrentPage > 1)
             {
@@ -110,7 +108,7 @@
     else
     {
         <div class="alert alert-info" role="alert">
-            No se encontraron Prendas.
+            No se encontraron tipos de prendas de vestir.
         </div>
     }
 </div>

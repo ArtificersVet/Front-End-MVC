@@ -24,20 +24,30 @@ namespace MVC_NPANTS.Controllers
         public async Task<IActionResult> Index(int page = 1)
         {
             SetAuthorizationHeader();
+
             var pagedResponse = await _httpClient.GetFromJsonAsync<PaginacionTipoPrendas>($"tipoprendasvestir?page={page}");
+
+            if (pagedResponse == null || pagedResponse.TipoPrendas == null || !pagedResponse.TipoPrendas.Any())
+            {
+                Console.WriteLine("No se recibieron datos de la API o la lista está vacía.");
+                Console.WriteLine($"Response: {pagedResponse}");
+            }
 
             var viewModel = new PaginacionTipoPrendas
             {
-                TipoPrendas = pagedResponse?.TipoPrendas,
+                TipoPrendas = pagedResponse?.TipoPrendas ?? new List<TipoPrendaVestir>(),
                 CurrentPage = pagedResponse?.CurrentPage ?? 1,
                 TotalPages = pagedResponse?.TotalPages ?? 1,
-                PageSize = pagedResponse?.PageSize ?? 10
+                PageSize = pagedResponse?.PageSize ?? 10,
+                TotalItems = pagedResponse?.TotalItems ?? 0
             };
+
             return View(viewModel);
         }
 
-       
-       
+
+
+
 
         // GET: TipoPrendaVestirController/Create
         public ActionResult Create()

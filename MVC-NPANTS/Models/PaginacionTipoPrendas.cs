@@ -9,7 +9,7 @@ namespace MVC_NPANTS.Models
         public int TotalPages { get; set; }
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }
-        [JsonPropertyName("tipoprendasvestir")]
-        public List<TipoPrendaVestir> TipoPrendas { get; set; } = new List<TipoPrendaVestir>();
+        [JsonPropertyName("tiposPrendaVestir")]
+        public List<TipoPrendaVestir> TipoPrendas { get; set; }
     }
 }
