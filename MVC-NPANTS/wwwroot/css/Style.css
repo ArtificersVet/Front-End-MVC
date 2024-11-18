@@ -17,12 +17,14 @@
     font-family: 'Poppins', sans-serif;
     width: 1470px;
     max-width: 1420px;
-    margin: 56px -330px;
+    margin: 100px auto; /* Centra el contenedor vertical y horizontalmente */
     padding: 30px;
     background-color: #fff;
     border-radius: 20px;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    min-height: 600px; /* Agregué esta propiedad para dar más altura al contenedor */
 }
+
 
 
 /* Encabezado */
@@ -449,6 +451,23 @@ h2 {
     margin-bottom: 8px;
     display: block;
 }
+    .form-label p {
+        font-size: 18px; /* Ajusta el tamaño según prefieras */
+        color: #000; /* Negro puro */
+        text-align: center; /* Para mantenerlo centrado como en el primer párrafo */
+        line-height: 1.6; /* Mejora la legibilidad */
+    }
+
+h2 {
+    font-size: 36px; /* Tamaño ajustable */
+    font-weight: bold;
+    background: linear-gradient(1deg, #9e9e8a, #44dda5); /* De gris a verde cian */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+}
+
+
 
 .form-control {
     width: 100%;
