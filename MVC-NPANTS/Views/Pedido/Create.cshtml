@@ -5,7 +5,7 @@
 }
 
 <div class="container mt-4">
-    <h2>Crear Pedido</h2>
+    <h2><i class="fas fa-shopping-cart"></i> Crear Pedido</h2>
 
     @if (!ViewData.ModelState.IsValid)
     {
@@ -17,12 +17,12 @@
     <form asp-action="Create" method="post" id="pedidoForm">
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label asp-for="FechaPedido" class="form-label">Fecha de Pedido</label>
+                <label asp-for="FechaPedido" class="form-label"><i class="fas fa-calendar-alt"></i> Fecha de Pedido</label>
                 <input asp-for="FechaPedido" type="date" class="form-control" required />
             </div>
 
             <div class="col-md-6 mb-3">
-                <label asp-for="TipoPago" class="form-label">Tipo de Pago</label>
+                <label asp-for="TipoPago" class="form-label"><i class="fas fa-money-bill-wave"></i> Tipo de Pago</label>
                 <select asp-for="TipoPago" class="form-select" required>
                     <option value="">Selecciona un tipo de pago</option>
                     <option value="1">Efectivo</option>
@@ -32,60 +32,65 @@
             </div>
 
             <div class="col-md-6 mb-3">
-                <label asp-for="ClienteId" class="form-label">Cliente</label>
+                <label asp-for="ClienteId" class="form-label"><i class="fas fa-user"></i> Cliente</label>
                 <select asp-for="ClienteId" class="form-select" required asp-items="ViewBag.Clientes">
                     <option value="">Selecciona un cliente</option>
                 </select>
             </div>
 
             <div class="col-md-6 mb-3">
-                <label asp-for="EstadoPedidoId" class="form-label">Estado del Pedido</label>
+                <label asp-for="EstadoPedidoId" class="form-label"><i class="fas fa-tasks"></i> Estado del Pedido</label>
                 <select asp-for="EstadoPedidoId" class="form-select" required asp-items="ViewBag.EstadoPedido">
                     <option value="">Selecciona un estado</option>
                 </select>
             </div>
 
             <div class="col-md-6 mb-3">
-                <label asp-for="Saldo" class="form-label">Saldo</label>
+                <label asp-for="Saldo" class="form-label"><i class="fas fa-dollar-sign"></i> Saldo</label>
                 <input asp-for="Saldo" type="number" step="0.01" class="form-control" required />
             </div>
 
             <div class="col-md-6 mb-3">
-                <label asp-for="Total" class="form-label">Total</label>
+                <label asp-for="Total" class="form-label"><i class="fas fa-calculator"></i> Total</label>
                 <input asp-for="Total" type="number" step="0.01" class="form-control" required readonly />
             </div>
         </div>
 
-        <h3 class="mt-4">Detalles del Producto</h3>
+        <h3 class="mt-4"><i class="fas fa-list"></i> Detalles del Producto</h3>
         <div id="detalles-container">
             <!-- Los detalles se agregarán aquí dinámicamente -->
         </div>
 
         <div class="mt-3 mb-4">
             <button type="button" class="btn btn-secondary" onclick="addDetalle()">
-                Agregar Detalle
+                <i class="fas fa-plus-circle"></i> Agregar Detalle
             </button>
         </div>
 
         @if (ViewData.ContainsKey("ApprovalLink"))
         {
             <div class="mt-4">
-                <a href="@ViewData["ApprovalLink"]" class="btn btn-primary">
-                    Ir a PayPal para procesar el pago
+                <a href="@ViewData["ApprovalLink"]" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-credit-card"></i> Ir a PayPal para procesar el pago
                 </a>
             </div>
         }
         else
         {
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary">Crear Pedido</button>
-                <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Crear Pedido
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </a>
             </div>
         }
     </form>
 </div>
 
 @section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script>
         let detalleCount = 0;
         const detallesIds = new Set(); // Para mantener un registro de los detalles activos
@@ -99,74 +104,66 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label">Prenda de Vestir</label>
-                                                         <select name="detalles[${detalleCount}].PrendaVestirId" class="form-select" required>
-                    <option value="">Selecciona</option>
+                                            <label class="form-label"><i class="fas fa-tshirt"></i> Prenda de Vestir</label>
+                                            <select name="detalles[${detalleCount}].PrendaVestirId" class="form-select" required>
+                                                <option value="">Selecciona</option>
         @if (ViewBag.PrendasVestir != null)
         {
             @foreach (var prenda in ViewBag.PrendasVestir)
             {
-                                            <option value="@prenda.Value">@prenda.Text</option>
+                                                                        <option value="@prenda.Value">@prenda.Text</option>
             }
         }
         else
         {
-                                <option value="">No hay prendas disponibles</option>
+                                                            <option value="">No hay prendas disponibles</option>
         }
-                </select>
-
+                                            </select>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label">Talla</label>
-                                                    <select name="detalles[${detalleCount}].TallaId" class="form-select" required>
-                    <option value="">Selecciona</option>
+                                            <label class="form-label"><i class="fas fa-ruler"></i> Talla</label>
+                                            <select name="detalles[${detalleCount}].TallaId" class="form-select" required>
+                                                <option value="">Selecciona</option>
         @if (ViewBag.Tallas != null)
         {
             @foreach (var talla in ViewBag.Tallas)
             {
-                                            <option value="@talla.Value">@talla.Text</option>
+                                                                        <option value="@talla.Value">@talla.Text</option>
             }
         }
         else
         {
-                                <option value="">No hay tallas disponibles</option>
+                                                            <option value="">No hay tallas disponibles</option>
         }
-                </select>
-
+                                            </select>
                                         </div>
-
                                         <div class="col-md-4 mb-3">
-                                            <label class="form-label">Cantidad</label>
+                                            <label class="form-label"><i class="fas fa-sort-numeric-up"></i> Cantidad</label>
                                             <input type="number" name="detalles[${detalleCount}].Cantidad" class="form-control cantidad-input" required min="1" />
                                         </div>
-
                                         <div class="col-md-8 mb-3">
-                                            <label class="form-label">Descripción</label>
+                                            <label class="form-label"><i class="fas fa-info-circle"></i> Descripción</label>
                                             <input type="text" name="detalles[${detalleCount}].Descripcion" class="form-control" required />
                                         </div>
-
                                         <div class="col-md-3 mb-3">
-                                            <label class="form-label">Precio</label>
+                                            <label class="form-label"><i class="fas fa-tag"></i> Precio</label>
                                             <input type="number" name="detalles[${detalleCount}].Precio" step="0.01" class="form-control precio-input" required min="0.01" />
                                         </div>
-
                                         <div class="col-md-3 mb-3">
-                                            <label class="form-label">Total por Pieza</label>
+                                            <label class="form-label"><i class="fas fa-calculator"></i> Total por Pieza</label>
                                             <input type="number" name="detalles[${detalleCount}].TotalPieza" step="0.01" class="form-control total-pieza-input" required readonly />
                                         </div>
-
                                         <div class="col-md-3 mb-3">
-                                            <label class="form-label">Consumo de Tela</label>
+                                            <label class="form-label"><i class="fas fa-ruler-combined"></i> Consumo de Tela</label>
                                             <input type="number" name="detalles[${detalleCount}].ConsumoTela" step="0.01" class="form-control" required min="0" />
                                         </div>
-
                                         <div class="col-md-3 mb-3">
-                                            <label class="form-label">SubTotal</label>
+                                            <label class="form-label"><i class="fas fa-dollar-sign"></i> SubTotal</label>
                                             <input type="number" name="detalles[${detalleCount}].SubTotal" step="0.01" class="form-control subtotal-input" required readonly />
                                         </div>
                                     </div>
                                     <button type="button" class="btn btn-danger btn-sm" onclick="removeDetalle('${detalleId}')">
-                                        Eliminar Detalle
+                                        <i class="fas fa-trash-alt"></i> Eliminar Detalle
                                     </button>
                                 </div>
                             `;
@@ -249,12 +246,12 @@
 
         // No agregar detalle automáticamente al cargar
         document.addEventListener('DOMContentLoaded', function () {
-            // Inicializar con un botón para agregar el primer detalle
+            // Inicializar con un mensaje para agregar el primer detalle
             const container = document.getElementById('detalles-container');
             if (container.children.length === 0) {
                 container.innerHTML = `
                                     <div class="alert alert-info">
-                                        Por favor, agregue al menos un detalle al pedido usando el botón "Agregar Detalle"
+                                        <i class="fas fa-info-circle"></i> Por favor, agregue al menos un detalle al pedido usando el botón "Agregar Detalle"
                                     </div>
                                 `;
             }
