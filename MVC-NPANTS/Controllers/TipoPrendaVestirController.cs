@@ -21,32 +21,52 @@ namespace MVC_NPANTS.Controllers
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             }
         }
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string searchString = null)
         {
             SetAuthorizationHeader();
 
-            var pagedResponse = await _httpClient.GetFromJsonAsync<PaginacionTipoPrendas>($"tipoprendasvestir?page={page}");
+            List<TipoPrendaVestir> tiposPrenda = new List<TipoPrendaVestir>();
+            int totalPages = 0;
 
-            if (pagedResponse == null || pagedResponse.TipoPrendas == null || !pagedResponse.TipoPrendas.Any())
+            try
             {
-                Console.WriteLine("No se recibieron datos de la API o la lista está vacía.");
-                Console.WriteLine($"Response: {pagedResponse}");
+                // Obtener todos los tipos de prenda desde el endpoint con paginación
+                var response = await _httpClient.GetFromJsonAsync<PaginacionTipoPrendas>($"tipoprendasvestir?page={page}&pageSize={pageSize}");
+
+                if (response != null)
+                {
+                    tiposPrenda = response.TipoPrendas;
+                    totalPages = response.TotalPages;
+                }
+
+                // Filtrar por el término de búsqueda si existe
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    tiposPrenda = tiposPrenda.Where(tp =>
+                        tp.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                    ViewBag.SearchString = searchString; // Guardar el término en ViewBag para mostrarlo en la vista
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                ModelState.AddModelError("", "Error al obtener la lista de tipos de prenda: " + ex.Message);
             }
 
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            // Crear el modelo de vista
             var viewModel = new PaginacionTipoPrendas
             {
-                TipoPrendas = pagedResponse?.TipoPrendas ?? new List<TipoPrendaVestir>(),
-                CurrentPage = pagedResponse?.CurrentPage ?? 1,
-                TotalPages = pagedResponse?.TotalPages ?? 1,
-                PageSize = pagedResponse?.PageSize ?? 10,
-                TotalItems = pagedResponse?.TotalItems ?? 0
+                TipoPrendas = tiposPrenda,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                PageSize = pageSize
             };
 
             return View(viewModel);
         }
-
-
-
 
 
         // GET: TipoPrendaVestirController/Create

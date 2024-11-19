@@ -19,6 +19,20 @@
         <a class="btn-create" asp-action="Create">Agregar nuevo tipo de prenda</a>
     </div>
 
+    <!-- Formulario de búsqueda -->
+    <form asp-action="Index" method="get" class="mb-3">
+        <div class="form-group d-flex">
+            <input type="text" class="form-control me-2" id="searchString" name="searchString" placeholder="Buscar por nombre" value="@ViewBag.SearchString">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </form>
+
+    @if (!string.IsNullOrEmpty(ViewBag.SearchString))
+    {
+        <p>Resultados de búsqueda para: "@ViewBag.SearchString"</p>
+    }
+
+    <!-- Listado de tipos de prendas -->
     @if (Model != null && Model.TipoPrendas != null && Model.TipoPrendas.Any())
     {
         <div class="product-grid">
@@ -33,7 +47,7 @@
                         }
                         else if (tipoPrenda.Nombre == "Pantalon")
                         {
-                            <img src="~/img/1.png" alt="Pantalon" class="img-fluid" />
+                            <img src="~/img/1.png" alt="Pantalón" class="img-fluid" />
                         }
                         else if (tipoPrenda.Nombre == "Corbatin")
                         {
@@ -44,6 +58,7 @@
                             <img src="~/img/4.png" alt="Imagen Predeterminada" class="img-fluid" />
                         }
                     </div>
+
                     <a href="@Url.Action("GetById", new { id = tipoPrenda.Id })" class="product-name">@tipoPrenda.Nombre</a>
                     <div class="action-buttons">
                         @Html.ActionLink("Editar", "Edit", new { id = tipoPrenda.Id }, new { @class = "btn-action btn-edit" })
@@ -54,6 +69,7 @@
             }
         </div>
 
+        <!-- Paginación -->
         <div class="pagination">
             @if (Model.CurrentPage > 1)
             {
