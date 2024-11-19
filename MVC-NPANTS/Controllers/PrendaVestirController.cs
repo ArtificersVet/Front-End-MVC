@@ -24,22 +24,54 @@ namespace MVC_NPANTS.Controllers
         }
 
         // GET: PrendaVestirController/Index
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string searchString = null)
         {
             SetAuthorizationHeader();
 
-            var pagedResponse = await _httpClient.GetFromJsonAsync<PagePrendaVestirResponse>($"prendas?page={page}");
+            List<PrendaVestir> prendas = new List<PrendaVestir>();
+            int totalPages = 0;
 
+            try
+            {
+                // Obtener todas las prendas desde el endpoint con paginación
+                var response = await _httpClient.GetFromJsonAsync<PagePrendaVestirResponse>($"prendas?page={page}&pageSize={pageSize}");
+
+                if (response != null)
+                {
+                    prendas = response.PrendasVestir;
+                    totalPages = response.TotalPages;
+                }
+
+                
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    prendas = prendas.Where(p =>
+                        p.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                        p.Tipoprendavestir.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                    ViewBag.SearchString = searchString; 
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                ModelState.AddModelError("", "Error al obtener la lista de prendas: " + ex.Message);
+            }
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            // Crear el modelo de vista
             var viewModel = new PagePrendaVestirResponse
             {
-                PrendasVestir = pagedResponse?.PrendasVestir,
-                CurrentPage = pagedResponse?.CurrentPage ?? 1,
-                TotalPages = pagedResponse?.TotalPages ?? 1,
-                PageSize = pagedResponse?.PageSize ?? 10
+                PrendasVestir = prendas,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                PageSize = pageSize
             };
 
             return View(viewModel);
         }
+
 
         // GET: PrendaVestirController/Details/5
         public async Task<IActionResult> Details(long id)
