@@ -23,7 +23,7 @@ namespace MVC_NPANTS.Models
         public long? EstadoPedidoId { get; set; }
         [JsonPropertyName("cliente")]
         public virtual Cliente? Cliente { get; set; }
-        [JsonPropertyName("estado_pedido")]
+        [JsonPropertyName("estadosPedido")]
         public virtual EstadoPedido? EstadoPedido { get; set; }
         public virtual ICollection<HistorialPedido> HistorialPedidos { get; set; }
         public List<DetalleProducto> Detalles { get; set; }

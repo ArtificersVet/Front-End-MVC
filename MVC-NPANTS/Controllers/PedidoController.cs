@@ -71,8 +71,8 @@ namespace MVC_NPANTS.Controllers
                 ViewBag.Clientes = new SelectList(clientesResponse?.Clientes ?? new List<Cliente>(), "Id", "Nombre");
 
                 // Cargar estados de pedido
-                var estadosResponse = await GetApiResponse<List<EstadoPedido>>("estadosPedido");
-                ViewBag.EstadoPedido = new SelectList(estadosResponse ?? new List<EstadoPedido>(), "Id", "Nombre");
+                var estadosResponse = await GetApiResponse<PageEstadoPedidoResponse>("estadosPedido");
+                ViewBag.EstadoPedido = new SelectList(estadosResponse.EstadosPedido ?? new List<EstadoPedido>(), "Id", "Nombre");
 
                 // Cargar prendas
                 var prendasResponse = await GetApiResponse<PrendaVestirResponse>("prendas");
