@@ -339,7 +339,7 @@ namespace MVC_NPANTS.Controllers
             try
             {
                 SetAuthorizationHeader();
-                var pedido = await GetApiResponse<Pedido>($"pedidos/{id}");
+                var pedido = await GetApiResponse<Pedido>($"pedido/{id}");
 
                 if (pedido == null)
                 {
