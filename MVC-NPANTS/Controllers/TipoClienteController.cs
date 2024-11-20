@@ -21,24 +21,57 @@ namespace MVC_NPANTS.Controllers
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             }
         }
-        public async Task <IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string searchString = null)
         {
             SetAuthorizationHeader();
 
-            var pagedResponse = await _httpClient.GetFromJsonAsync<PageTipoClienteResponse>($"tipoclientes?page={page}");
+            List<TipoCliente> tiposClientes = new List<TipoCliente>();
+            int totalPages = 0;
 
-            var viewModel = new PageTipoClienteResponse
+            try
             {
-                TipoClientes = pagedResponse?.TipoClientes,
-                CurrentPage = pagedResponse?.CurrentPage ?? 1,
-                TotalPages = pagedResponse?.TotalPages ?? 1,
-                PageSize = pagedResponse?.PageSize ?? 10
+                // Obtener todos los tipos de cliente desde el endpoint con paginación
+                var response = await _httpClient.GetFromJsonAsync<PagedTipoClienteResponse>($"tipoclientes?page={page}&pageSize={pageSize}");
+
+                if (response != null)
+                {
+                    tiposClientes = response.TipoClientes;
+                    totalPages = response.TotalPages;
+                }
+
+                // Filtrar por el término de búsqueda si existe
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    tiposClientes = tiposClientes.Where(tc =>
+                        tc.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                    ViewBag.SearchString = searchString; // Guardar el término en ViewBag para mostrarlo en la vista
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                ModelState.AddModelError("", "Error al obtener la lista de tipos de cliente: " + ex.Message);
+            }
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            // Crear el modelo de vista
+            var viewModel = new PagedTipoClienteResponse
+            {
+                TipoClientes = tiposClientes,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                PageSize = pageSize
             };
 
             return View(viewModel);
         }
 
-        
+
+
+
+
         public ActionResult Create()
         {
             SetAuthorizationHeader();
