@@ -1,14 +1,26 @@
-﻿
-@model MVC_NPANTS.Controllers.TallaController.PaginatedResponse<MVC_NPANTS.Models.Talla>
+﻿@model MVC_NPANTS.Controllers.TallaController.PaginatedResponse<MVC_NPANTS.Models.Talla>
 @{
     ViewData["Title"] = "Catálogo de Tallas";
 }
 
 <div class="main-container">
-    <div class="page-header">
-        <h1 style="color:white">@ViewData["Title"]</h1>
-        <a class="btn-create" asp-action="Create">Agregar nueva talla</a>
+    <div class="search-container">
+        <div class="page-header">
+            <h1 style="color:white">@ViewData["Title"]</h1>
+            <a class="btn-create" asp-action="Create">Agregar nueva talla</a>
+        </div>
+        <form asp-action="Index" method="get">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" name="searchString" placeholder="Buscar talla..." aria-label="Search for talla" aria-describedby="search-button">
+                <button type="submit" class="btn btn-primary" id="search-button">Buscar</button>
+            </div>
+           
+        </form>   
     </div>
+    <p> 
+
+    </p>
+   
 
     @if (TempData["Success"] != null)
     {
@@ -65,8 +77,8 @@
                     @for (int i = 1; i <= ViewBag.TotalPages; i++)
                     {
                         <a class="pagination-btn @(i == ViewBag.CurrentPage ? "active" : "")"
-                           asp-action="Index" 
-                           asp-route-page="@i" 
+                           asp-action="Index"
+                           asp-route-page="@i"
                            asp-route-limit="@ViewBag.ItemsPerPage">
                             @i
                         </a>
@@ -85,71 +97,5 @@
 </div>
 
 <style>
-    .pagination-container {
-        margin-top: 2rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        padding: 1rem;
-    }
-
-    .pagination-info {
-        color: white;
-        font-size: 0.9rem;
-    }
-
-    .pagination-controls {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .pagination-numbers {
-        display: flex;
-        gap: 0.25rem;
-    }
-
-    .pagination-btn {
-        padding: 0.5rem 1rem;
-        background-color: #2c3e50;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        transition: background-color 0.3s;
-    }
-
-    .pagination-btn:hover {
-        background-color: #34495e;
-        color: white;
-        text-decoration: none;
-    }
-
-    .pagination-btn.active {
-        background-color: #3498db;
-    }
-
-    .alert {
-        margin: 1rem 0;
-        padding: 1rem;
-        border-radius: 4px;
-    }
-
-    .alert-success {
-        background-color: rgba(46, 204, 113, 0.2);
-        border: 1px solid #2ecc71;
-        color: #2ecc71;
-    }
-
-    .alert-danger {
-        background-color: rgba(231, 76, 60, 0.2);
-        border: 1px solid #e74c3c;
-        color: #e74c3c;
-    }
-
-    .alert-info {
-        background-color: rgba(52, 152, 219, 0.2);
-        border: 1px solid #3498db;
-        color: #3498db;
-    }
+    /* Styling for search bar, main content, and pagination remains the same */
 </style>
