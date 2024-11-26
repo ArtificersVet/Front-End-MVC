@@ -29,7 +29,7 @@ namespace MVC_NPANTS.Controllers
 
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<List<Role>>("/roles");
+                var response = await _httpClient.GetFromJsonAsync<List<Role>>("roles");
                 if (response != null)
                 {
                     roles = response;
@@ -56,7 +56,7 @@ namespace MVC_NPANTS.Controllers
 
             try
             {
-                role = await _httpClient.GetFromJsonAsync<Role>($"https://api-npants.onrender.com/roles/{id}");
+                role = await _httpClient.GetFromJsonAsync<Role>($"http://3.142.209.219:3000/roles/{id}");
                 if (role == null)
                 {
                     Console.WriteLine($"No se encontró el rol con ID {id}.");
@@ -90,7 +90,7 @@ namespace MVC_NPANTS.Controllers
             {
                 try
                 {
-                    var response = await _httpClient.PostAsJsonAsync("https://api-npants.onrender.com/roles/create", role);
+                    var response = await _httpClient.PostAsJsonAsync("http://3.142.209.219:3000/roles/create", role);
                     if (response.IsSuccessStatusCode)
                     {
                         return RedirectToAction("Index");
@@ -116,7 +116,7 @@ namespace MVC_NPANTS.Controllers
             Role role = null;
             try
             {
-                role = await _httpClient.GetFromJsonAsync<Role>($"https://api-npants.onrender.com/roles/{id}");
+                role = await _httpClient.GetFromJsonAsync<Role>($"http://3.142.209.219:3000/roles/{id}");
                 if (role == null)
                 {
                     return NotFound();
@@ -146,7 +146,7 @@ namespace MVC_NPANTS.Controllers
             {
                 try
                 {
-                    var response = await _httpClient.PutAsJsonAsync($"https://api-npants.onrender.com/roles/{id}", role);
+                    var response = await _httpClient.PutAsJsonAsync($"http://3.142.209.219:3000/roles/{id}", role);
                     if (response.IsSuccessStatusCode)
                     {
                         return RedirectToAction("Index");
@@ -173,7 +173,7 @@ namespace MVC_NPANTS.Controllers
             Role role = null;
             try
             {
-                role = await _httpClient.GetFromJsonAsync<Role>($"https://api-npants.onrender.com/roles/{id}");
+                role = await _httpClient.GetFromJsonAsync<Role>($"http://3.142.209.219:3000/roles/{id}");
                 if (role == null)
                 {
                     return NotFound();
@@ -195,7 +195,7 @@ namespace MVC_NPANTS.Controllers
             SetAuthorizationHeader();
             try
             {
-                var response = await _httpClient.DeleteAsync($"https://api-npants.onrender.com/roles/{id}");
+                var response = await _httpClient.DeleteAsync($"http://3.142.209.219:3000/roles/{id}");
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index"); // Redirigir a la lista de roles después de eliminar

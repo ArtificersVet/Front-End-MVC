@@ -35,10 +35,10 @@ namespace MVC_NPANTS.Controllers
             try
             {
                 // Realizar solicitud con paginación
-                var response = await _httpClient.GetFromJsonAsync<PaginationResponse>("usuarios?page=" + page + "&pageSize=" + pageSize);
+                var response = await _httpClient.GetFromJsonAsync<usuariosPaged>("usuarios?page=" + page + "&pageSize=" + pageSize);
                 if (response != null)
                 {
-                    usuarios = response.Usuarios;
+                    usuarios = response.usuarios;
                     totalPages = response.TotalPages;
                 }
 
