@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace MVC_NPANTS.Models
 {
@@ -15,8 +16,11 @@ namespace MVC_NPANTS.Models
 
         public string? Nombre { get; set; }
         public string? Tipo { get; set; }
+         
+        public double? Precio { get; set; }
 
         public List<EstiloTalla> Tallas { get; set; }
+
 
 
         public virtual ICollection<PrendaVestir> PrendaVestirs { get; set; }

@@ -15,6 +15,9 @@ namespace MVC_NPANTS.Models
         [Required(ErrorMessage = "El tipo es requerido")]
         public string Tipo { get; set; }
 
+        [Required(ErrorMessage = "El precio es requirdo")]
+        public double Precio { get; set; }
+
         [UniqueTallaId]
         public List<EstiloTallaEditDTO> Tallas { get; set; } = new List<EstiloTallaEditDTO>();
     }

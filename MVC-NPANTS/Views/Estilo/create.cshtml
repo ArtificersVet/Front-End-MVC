@@ -25,6 +25,12 @@
             <span asp-validation-for="Tipo" class="text-danger"></span>
         </div>
 
+        <div class="form-group mb-3">
+            <label asp-for="Precio" class="control-label">Precio</label>
+            <input type="number"  asp-for="Precio" class="form-control" required />
+            <span asp-validation-for="Precio" class="text-danger"></span>
+        </div>
+
         <h3>Tallas</h3>
         <div id="tallas-container">
             <!-- Las tallas se agregarán dinámicamente aquí -->

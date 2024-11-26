@@ -76,7 +76,7 @@ namespace MVC_NPANTS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nombre, Tipo, Tallas")] EstiloCreateViewModel viewModel)
+        public async Task<IActionResult> Create([Bind("Nombre, Tipo, Precio, Tallas")] EstiloCreateViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -89,6 +89,7 @@ namespace MVC_NPANTS.Controllers
                     {
                         nombre = viewModel.Nombre,
                         tipo = viewModel.Tipo,
+                        precio = viewModel.Precio,
                         tallas = viewModel.Tallas.Select(t => new
                         {
                             talla_id  = t.TallaId,
@@ -152,6 +153,7 @@ namespace MVC_NPANTS.Controllers
                     Id = (int)estilo.Id,
                     Nombre = estilo.Nombre,
                     Tipo = estilo.Tipo,
+                    Precio = (double)estilo.Precio,
                     Tallas = estilo.Tallas.Select(t => new EstiloTallaEditDTO
                     {
                         Id = t.Id,
@@ -191,6 +193,7 @@ namespace MVC_NPANTS.Controllers
                         id = viewModel.Id,
                         nombre = viewModel.Nombre,
                         tipo = viewModel.Tipo,
+                        precio = viewModel.Precio,
                         tallas = viewModel.Tallas.ToList(), // Usar la lista completa de Tallas sin modificar
                         tallasEliminadas = TallasEliminadas ?? new List<int>()
                     };
