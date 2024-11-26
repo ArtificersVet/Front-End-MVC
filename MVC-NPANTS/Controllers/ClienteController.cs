@@ -24,8 +24,8 @@ namespace MVC_NPANTS.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index(int page = 1)
+        
+        public async Task<IActionResult> Index(int page = 1, string searchString = null)
         {
             SetAuthorizationHeader();
 
@@ -33,27 +33,47 @@ namespace MVC_NPANTS.Controllers
 
             try
             {
+                // Obtener todos los clientes paginados desde la API
                 var pagedResponse = await _httpClient.GetFromJsonAsync<PagedClientesResponse>($"clientes?page={page}");
 
                 if (pagedResponse != null)
                 {
-                    viewModel.Clientes = pagedResponse.Clientes;
-                    viewModel.CurrentPage = pagedResponse.CurrentPage;
-                    viewModel.TotalPages = pagedResponse.TotalPages;
-                    viewModel.PageSize = pagedResponse.PageSize;
+                    var clientes = pagedResponse.Clientes;
+
+                    // Verificar si hay un término de búsqueda
+                    if (!string.IsNullOrEmpty(searchString))
+                    {
+                        clientes = clientes.Where(tc =>
+                            tc.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                        // Ajustar los datos de la vista con los resultados filtrados
+                        viewModel.Clientes = clientes;
+                        viewModel.TotalItems = clientes.Count;
+                        viewModel.PageSize = pagedResponse.PageSize;
+                        viewModel.TotalPages = (int)Math.Ceiling((double)clientes.Count / pagedResponse.PageSize);
+                        viewModel.CurrentPage = 1; // Reiniciar a la primera página para la búsqueda
+                    }
+                    else
+                    {
+                        // Si no hay búsqueda, usar los resultados originales
+                        viewModel = pagedResponse;
+                    }
+
+                    ViewBag.SearchString = searchString; // Mantener el término de búsqueda en la vista
                 }
             }
             catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                // Si el endpoint devuelve un 404, devolvemos la vista con una lista vacía en lugar de lanzar el error
+                // Si la API devuelve un 404, mostrar una lista vacía
                 viewModel.Clientes = new List<Cliente>();
                 viewModel.CurrentPage = 1;
                 viewModel.TotalPages = 1;
                 viewModel.PageSize = 10;
+                viewModel.TotalItems = 0;
             }
             catch (Exception)
             {
-                // Cualquier otro tipo de excepción se captura para evitar que la aplicación falle
+                // Manejar errores genéricos
                 viewModel.Clientes = new List<Cliente>();
             }
 

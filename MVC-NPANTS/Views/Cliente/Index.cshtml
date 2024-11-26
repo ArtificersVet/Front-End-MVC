@@ -19,6 +19,17 @@
         <a class="btn-create" asp-action="Create">Agregar nuevo cliente</a>
     </div>
 
+    <form asp-action="Index" method="get" class="mb-3">
+        <div class="form-group d-flex">
+            <input type="text" class="form-control me-2" id="searchString" name="searchString" placeholder="Buscar por nombre" value="@ViewBag.SearchString">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </form>
+    @if (!string.IsNullOrEmpty(ViewBag.SearchString))
+    {
+        <p>Resultados de búsqueda para: "@ViewBag.SearchString"</p>
+    }
+
     @if (Model != null && Model.Clientes != null && Model.Clientes.Any())
     {
         <div class="product-grid">
