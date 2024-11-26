@@ -21,7 +21,7 @@
 
     <form asp-action="Index" method="get" class="mb-3">
         <div class="form-group d-flex">
-            <input type="text" class="form-control me-2" id="searchString" name="searchString" placeholder="Ingrese nombre o color">
+            <input type="text" class="form-control me-2" id="searchString" name="searchString" placeholder="Ingrese nombre o color" value="@ViewBag.searchString">
             <button type="submit" class="btn btn-primary">Buscar</button>
         </div>
     </form>
@@ -97,10 +97,7 @@
                    asp-route-pageSize="@Model.PageSize">Última</a>
             }
 
-            <span class="pagination-info">
-                Página @Model.CurrentPage de @Model.TotalPages
-                (Total: @Model.TotalItems registros)
-            </span>
+           
         </div>
     }
     else

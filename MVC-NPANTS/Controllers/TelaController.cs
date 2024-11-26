@@ -23,18 +23,45 @@ namespace MVC_NPANTS.Controllers
         }
 
         // Listar todas las telas
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, string searchString = null, int pageSize = 10)
         {
             SetAuthorizationHeader();
 
-            var pagedResponse = await _httpClient.GetFromJsonAsync<PageTelaResponse>($"telas?page={page}");
+            List<Tela> telas = new List<Tela>();
+            int totalPages = 0;
+            try
+            {
+                var pagedResponse = await _httpClient.GetFromJsonAsync<PageTelaResponse>($"telas?page={page}");
+
+                if (pagedResponse != null)
+                {
+                    telas = pagedResponse.Telas;
+                    totalPages = pagedResponse.TotalPages;
+                }
+
+                // Filtrar por el término de búsqueda si existe
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    telas = telas.Where(t =>
+                         t.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                        t.Color.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                    ViewBag.SearchString = searchString; // Guardar el término en ViewBag para mostrarlo en la vista
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                ModelState.AddModelError("", "Error al obtener la lista de telas: " + ex.Message);
+            }
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
 
             var viewModel = new PageTelaResponse
             {
-                Telas = pagedResponse?.Telas,
-                CurrentPage = pagedResponse?.CurrentPage ?? 1,
-                TotalPages = pagedResponse?.TotalPages ?? 1,
-                PageSize = pagedResponse?.PageSize ?? 10
+                Telas = telas,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                PageSize = pageSize
             };
 
             return View(viewModel);
