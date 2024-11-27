@@ -1,168 +1,137 @@
 ﻿@model MVC_NPANTS.Models.EstiloEditViewModel
-@{
-    ViewData["Title"] = "Editar Estilo";
-}
 
-<div class="container mt-4">
-    <h2>Editar Estilo</h2>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+</head>
 
-    <form asp-action="Edit" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="Id" />
+<h2>Editar Estilo</h2>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group mb-3">
-                    <label asp-for="Nombre" class="control-label">Nombre del Estilo</label>
-                    <input asp-for="Nombre" class="form-control" />
-                    <span asp-validation-for="Nombre" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group mb-3">
-                    <label asp-for="Tipo" class="control-label">Tipo de Estilo</label>
-                    <input asp-for="Tipo" class="form-control" />
-                    <span asp-validation-for="Tipo" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group mb-3">
-                    <label asp-for="Precio" class="control-label">Precio</label>
-                    <input type ="number" asp-for="Precio" class="form-control" />
-                    <span asp-validation-for="Precio" class="text-danger"></span>
-                </div>
-            </div>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+@if (ViewBag.Tallas != null && ViewBag.Tallas.Count > 0)
+{
+    <form asp-action="Edit" method="post" id="editForm">
+        <input type="hidden" asp-for="Id" /> 
+        <div class="form-group mb-3">
+            <label asp-for="Nombre" class="control-label">Nombre</label>
+            <input asp-for="Nombre" class="form-control" required />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
         </div>
 
-        <div class="card mt-4">
-            <div class="card-header">
-                <h4>Tallas y Consumo de Tela</h4>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="tallasTable">
-                        <thead>
-                            <tr>
-                                <th>Talla</th>
-                                <th>Consumo de Tela</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (var i = 0; i < Model.Tallas.Count; i++)
-                            {
-                                <tr>
-                                    <td>
-                                        <input type="hidden" asp-for="Tallas[i].Id" />
-                                        <select asp-for="Tallas[i].TallaId" class="form-control"
-                                                asp-items="@(new SelectList(ViewBag.Tallas, "Id", "Nombre", Model.Tallas[i].TallaId))">
-                                        </select>
-                                        <span asp-validation-for="Tallas[i].TallaId" class="text-danger"></span>
-                                    </td>
-                                    <td>
-                                        <input asp-for="Tallas[i].ConsumoTela" class="form-control" type="number" step="0.01" />
-                                        <span asp-validation-for="Tallas[i].ConsumoTela" class="text-danger"></span>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">
-                                            <i class="fas fa-trash"></i> Eliminar
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-                <button type="button" class="btn btn-primary" onclick="agregarFila()">
-                    <i class="fas fa-plus"></i> Agregar Talla
-                </button>
-            </div>
+        <div class="form-group mb-3">
+            <label asp-for="Tipo" class="control-label">Tipo</label>
+            <input asp-for="Tipo" class="form-control" required />
+            <span asp-validation-for="Tipo" class="text-danger"></span>
         </div>
 
-        <div class="form-group mt-4">
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-save"></i> Guardar Cambios
-            </button>
-            <a asp-action="Index" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Volver a la Lista
-            </a>
+        <div class="form-group mb-3">
+            <label asp-for="Precio" class="control-label">Precio</label>
+            <input type="number" asp-for="Precio" class="form-control" required />
+            <span asp-validation-for="Precio" class="text-danger"></span>
+        </div>
+
+        <h3>Tallas</h3>
+        <div id="tallas-container">
+            @for (var i = 0; i < Model.Tallas.Count; i++)
+            {
+
+               <div class="form-group talla-row border p-3 mb-3">
+    <div class="row">
+        <div class="col-md-5">
+            <input type="hidden" asp-for="Tallas[i].Id" />
+            <label asp-for="Tallas[i].TallaId">Talla:</label>
+                            <select asp-for="Tallas[i].TallaId" class="form-control"
+                                    asp-items="@(new SelectList(ViewBag.Tallas, "Id", "Nombre", Model.Tallas[i].TallaId))">
+                            </select>
+            <span asp-validation-for="Tallas[i].TallaId" class="text-danger"></span>
+        </div>
+        <div class="col-md-5">
+            <label asp-for="Tallas[i].ConsumoTela">Consumo de Tela:</label> 
+            <input type="number" asp-for="Tallas[i].ConsumoTela" class="form-control" required min="0.01" step="0.01" /> 
+            <span asp-validation-for="Tallas[i].ConsumoTela" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <button type="button" class="btn btn-danger remove-talla mt-3">Eliminar</button>
+        </div>
+    </div>
+</div>
+            }
+        </div>
+
+        <button type="button" class="btn btn-secondary mt-2 mb-3" id="agregar-talla">Agregar Talla</button>
+
+        <div class="form-group">
+            <input type="submit" value="Guardar Cambios" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
         </div>
     </form>
-</div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
-    <script>
-        // Guardar las tallas existentes al cargar la página
-        const tallasIniciales = @Html.Raw(Json.Serialize(Model.Tallas));
-
-        function agregarFila() {
-            const tbody = document.querySelector("#tallasTable tbody");
-            const index = tbody.children.length;
-            const newRow = document.createElement("tr");
-
-            const selectTemplate = document.querySelector("select[name^='Tallas[0].TallaId']").cloneNode(true);
-            selectTemplate.name = `Tallas[${index}].TallaId`;
-            selectTemplate.id = `Tallas_${index}__TallaId`;
-            // Limpiar la selección para la nueva fila
-            selectTemplate.selectedIndex = 0;
-
-            newRow.innerHTML = `
-                        <td>
-                            <input type="hidden" name="Tallas[${index}].Id" value="0" />
-                            ${selectTemplate.outerHTML}
-                        </td>
-                        <td>
-                            <input name="Tallas[${index}].ConsumoTela" type="number" step="0.01" class="form-control" value="0" />
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">
-                                <i class="fas fa-trash"></i> Eliminar
-                            </button>
-                        </td>`;
-
-            tbody.appendChild(newRow);
-        }
-
-        function eliminarFila(button) {
-            const row = button.closest('tr');
-            if (document.querySelectorAll("#tallasTable tbody tr").length > 1) {
-                // Obtener el índice de la fila
-                const rowIndex = Array.from(row.parentElement.children).indexOf(row);
-
-                // Si es una talla existente, agregar un campo hidden para marcarla como eliminada
-                if (tallasIniciales[rowIndex] && tallasIniciales[rowIndex].Id > 0) {
-                    const form = document.querySelector('form');
-                    const deletedInput = document.createElement('input');
-                    deletedInput.type = 'hidden';
-                    deletedInput.name = `TallasEliminadas`;
-                    deletedInput.value = tallasIniciales[rowIndex].Id;
-                    form.appendChild(deletedInput);
-                }
-
-                row.remove();
-                reindexTallasInputs();
-            } else {
-                alert("Debe mantener al menos una talla.");
-            }
-        }
-
-        function reindexTallasInputs() {
-            const rows = document.querySelectorAll("#tallasTable tbody tr");
-            rows.forEach((row, index) => {
-                row.querySelectorAll('select, input').forEach(input => {
-                    const name = input.getAttribute('name');
-                    if (name && name.includes('Tallas[')) {
-                        input.setAttribute('name', name.replace(/\[\d+\]/, `[${index}]`));
-                        if (input.id) {
-                            input.id = input.id.replace(/\d+/, index);
-                        }
-                    }
-                });
-            });
-        }
-    </script>
 }
+else
+{
+    <p class="text-danger">No se encontraron tallas disponibles.</p>
+    <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+}
+
+<script>
+    $(document).ready(function () {
+        function agregarTalla() {
+            var index = $("#tallas-container .talla-row").length;
+            var nuevaTalla = `
+                <div class="form-group talla-row border p-3 mb-3">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <input type="hidden" name="Tallas[${index}].Id" value="0" /> 
+                            <label for="Tallas_${index}__TallaId">Talla:</label>
+                            <select id="Tallas_${index}__TallaId" name="Tallas[${index}].TallaId" class="form-control talla-select" required>
+                                <option value="">Seleccione una talla</option>
+                                @foreach (var talla in ViewBag.Tallas)
+                                {
+                                    <option value="@talla.Id">@talla.Nombre</option>
+                                }
+                            </select>
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Tallas[${index}].TallaId" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="Tallas_${index}__ConsumoTela">Consumo de Tela:</label>
+                            <input type="number" id="Tallas_${index}__ConsumoTela" name="Tallas[${index}].ConsumoTela" class="form-control" required min="0.01" step="0.01" />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Tallas[${index}].ConsumoTela" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger remove-talla mt-4">Eliminar</button>
+                        </div>
+                    </div>
+                </div>`;
+            $("#tallas-container").append(nuevaTalla);
+        }
+
+        $("#agregar-talla").click(agregarTalla);
+
+        $("#tallas-container").on("click", ".remove-talla", function () {
+            $(this).closest(".talla-row").remove();
+
+            // Actualizar índices y validación de jQuery
+            $(".talla-row").each(function (index) {
+                $(this).find('label[for^="Tallas_"]').attr('for', `Tallas_${index}__TallaId`);
+                $(this).find('select[name^="Tallas["]').attr('name', `Tallas[${index}].TallaId`).attr('id', `Tallas_${index}__TallaId`);
+                $(this).find('label[for^="Tallas_"]').attr('for', `Tallas_${index}__ConsumoTela`);
+                $(this).find('input[name^="Tallas["]').attr('name', `Tallas[${index}].ConsumoTela`).attr('id', `Tallas_${index}__ConsumoTela`);
+
+                // Eliminar mensajes de error anteriores
+                $(this).find('.field-validation-error').remove();
+                // Agregar nuevos spans para los mensajes de error
+                $(this).find('select[name^="Tallas["]').after('<span class="text-danger field-validation-valid" data-valmsg-for="Tallas[' + index + '].TallaId" data-valmsg-replace="true"></span>');
+                $(this).find('input[name^="Tallas["]').after('<span class="text-danger field-validation-valid" data-valmsg-for="Tallas[' + index + '].ConsumoTela" data-valmsg-replace="true"></span>');
+            });
+
+            // Reiniciar la validación de jQuery Validate
+            $.validator.unobtrusive.parse("#editForm"); 
+        });
+
+        // Validación del formulario (similar a la vista Create)
+        $("#editForm").submit(function (e) {
+            // ... (código de validación del formulario)
+        });
+    });
+</script>

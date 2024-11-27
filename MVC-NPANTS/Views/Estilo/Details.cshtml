@@ -1,56 +1,149 @@
 ﻿@model MVC_NPANTS.Models.Estilo
-
 @{
     ViewData["Title"] = "Detalles del Estilo";
 }
+<head>
+    <style>
 
+        .form-label {
+            color:white;
+        }
+        .custom-table-container {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+            .custom-table-container::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                transform: rotate(45deg);
+                transition: all 0.6s;
+            }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: transparent;
+        }
+
+        .custom-header {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+            .custom-header th {
+                padding: 15px;
+                border-bottom: 2px solid rgba(255,255,255,0.2);
+                text-align: center;
+                font-size: 16px;
+            }
+
+        .custom-row {
+            transition: all 0.4s ease;
+        }
+
+            .custom-row:nth-child(even) {
+                background-color: rgba(255,255,255,0.05);
+            }
+
+            .custom-row:nth-child(odd) {
+                background-color: rgba(255,255,255,0.02);
+            }
+
+            .custom-row:hover {
+                background-color: rgba(255,255,255,0.1);
+                transform: scale(1.02);
+            }
+
+            .custom-row td {
+                padding: 12px;
+                text-align: center;
+                color: white;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                font-size: 14px;
+            }
+
+        .form-detail {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: white;
+            border: none;
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            color: wheat;
+            font-weight: 500;
+        }
+    </style>
+</head>
 <div class="main-container">
     <div class="page-header">
-        <h1 style="color:white">@ViewData["Title"]</h1>
+        <h1 class="text-center" style="color: white;">@ViewData["Title"]</h1>
     </div>
-
-    <div>
-        <h4>Estilo</h4>
-        <hr />
-        <dl class="row">
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.Nombre)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.Nombre)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.Tipo)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.Tipo)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Precio)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Precio)
-            </dd>
-            <dt class="col-sm-2">
-                Tallas
-            </dt>
-            <dd class="col-sm-10">
-                @if (Model.Tallas != null)
+    <form class="shadow rounded" style="background: linear-gradient(135deg, #2c3e50, #4ca1af); color: white; padding: 30px;">
+        <div class="row">
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label" style="color:white">ID:</label>
+                <div class="form-control form-detail" >@Html.DisplayFor(model => model.Id)</div>
+            </div>
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label" style="color:white">Nombre:</label>
+                <div class="form-control form-detail">@Html.DisplayFor(model => model.Nombre)</div>
+            </div>
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label" style="color:white">Tipo:</label>
+                <div class="form-control form-detail">@Html.DisplayFor(model => model.Tipo)</div>
+            </div>
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label" style="color:white">Precio:</label>
+                <div class="form-control form-detail">@Html.DisplayFor(model => model.Precio)</div>
+            </div>
+            <div class="col-12 mb-3">
+                <label class="form-label" style="color:white">Tallas:</label>
+                @if (Model.Tallas != null && Model.Tallas.Any())
                 {
-                    <ul>
-                        @foreach (var estiloTalla in Model.Tallas) 
-                        {
-                            <li>
-                                Talla: @estiloTalla.Talla.Nombre - Consumo: @estiloTalla.ConsumoTela
-                            </li>
-                        }
-                    </ul>
+                    <div class="custom-table-container">
+                        <table class="custom-table">
+                            <thead class="custom-header">
+                                <tr>
+                                    <th>Talla</th>
+                                    <th>Consumo de Tela</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var estiloTalla in Model.Tallas)
+                                {
+                                    <tr class="custom-row">
+                                        <td>@estiloTalla.Talla.Nombre</td>
+                                        <td>@estiloTalla.ConsumoTela</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 }
-            </dd>
-        </dl>
-    </div>
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a> 
-        <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a> 
-    </div>
+                else
+                {
+                    <div class="form-control form-detail text-center">No hay tallas asociadas.</div>
+                }
+            </div>
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+            @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary", style = "background-color: wheat; border: none; color: #2c3e50;" })
+            <a asp-action="Index" class="btn btn-secondary" style="background-color: rgba(255,255,255,0.1); color: white; border: none;">Volver</a>
+        </div>
+    </form>
 </div>
