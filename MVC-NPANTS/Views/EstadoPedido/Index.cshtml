@@ -79,16 +79,13 @@
                    asp-route-pageSize="@Model.PageSize">Última</a>
             }
 
-            <span class="pagination-info">
-                Página @Model.CurrentPage de @Model.TotalPages
-                (Total: @Model.TotalItems registros)
-            </span>
+           
         </div>
     }
     else
     {
         <div class="alert alert-info" role="alert">
-            No se encontraron Telas.
+            No se encontraron Estados.
         </div>
     }
 </div>
