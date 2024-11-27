@@ -40,7 +40,7 @@ namespace MVC_NPANTS.Controllers
         }
 
         // Listar todas las tallas con paginación
-        public async Task<IActionResult> Index(int page = 1, int limit = 10)
+        public async Task<IActionResult> Index(int page = 1, int limit = 10, string searchString = null)
         {
             SetAuthorizationHeader();
             try
@@ -57,13 +57,24 @@ namespace MVC_NPANTS.Controllers
                     });
                 }
 
-                // Pasar los datos de paginación a la vista a través de ViewBag
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    response.Data = response.Data.Where(t =>
+                        t.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                    ).ToList();
+
+                    response.Pagination.TotalItems = response.Data.Count;
+                    response.Pagination.TotalPages = (int)Math.Ceiling((double)response.Data.Count / response.Pagination.ItemsPerPage);
+                    response.Pagination.CurrentPage = 1;
+                }
+
                 ViewBag.CurrentPage = response.Pagination.CurrentPage;
                 ViewBag.TotalPages = response.Pagination.TotalPages;
                 ViewBag.HasNextPage = response.Pagination.HasNextPage;
                 ViewBag.HasPrevPage = response.Pagination.HasPrevPage;
                 ViewBag.ItemsPerPage = response.Pagination.ItemsPerPage;
                 ViewBag.TotalItems = response.Pagination.TotalItems;
+                ViewBag.SearchString = searchString;
 
                 return View(response);
             }
@@ -77,7 +88,6 @@ namespace MVC_NPANTS.Controllers
                 });
             }
         }
-
         // El resto de los métodos permanecen igual
         public IActionResult Create()
         {
